@@ -1,0 +1,241 @@
+<!-- src/app/pages/perfil/perfil.page.html -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Perfil</ion-title>
+    <ion-buttons slot="start">
+      <ion-button
+        *ngIf="!isLoading && !loadError"
+        (click)="toggleEdit()"
+        [color]="isEditing ? 'danger' : 'primary'">
+        <ion-icon slot="icon-only" [name]="isEditing ? 'close-outline' : 'create-outline'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="profile-content">
+
+  <!-- A carregar -->
+  <div class="state-center" *ngIf="isLoading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>A carregar perfil...</p>
+  </div>
+
+  <!-- Erro -->
+  <div class="state-center state-error" *ngIf="!isLoading && loadError">
+    <ion-icon name="alert-circle-outline"></ion-icon>
+    <p>Não foi possível carregar o perfil.</p>
+    <button class="btn-retry" (click)="loadPerfil()">Tentar novamente</button>
+  </div>
+
+  <!-- Conteúdo principal -->
+  <ng-container *ngIf="!isLoading && !loadError">
+
+    <!-- Hero / Avatar -->
+    <div class="profile-hero">
+      <div class="avatar-wrapper" [class.editable]="isEditing" (click)="isEditing && fileInput.click()">
+        <div class="avatar-ring">
+          <img *ngIf="profileImagePreview" [src]="profileImagePreview" alt="Foto" class="avatar-img" />
+          <div *ngIf="!profileImagePreview" class="avatar-initials">{{ initials }}</div>
+        </div>
+        <div class="avatar-edit-badge" *ngIf="isEditing">
+          <ion-icon name="camera-outline"></ion-icon>
+        </div>
+      </div>
+      <input #fileInput type="file" accept="image/*" (change)="onPhotoChange($event)" hidden />
+      <div class="hero-info">
+        <h2 class="hero-name">{{ profileForm.get('nomeCompleto')?.value || 'Sem Nome' }}</h2>
+      </div>
+    </div>
+
+    <form [formGroup]="profileForm" class="profile-form">
+
+      <!-- ── Identificação ── -->
+      <div class="section-group">
+        <div class="group-label">
+          <ion-icon name="person-circle-outline"></ion-icon>
+          Identificação
+        </div>
+
+        <div class="field-item" [class.has-error]="isFieldInvalid('nomeCompleto')">
+          <label class="field-label">Nome Completo</label>
+          <div class="field-input-wrap">
+            <ion-icon name="person-outline" class="field-icon"></ion-icon>
+            <input class="field-input" formControlName="nomeCompleto" type="text"
+              placeholder="Nome completo" [attr.disabled]="!isEditing ? true : null" />
+          </div>
+          <span class="field-error" *ngIf="isFieldInvalid('nomeCompleto')">{{ getFieldError('nomeCompleto') }}</span>
+        </div>
+
+        <div class="field-item" [class.has-error]="isFieldInvalid('genero')">
+          <label class="field-label">Género</label>
+          <div class="field-input-wrap select-wrap">
+            <ion-icon name="transgender-outline" class="field-icon"></ion-icon>
+            <select class="field-input field-select" formControlName="genero" [attr.disabled]="!isEditing ? true : null">
+              <option value="">Selecionar</option>
+              <option value="masculino">Masculino</option>
+              <option value="feminino">Feminino</option>
+              <option value="outro">Outro</option>
+            </select>
+            <ion-icon name="chevron-down-outline" class="select-arrow"></ion-icon>
+          </div>
+          <span class="field-error" *ngIf="isFieldInvalid('genero')">{{ getFieldError('genero') }}</span>
+        </div>
+
+        <div class="field-item" [class.has-error]="isFieldInvalid('dataNascimento')">
+          <label class="field-label">Data de Nascimento</label>
+          <div class="field-input-wrap">
+            <ion-icon name="calendar-outline" class="field-icon"></ion-icon>
+            <input class="field-input" formControlName="dataNascimento" type="date"
+              [attr.disabled]="!isEditing ? true : null" />
+          </div>
+          <span class="field-error" *ngIf="isFieldInvalid('dataNascimento')">{{ getFieldError('dataNascimento') }}</span>
+        </div>
+
+        <div class="field-item" [class.has-error]="isFieldInvalid('cartaoCidadao')">
+          <label class="field-label">Cartão de Cidadão</label>
+          <div class="field-input-wrap">
+            <ion-icon name="id-card-outline" class="field-icon"></ion-icon>
+            <input class="field-input" formControlName="cartaoCidadao" type="text"
+              placeholder="00000000 0XX0" [attr.disabled]="!isEditing ? true : null" />
+          </div>
+          <span class="field-error" *ngIf="isFieldInvalid('cartaoCidadao')">{{ getFieldError('cartaoCidadao') }}</span>
+        </div>
+
+        <div class="field-item">
+          <label class="field-label">NIF</label>
+          <div class="field-input-wrap field-nif-readonly">
+            <ion-icon name="document-text-outline" class="field-icon"></ion-icon>
+            <input class="field-input" formControlName="nif" type="text"
+              placeholder="000000000" tabindex="-1" maxlength="9" />
+            <ion-icon name="lock-closed-outline" style="font-size:14px;color:#9ca3af;flex-shrink:0"></ion-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Morada ── -->
+      <div class="section-group">
+        <div class="group-label">
+          <ion-icon name="location-outline"></ion-icon>
+          Morada
+        </div>
+
+        <div class="field-item" [class.has-error]="isFieldInvalid('morada')">
+          <label class="field-label">Morada</label>
+          <div class="field-input-wrap">
+            <ion-icon name="home-outline" class="field-icon"></ion-icon>
+            <input class="field-input" formControlName="morada" type="text"
+              placeholder="Rua, Número, Andar" [attr.disabled]="!isEditing ? true : null" />
+          </div>
+          <span class="field-error" *ngIf="isFieldInvalid('morada')">{{ getFieldError('morada') }}</span>
+        </div>
+
+        <div class="field-row">
+          <div class="field-item field-half" [class.has-error]="isFieldInvalid('codigoPostal')">
+            <label class="field-label">Código Postal</label>
+            <div class="field-input-wrap">
+              <ion-icon name="map-outline" class="field-icon"></ion-icon>
+              <input class="field-input" formControlName="codigoPostal" type="text"
+                placeholder="0000-000" [attr.disabled]="!isEditing ? true : null" />
+            </div>
+            <span class="field-error" *ngIf="isFieldInvalid('codigoPostal')">{{ getFieldError('codigoPostal') }}</span>
+          </div>
+
+          <div class="field-item field-half" [class.has-error]="isFieldInvalid('localidade')">
+            <label class="field-label">Localidade</label>
+            <div class="field-input-wrap">
+              <ion-icon name="business-outline" class="field-icon"></ion-icon>
+              <input class="field-input" formControlName="localidade" type="text"
+                placeholder="Cidade" [attr.disabled]="!isEditing ? true : null" />
+            </div>
+            <span class="field-error" *ngIf="isFieldInvalid('localidade')">{{ getFieldError('localidade') }}</span>
+          </div>
+        </div>
+
+        <div class="field-item">
+          <label class="field-label">País</label>
+          <div class="field-input-wrap select-wrap">
+            <ion-icon name="globe-outline" class="field-icon"></ion-icon>
+            <select class="field-input field-select" formControlName="pais" [attr.disabled]="!isEditing ? true : null">
+              <option *ngFor="let p of paisList" [value]="p">{{ p }}</option>
+            </select>
+            <ion-icon name="chevron-down-outline" class="select-arrow"></ion-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Contactos ── -->
+      <div class="section-group">
+        <div class="group-label">
+          <ion-icon name="call-outline"></ion-icon>
+          Contactos
+        </div>
+
+        <div class="field-item" [class.has-error]="isFieldInvalid('telemovel1')">
+          <label class="field-label">Telemóvel Principal</label>
+          <div class="field-input-wrap">
+            <ion-icon name="phone-portrait-outline" class="field-icon"></ion-icon>
+            <input class="field-input" formControlName="telemovel1" type="tel"
+              placeholder="9XX XXX XXX" [attr.disabled]="!isEditing ? true : null" />
+          </div>
+          <span class="field-error" *ngIf="isFieldInvalid('telemovel1')">{{ getFieldError('telemovel1') }}</span>
+        </div>
+
+        <div class="field-item" [class.has-error]="isFieldInvalid('telemovel2')">
+          <label class="field-label">
+            Telemóvel Alternativo
+            <span class="optional">(opcional)</span>
+          </label>
+          <div class="field-input-wrap">
+            <ion-icon name="phone-portrait-outline" class="field-icon"></ion-icon>
+            <input class="field-input" formControlName="telemovel2" type="tel"
+              placeholder="9XX XXX XXX" [attr.disabled]="!isEditing ? true : null" />
+          </div>
+          <span class="field-error" *ngIf="isFieldInvalid('telemovel2')">{{ getFieldError('telemovel2') }}</span>
+        </div>
+
+        <div class="field-item" [class.has-error]="isFieldInvalid('email')">
+          <label class="field-label">Email</label>
+          <div class="field-input-wrap">
+            <ion-icon name="mail-outline" class="field-icon"></ion-icon>
+            <input class="field-input" formControlName="email" type="email"
+              placeholder="email@exemplo.com" [attr.disabled]="!isEditing ? true : null" />
+          </div>
+          <span class="field-error" *ngIf="isFieldInvalid('email')">{{ getFieldError('email') }}</span>
+        </div>
+      </div>
+
+      <!-- ── Nº de Sócio ── -->
+      <div class="socio-footer">
+        <div class="socio-footer-inner">
+          <div class="socio-footer-left">
+            <ion-icon name="card-outline"></ion-icon>
+            <span class="socio-footer-label">Nº de Sócio</span>
+          </div>
+          <div class="socio-footer-right">
+            <span class="socio-footer-value">{{ profileForm.get('numeroSocio')?.value || '—' }}</span>
+            <ion-icon name="lock-closed-outline" class="socio-lock"></ion-icon>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- Barra de guardar -->
+    <div class="save-bar" *ngIf="isEditing">
+      <button class="btn-save" (click)="saveProfile()" [disabled]="isSaving">
+        <ion-spinner *ngIf="isSaving" name="crescent" class="save-spinner"></ion-spinner>
+        <ion-icon *ngIf="!isSaving" name="checkmark-circle-outline"></ion-icon>
+        {{ isSaving ? 'A guardar...' : 'Guardar Alterações' }}
+      </button>
+      <button class="btn-cancel" (click)="toggleEdit()" [disabled]="isSaving">Cancelar</button>
+    </div>
+
+  </ng-container>
+
+  <div class="bottom-space"></div>
+
+</ion-content>

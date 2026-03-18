@@ -1,0 +1,117 @@
+<!-- src/app/pages/calendario/evento-modal/evento-modal.component.html -->
+<ion-header>
+  <ion-toolbar class="modal-toolbar">
+    <ion-title>{{ modoEdicao ? 'Editar Evento' : 'Novo Evento' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="fechar()" fill="clear" class="close-btn">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="modal-content">
+  <form [formGroup]="form" class="evento-form">
+
+    <!-- Tipo de Evento -->
+    <div class="field-item" [class.has-error]="isFieldInvalid('tipo')">
+      <label class="field-label">
+        <ion-icon name="pricetag-outline"></ion-icon>
+        Tipo de Evento
+      </label>
+      <div class="tipo-grid">
+        <button
+          type="button"
+          class="tipo-btn"
+          *ngFor="let tipo of tiposEvento"
+          [class.selected]="form.get('tipo')?.value === tipo.valor"
+          [class]="'tipo-btn cor-' + tipo.cor + (form.get('tipo')?.value === tipo.valor ? ' selected' : '')"
+          (click)="form.get('tipo')?.setValue(tipo.valor)">
+          {{ tipo.label }}
+        </button>
+      </div>
+      <span class="field-error" *ngIf="isFieldInvalid('tipo')">Seleciona um tipo</span>
+    </div>
+
+    <!-- Nome do Evento -->
+    <div class="field-item" [class.has-error]="isFieldInvalid('nome')">
+      <label class="field-label">
+        <ion-icon name="calendar-outline"></ion-icon>
+        Nome do Evento
+      </label>
+      <div class="field-input-wrap">
+        <input class="field-input" formControlName="nome" type="text"
+          placeholder="Ex: Treino de preparação" />
+      </div>
+      <span class="field-error" *ngIf="isFieldInvalid('nome')">Campo obrigatório</span>
+    </div>
+
+    <!-- Local -->
+    <div class="field-item" [class.has-error]="isFieldInvalid('local')">
+      <label class="field-label">
+        <ion-icon name="location-outline"></ion-icon>
+        Local
+      </label>
+      <div class="field-input-wrap">
+        <input class="field-input" formControlName="local" type="text"
+          placeholder="Ex: Estádio Municipal" />
+      </div>
+      <span class="field-error" *ngIf="isFieldInvalid('local')">Campo obrigatório</span>
+    </div>
+
+    <!-- Data -->
+    <div class="field-item" [class.has-error]="isFieldInvalid('data')">
+      <label class="field-label">
+        <ion-icon name="calendar-outline"></ion-icon>
+        Data
+      </label>
+      <div class="field-input-wrap">
+        <input class="field-input" formControlName="data" type="date" />
+      </div>
+      <span class="field-error" *ngIf="isFieldInvalid('data')">Campo obrigatório</span>
+    </div>
+
+    <!-- Hora Início / Fim -->
+    <div class="field-row">
+      <div class="field-item field-half" [class.has-error]="isFieldInvalid('horaInicio')">
+        <label class="field-label">
+          <ion-icon name="time-outline"></ion-icon>
+          Hora Início
+        </label>
+        <div class="field-input-wrap">
+          <input class="field-input" formControlName="horaInicio" type="time" />
+        </div>
+        <span class="field-error" *ngIf="isFieldInvalid('horaInicio')">Obrigatório</span>
+      </div>
+
+      <div class="field-item field-half" [class.has-error]="isFieldInvalid('horaFim')">
+        <label class="field-label">
+          <ion-icon name="time-outline"></ion-icon>
+          Hora Fim
+        </label>
+        <div class="field-input-wrap">
+          <input class="field-input" formControlName="horaFim" type="time" />
+        </div>
+        <span class="field-error" *ngIf="isFieldInvalid('horaFim')">Obrigatório</span>
+      </div>
+    </div>
+
+    <!-- Google Calendar (preparado para implementar) -->
+    <div class="google-cal-info">
+      <ion-icon name="logo-google"></ion-icon>
+      <span>Este evento será adicionado ao Google Calendar</span>
+    </div>
+
+    <!-- Ações -->
+    <div class="form-actions">
+      <button class="btn-eliminar" *ngIf="modoEdicao" (click)="eliminar()">
+        Eliminar
+      </button>
+      <button class="btn-guardar" (click)="guardar()" [disabled]="isSaving">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        {{ isSaving ? 'A guardar...' : 'Guardar' }}
+      </button>
+    </div>
+
+  </form>
+</ion-content>

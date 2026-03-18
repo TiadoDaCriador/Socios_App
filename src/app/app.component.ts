@@ -1,27 +1,98 @@
-
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { IonApp, IonSplitPane, IonMenu, IonContent, IonList, IonListHeader, IonNote, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterOutlet, IonRouterLink } from '@ionic/angular/standalone';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
+import {
+  IonApp,
+  IonSplitPane,
+  IonMenu,
+  IonContent,
+  IonList,
+  IonMenuToggle,
+  IonItem,
+  IonIcon,
+  IonLabel,
+  IonRouterOutlet,
+  IonRouterLink
+} from '@ionic/angular/standalone';
+
 import { addIcons } from 'ionicons';
-import { mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, heartOutline, heartSharp, archiveOutline, archiveSharp, trashOutline, trashSharp, warningOutline, warningSharp, bookmarkOutline, bookmarkSharp } from 'ionicons/icons';
+import {
+  person,
+  calendar,
+  calendarClear,
+  card,
+  mail,
+  wallet,
+  settings,
+  homeOutline,
+  calendarOutline,
+  personOutline,
+  menuOutline,
+  logOutOutline, // ← adicionado
+} from 'ionicons/icons';
+
+import { MenuController } from '@ionic/angular';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  imports: [RouterLink, RouterLinkActive, IonApp, IonSplitPane, IonMenu, IonContent, IonList, IonListHeader, IonNote, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterLink, IonRouterOutlet],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    IonApp,
+    IonSplitPane,
+    IonMenu,
+    IonContent,
+    IonList,
+    IonMenuToggle,
+    IonItem,
+    IonIcon,
+    IonLabel,
+    IonRouterLink,
+    IonRouterOutlet
+  ]
 })
 export class AppComponent {
+
   public appPages = [
-    { title: 'Inbox', url: '/folder/inbox', icon: 'mail' },
-    { title: 'Outbox', url: '/folder/outbox', icon: 'paper-plane' },
-    { title: 'Favorites', url: '/folder/favorites', icon: 'heart' },
-    { title: 'Archived', url: '/folder/archived', icon: 'archive' },
-    { title: 'Trash', url: '/folder/trash', icon: 'trash' },
-    { title: 'Spam', url: '/folder/spam', icon: 'warning' },
+    { title: 'Perfil',          url: '/tabs/perfil',          icon: 'person'         },
+    { title: 'Eventos',         url: '/tabs/eventos',         icon: 'calendar'       },
+    { title: 'Calendário',      url: '/tabs/calendario',      icon: 'calendar-clear' },
+    { title: 'Conta Corrente',  url: '/tabs/conta-corrente',  icon: 'card'           },
+    { title: 'Convocatórias',   url: '/tabs/convocatorias',   icon: 'mail'           },
+    { title: 'Quotas',          url: '/tabs/quotas',          icon: 'wallet'         },
+    { title: 'Definições',      url: '/tabs/definicoes',      icon: 'settings'       },
   ];
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
-  constructor() {
-    addIcons({ mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, heartOutline, heartSharp, archiveOutline, archiveSharp, trashOutline, trashSharp, warningOutline, warningSharp, bookmarkOutline, bookmarkSharp });
+
+  constructor(
+    private auth: AuthService,
+    private menu: MenuController,
+  ) {
+    addIcons({
+      person,
+      calendar,
+      calendarClear,
+      card,
+      mail,
+      wallet,
+      settings,
+      homeOutline,
+      calendarOutline,
+      personOutline,
+      menuOutline,
+      logOutOutline, // ← adicionado
+    });
+  }
+
+  openMenu() {
+    this.menu.open();
+  }
+
+  logout() {
+    this.auth.logout();
   }
 }
