@@ -1,11 +1,36 @@
-<ion-header>
+<!-- src/app/pages/definicoes/definicoes.page.html -->
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title slot="start">Maestro</ion-title>
+    <ion-title>Definições</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true" class="def-content">
+
+  <div class="opcoes-lista">
+    <div
+      class="opcao-row"
+      *ngFor="let op of opcoes"
+      [class.danger]="op.danger"
+      (click)="clicar(op)">
+
+      <div class="opcao-icon" [class.danger-icon]="op.danger">
+        <ion-icon [name]="op.icone"></ion-icon>
+      </div>
+
+      <div class="opcao-info">
+        <span class="opcao-label" [class.danger-label]="op.danger">{{ op.label }}</span>
+        <span class="opcao-desc" *ngIf="op.descricao">{{ op.descricao }}</span>
+      </div>
+
+      <ion-icon name="chevron-forward-outline" class="chevron" *ngIf="!op.danger"></ion-icon>
+
+    </div>
+  </div>
+
+  <div class="bottom-space"></div>
+
 </ion-content>

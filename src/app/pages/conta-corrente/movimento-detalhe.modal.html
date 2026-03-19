@@ -1,0 +1,82 @@
+<!-- src/app/pages/conta-corrente/movimento-detalhe-modal.html -->
+<ion-header>
+  <ion-toolbar class="modal-toolbar">
+    <ion-title>Detalhe da Despesa</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="fechar()" fill="clear">
+        <ion-icon name="close-outline" style="font-size:22px;color:#6b7280"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="modal-content">
+
+  <!-- Banner -->
+  <div class="mov-banner">
+    <span class="banner-tipo">Despesa</span>
+    <span class="banner-valor">{{ formatarValor(movimento.valor) }}</span>
+  </div>
+
+  <!-- Detalhes -->
+  <div class="detalhe-body">
+
+    <div class="detalhe-item">
+      <div class="detalhe-icon-wrap">
+        <ion-icon name="document-text-outline"></ion-icon>
+      </div>
+      <div class="detalhe-info">
+        <span class="detalhe-label">Descrição</span>
+        <span class="detalhe-valor">{{ movimento.descricao }}</span>
+      </div>
+    </div>
+
+    <div class="detalhe-item">
+      <div class="detalhe-icon-wrap">
+        <ion-icon name="calendar-outline"></ion-icon>
+      </div>
+      <div class="detalhe-info">
+        <span class="detalhe-label">Data</span>
+        <span class="detalhe-valor">{{ formatarData(movimento.data) }}</span>
+      </div>
+    </div>
+
+    <div class="detalhe-item">
+      <div class="detalhe-icon-wrap">
+        <ion-icon name="time-outline"></ion-icon>
+      </div>
+      <div class="detalhe-info">
+        <span class="detalhe-label">Hora</span>
+        <span class="detalhe-valor">{{ formatarHora(movimento.data) }}</span>
+      </div>
+    </div>
+
+    <div class="detalhe-item">
+      <div class="detalhe-icon-wrap">
+        <ion-icon name="cash-outline"></ion-icon>
+      </div>
+      <div class="detalhe-info">
+        <span class="detalhe-label">Valor</span>
+        <span class="detalhe-valor valor-despesa">{{ formatarValor(movimento.valor) }}</span>
+      </div>
+    </div>
+
+    <div class="detalhe-item">
+      <div class="detalhe-icon-wrap">
+        <ion-icon name="card-outline"></ion-icon>
+      </div>
+      <div class="detalhe-info">
+        <span class="detalhe-label">Conta</span>
+        <span class="detalhe-valor">{{ movimento.conta }}</span>
+      </div>
+    </div>
+
+    <!-- Exportar PDF -->
+    <button class="btn-exportar" (click)="exportarPDF()" [disabled]="exportando">
+      <ion-icon name="download-outline"></ion-icon>
+      {{ exportando ? 'A exportar...' : 'Exportar PDF' }}
+    </button>
+
+  </div>
+
+</ion-content>

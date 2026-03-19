@@ -1,11 +1,103 @@
-<ion-header>
+<!-- src/app/pages/conta-corrente/conta-corrente.page.html -->
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title slot="start">Maestro</ion-title>
+    <ion-title>Conta Corrente</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true" class="cc-content">
+
+  <!-- Saldo Total -->
+  <div class="saldo-card saldo-total">
+    <ion-icon name="wallet-outline"></ion-icon>
+    <span>Saldo {{ formatarValor(saldoTotal) }}</span>
+  </div>
+
+  <!-- Valor do Período -->
+  <div class="saldo-card saldo-periodo">
+    <ion-icon name="trending-down-outline"></ion-icon>
+    <span>Valor do período: {{ formatarValor(valorPeriodo) }}</span>
+  </div>
+
+  <!-- Pesquisa e Filtro -->
+  <div class="toolbar-pesquisa">
+    <div class="pesquisa-wrap">
+      <ion-icon name="search-outline" class="pesquisa-icon"></ion-icon>
+      <input class="pesquisa-input" type="text" placeholder="Pesquisar..."
+        [(ngModel)]="pesquisa" />
+    </div>
+    <button class="btn-filtro" [class.active]="mostrarFiltros"
+      (click)="mostrarFiltros = !mostrarFiltros">
+      <ion-icon name="filter-outline"></ion-icon>
+    </button>
+  </div>
+
+  <!-- Painel de Filtros -->
+  <div class="filtros-painel" *ngIf="mostrarFiltros">
+
+    <!-- Últimas N despesas -->
+    <div class="filtros-row">
+      <span class="filtros-label">Mostrar:</span>
+      <button class="filtro-chip" *ngFor="let n of limitesDisponiveis"
+        [class.active]="limite === n"
+        (click)="limite = n">
+        {{ n === 0 ? 'Todas' : 'Últimas ' + n }}
+      </button>
+    </div>
+
+    <!-- Período -->
+    <div class="filtros-row">
+      <span class="filtros-label">De:</span>
+      <input class="filtro-data" type="date" [(ngModel)]="dataInicio" />
+      <span class="filtros-label">Até:</span>
+      <input class="filtro-data" type="date" [(ngModel)]="dataFim" />
+    </div>
+
+  </div>
+
+  <!-- Cabeçalho da lista -->
+  <div class="lista-header">
+    <div class="lista-header-data" (click)="toggleOrdem()">
+      Data
+      <ion-icon [name]="ordemDesc ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon>
+    </div>
+    <div class="lista-header-desc">Descrição</div>
+    <div class="lista-header-valor">Valor</div>
+  </div>
+
+  <!-- Lista de Despesas -->
+  <div class="movimentos-lista">
+
+    <div class="estado-vazio" *ngIf="movimentosFiltrados.length === 0">
+      <ion-icon name="wallet-outline"></ion-icon>
+      <p>Nenhuma despesa encontrada</p>
+    </div>
+
+    <div class="movimento-row" *ngFor="let mov of movimentosFiltrados"
+      (click)="abrirDetalhe(mov)">
+
+      <div class="mov-data-col">
+        <span class="mov-data">{{ formatarData(mov.data) }}</span>
+        <span class="mov-hora">{{ formatarHora(mov.data) }}</span>
+      </div>
+
+      <div class="mov-desc-col">
+        <span class="mov-desc">{{ mov.descricao }}</span>
+      </div>
+
+      <div class="mov-valor-col valor-despesa">
+        {{ formatarValor(mov.valor) }}
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Total -->
+  <div class="total-label">{{ movimentosFiltrados.length }} despesas</div>
+
+  <div class="bottom-space"></div>
+
 </ion-content>

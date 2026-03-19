@@ -1,0 +1,72 @@
+<!-- src/app/pages/eventos/evento-detalhe-modal.component.html -->
+<ion-header>
+  <ion-toolbar class="detalhe-toolbar">
+    <ion-title>Detalhe do Evento</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="fechar()" fill="clear">
+        <ion-icon name="close-outline" style="font-size:22px;color:#6b7280"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="detalhe-content">
+
+  <!-- Banner com cor do evento -->
+  <div class="detalhe-banner" [class]="'banner-' + evento.cor">
+    <div class="banner-tipo">{{ evento.tipo }}</div>
+    <h1 class="banner-nome">{{ evento.nome }}</h1>
+  </div>
+
+  <!-- Detalhes -->
+  <div class="detalhe-body">
+
+    <div class="detalhe-item">
+      <div class="detalhe-icon-wrap">
+        <ion-icon name="calendar-outline"></ion-icon>
+      </div>
+      <div class="detalhe-info">
+        <span class="detalhe-label">Data</span>
+        <span class="detalhe-valor">{{ formatarDataCompleta(evento.dataInicio) }}</span>
+      </div>
+    </div>
+
+    <div class="detalhe-item">
+      <div class="detalhe-icon-wrap">
+        <ion-icon name="time-outline"></ion-icon>
+      </div>
+      <div class="detalhe-info">
+        <span class="detalhe-label">Horário</span>
+        <span class="detalhe-valor">{{ formatarHora(evento.dataInicio) }} — {{ formatarHora(evento.dataFim) }}</span>
+      </div>
+    </div>
+
+    <div class="detalhe-item">
+      <div class="detalhe-icon-wrap">
+        <ion-icon name="location-outline"></ion-icon>
+      </div>
+      <div class="detalhe-info">
+        <span class="detalhe-label">Local</span>
+        <span class="detalhe-valor">{{ evento.local }}</span>
+      </div>
+    </div>
+
+    <div class="detalhe-item" *ngIf="evento.descricao">
+      <div class="detalhe-icon-wrap">
+        <ion-icon name="pricetag-outline"></ion-icon>
+      </div>
+      <div class="detalhe-info">
+        <span class="detalhe-label">Descrição</span>
+        <span class="detalhe-valor">{{ evento.descricao }}</span>
+      </div>
+    </div>  
+
+    <!-- Botão Eliminar -->
+    <button class="btn-eliminar" (click)="eliminar()">
+      <ion-icon name="trash-outline"></ion-icon>
+      Eliminar Evento
+    </button>
+
+  </div>
+
+</ion-content>

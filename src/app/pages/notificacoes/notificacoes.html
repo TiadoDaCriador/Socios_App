@@ -1,0 +1,85 @@
+<!-- src/app/pages/notificacoes/notificacoes.page.html -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Notificações
+      <ion-badge *ngIf="totalNaoLidas > 0" class="header-badge">{{ totalNaoLidas }}</ion-badge>
+    </ion-title>
+    <ion-buttons slot="end">
+      <button class="btn-icon" *ngIf="totalNaoLidas > 0" (click)="marcarTodasLidas()" title="Marcar todas como lidas">
+        <ion-icon name="checkmark-done-outline"></ion-icon>
+      </button>
+      <button class="btn-icon" [class.active]="mostrarFiltros" (click)="mostrarFiltros = !mostrarFiltros">
+        <ion-icon name="filter-outline"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="notif-content">
+
+  <!-- Filtros -->
+  <div class="filtros-painel" [hidden]="!mostrarFiltros">
+    <div class="filtros-row">
+      <button class="filtro-chip" [class.active]="filtroCategoria === ''" (click)="setFiltro('')">Todas</button>
+      <button
+        class="filtro-chip"
+        *ngFor="let c of categorias"
+        [class.active]="filtroCategoria === c.valor"
+        [class]="'filtro-chip ' + corCategoria(c.valor) + (filtroCategoria === c.valor ? ' active' : '')"
+        (click)="setFiltro(c.valor)">
+        <ion-icon [name]="c.icone"></ion-icon>
+        {{ c.label }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Lista -->
+  <div class="notif-lista">
+
+    <div class="estado-vazio" *ngIf="notificacoesFiltradas.length === 0">
+      <ion-icon name="notifications-outline"></ion-icon>
+      <p>Nenhuma notificação</p>
+    </div>
+
+    <div
+      class="notif-card"
+      *ngFor="let n of notificacoesFiltradas"
+      [class.nao-lida]="!n.lida"
+      (click)="marcarLida(n)">
+
+      <!-- Ícone categoria -->
+      <div class="notif-icone" [class]="corCategoria(n.categoria)">
+        <ion-icon [name]="iconeCategoria(n.categoria)"></ion-icon>
+      </div>
+
+      <!-- Conteúdo -->
+      <div class="notif-body">
+        <div class="notif-top">
+          <span class="notif-titulo">{{ n.titulo }}</span>
+          <span class="notif-tempo">{{ formatarTempo(n.data) }}</span>
+        </div>
+        <p class="notif-msg">{{ n.mensagem }}</p>
+        <span class="notif-categoria-label" [class]="corCategoria(n.categoria)">
+          {{ categorias.find(c => c.valor === n.categoria)?.label }}
+        </span>
+      </div>
+
+      <!-- Ponto não lida + eliminar -->
+      <div class="notif-actions">
+        <div class="ponto-nao-lida" *ngIf="!n.lida"></div>
+        <button class="btn-eliminar" (click)="eliminar(n); $event.stopPropagation()">
+          <ion-icon name="trash-outline"></ion-icon>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="total-label">{{ notificacoesFiltradas.length }} notificações</div>
+  <div class="bottom-space"></div>
+
+</ion-content>

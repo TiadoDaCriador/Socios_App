@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar class="modal-toolbar">
+    <ion-title>Cartões Associados</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="fechar()" fill="clear">
+        <ion-icon name="close-outline" style="font-size:22px;color:#6b7280"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="modal-content">
+  <div class="modal-body">
+
+    <div class="cartao-item" *ngFor="let c of cartoes">
+      <div class="cartao-left">
+        <div class="setting-icon cartao-icon">
+          <ion-icon name="card-outline"></ion-icon>
+        </div>
+        <div class="setting-info">
+          <span class="setting-label">•••• •••• •••• {{ c.ultimos4 }}</span>
+          <span class="setting-desc">{{ c.titular }} · {{ c.tipo }}</span>
+        </div>
+      </div>
+      <button class="btn-remover" (click)="remover(c)">
+        <ion-icon name="trash-outline"></ion-icon>
+      </button>
+    </div>
+
+    <div class="vazio" *ngIf="cartoes.length === 0">
+      <ion-icon name="card-outline"></ion-icon>
+      <p>Nenhum cartão associado</p>
+    </div>
+
+    <button class="btn-adicionar" (click)="adicionar()">
+      <ion-icon name="add-circle-outline"></ion-icon>
+      Adicionar Cartão
+    </button>
+
+  </div>
+</ion-content>

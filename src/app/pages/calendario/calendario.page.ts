@@ -8,6 +8,7 @@ import {
 import { addIcons } from 'ionicons';
 import { chevronBackOutline, chevronForwardOutline } from 'ionicons/icons';
 import { EventoModalComponent } from './eventomodal/eventomodal.component';
+import { EventosService } from '../../services/eventos.service';
 
 export interface Evento {
   id: number;
@@ -48,7 +49,10 @@ export class CalendarioPage implements OnInit {
   celulas: { data: Date; mesAtual: boolean }[] = [];
   horas = Array.from({ length: 14 }, (_, i) => `${String(i + 7).padStart(2, '0')}:00`);
 
-  constructor(private modalCtrl: ModalController) {
+  constructor(
+    private modalCtrl: ModalController,
+    private eventosService: EventosService,
+  ) {
     addIcons({ chevronBackOutline, chevronForwardOutline });
   }
 
@@ -71,24 +75,28 @@ export class CalendarioPage implements OnInit {
     const { data: resultado, role } = await modal.onWillDismiss();
 
     if (role === 'guardar' && resultado) {
-      // Adiciona o novo evento à lista
-      const novoEvento: Evento = {
-        id: Date.now(),
+      // Adiciona ao serviço partilhado → aparece automaticamente na página de Eventos
+      const novoEvento = this.eventosService.adicionarDoCalendario({
         titulo: resultado.titulo,
-        data: resultado.data,
-        hora: resultado.hora,
-        cor: resultado.cor,
-      };
-      this.eventos = [...this.eventos, novoEvento];
+        data:   resultado.data,
+        hora:   resultado.hora,
+        cor:    resultado.cor,
+        local:  resultado.local,
+      });
 
-      // TODO: Recarregar eventos do API após guardar
-      // this.eventoService.getEventos().subscribe(ev => this.eventos = ev);
+      // Adiciona também à lista local do calendário
+      this.eventos = [...this.eventos, {
+        id:     novoEvento.id,
+        titulo: novoEvento.nome,
+        data:   resultado.data,
+        hora:   resultado.hora,
+        cor:    resultado.cor,
+      }];
     }
 
     if (role === 'eliminar' && resultado?.id) {
       this.eventos = this.eventos.filter(e => e.id !== resultado.id);
-
-      // TODO: Confirmar eliminação com o API
+      this.eventosService.eliminar(resultado.id);
     }
   }
 
@@ -112,17 +120,22 @@ export class CalendarioPage implements OnInit {
       this.eventos = this.eventos.map(e =>
         e.id === evento.id ? { ...e, ...resultado } : e
       );
+      this.eventosService.atualizar(evento.id, {
+        nome: resultado.titulo,
+        cor:  resultado.cor,
+      });
     }
 
     if (role === 'eliminar') {
       this.eventos = this.eventos.filter(e => e.id !== evento.id);
+      this.eventosService.eliminar(evento.id);
     }
   }
 
   // ─── Navegação ────────────────────────────────────────────
   anterior() {
     const d = new Date(this.dataAtual);
-    if (this.vista === 'mes') d.setMonth(d.getMonth() - 1);
+    if (this.vista === 'mes')    d.setMonth(d.getMonth() - 1);
     else if (this.vista === 'semana') d.setDate(d.getDate() - 7);
     else d.setDate(d.getDate() - 1);
     this.dataAtual = d;
@@ -131,7 +144,7 @@ export class CalendarioPage implements OnInit {
 
   proximo() {
     const d = new Date(this.dataAtual);
-    if (this.vista === 'mes') d.setMonth(d.getMonth() + 1);
+    if (this.vista === 'mes')    d.setMonth(d.getMonth() + 1);
     else if (this.vista === 'semana') d.setDate(d.getDate() + 7);
     else d.setDate(d.getDate() + 1);
     this.dataAtual = d;
@@ -155,7 +168,7 @@ export class CalendarioPage implements OnInit {
     const mes = this.dataAtual.getMonth();
 
     const primeiroDia = new Date(ano, mes, 1);
-    const ultimoDia = new Date(ano, mes + 1, 0);
+    const ultimoDia   = new Date(ano, mes + 1, 0);
 
     let inicioSemana = primeiroDia.getDay();
     inicioSemana = inicioSemana === 0 ? 6 : inicioSemana - 1;
@@ -187,24 +200,24 @@ export class CalendarioPage implements OnInit {
   eventosNoDia(data: Date): Evento[] {
     return this.eventos.filter(e =>
       e.data.getFullYear() === data.getFullYear() &&
-      e.data.getMonth() === data.getMonth() &&
-      e.data.getDate() === data.getDate()
+      e.data.getMonth()    === data.getMonth()    &&
+      e.data.getDate()     === data.getDate()
     );
   }
 
   eventoNaHora(data: Date, hora: string): Evento | null {
     return this.eventos.find(e =>
       e.data.getFullYear() === data.getFullYear() &&
-      e.data.getMonth() === data.getMonth() &&
-      e.data.getDate() === data.getDate() &&
+      e.data.getMonth()    === data.getMonth()    &&
+      e.data.getDate()     === data.getDate()     &&
       e.hora === hora.replace(':00', 'h')
     ) ?? null;
   }
 
   isHoje(data: Date): boolean {
     return data.getFullYear() === this.hoje.getFullYear() &&
-      data.getMonth() === this.hoje.getMonth() &&
-      data.getDate() === this.hoje.getDate();
+           data.getMonth()    === this.hoje.getMonth()    &&
+           data.getDate()     === this.hoje.getDate();
   }
 
   get tituloNavegacao(): string {

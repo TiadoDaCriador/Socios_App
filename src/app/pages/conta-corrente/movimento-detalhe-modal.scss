@@ -1,0 +1,123 @@
+// src/app/pages/conta-corrente/movimento-detalhe-modal.scss
+
+$receita: #2e7d32;
+$despesa: #c62828;
+$primary: #1a6fdb;
+$bg:      #f5f7fb;
+$card:    #ffffff;
+$border:  #e2e8f0;
+$text:    #1a1a2e;
+$muted:   #6b7280;
+$radius-sm: 6px;
+
+.modal-toolbar {
+  --background: #{$card};
+  --color: #{$text};
+  --border-color: #{$border};
+}
+
+.modal-content {
+  --background: #{$bg};
+}
+
+// ── Banner ─────────────────────────────────────────────────
+.mov-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 20px;
+  background: linear-gradient(135deg, #b71c1c, #c62828);
+}
+
+.banner-tipo {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.8);
+}
+
+.banner-valor {
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+// ── Body ───────────────────────────────────────────────────
+.detalhe-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detalhe-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: $card;
+  border-radius: $radius-sm;
+  border: 1px solid $border;
+}
+
+.detalhe-icon-wrap {
+  width: 34px;
+  height: 34px;
+  background: #e8f0fc;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 17px; color: $primary; }
+}
+
+.detalhe-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.detalhe-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: $muted !important;
+}
+
+.detalhe-valor {
+  font-size: 14px;
+  font-weight: 500;
+  color: $text !important;
+  line-height: 1.4;
+
+  &.valor-receita { color: $receita !important; font-weight: 700; }
+  &.valor-despesa { color: $despesa !important; font-weight: 700; }
+}
+
+// ── Botão Exportar ─────────────────────────────────────────
+.btn-exportar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px;
+  margin-top: 8px;
+  border: none;
+  border-radius: $radius-sm;
+  background: $primary;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  ion-icon { font-size: 18px; }
+
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}

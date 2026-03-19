@@ -25,8 +25,8 @@ export const TIPOS_EVENTO = [
 
 @Component({
   selector: 'app-evento-modal',
-  templateUrl: './evento-modal.component.html',
-  styleUrls: ['./evento-modal.component.scss'],
+  templateUrl: './eventomodal.component.html',
+  styleUrls: ['./eventomodal.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -94,6 +94,7 @@ export class EventoModalComponent implements OnInit {
       data:   new Date(dados.data),
       hora:   dados.horaInicio,
       cor:    this.tipoSelecionado?.cor ?? 'blue',
+      
     };
 
     // TODO: Guardar no API

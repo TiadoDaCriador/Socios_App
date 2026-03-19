@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar class="modal-toolbar">
+    <ion-title>Notificações</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="fechar()" fill="clear">
+        <ion-icon name="close-outline" style="font-size:22px;color:#6b7280"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="modal-content">
+  <div class="modal-body">
+    <div class="setting-row">
+      <div class="setting-info"><span class="setting-label">Eventos</span></div>
+      <ion-toggle [(ngModel)]="notifEventos"></ion-toggle>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info"><span class="setting-label">Quotas</span></div>
+      <ion-toggle [(ngModel)]="notifQuotas"></ion-toggle>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info"><span class="setting-label">Convocatórias</span></div>
+      <ion-toggle [(ngModel)]="notifConvocatorias"></ion-toggle>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info"><span class="setting-label">Notícias</span></div>
+      <ion-toggle [(ngModel)]="notifNoticias"></ion-toggle>
+    </div>
+    <button class="btn-guardar" (click)="guardar()">Guardar</button>
+  </div>
+</ion-content>

@@ -1,11 +1,106 @@
-<ion-header>
+<!-- src/app/pages/convocatorias/convocatorias.page.html -->
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title slot="start">Maestro</ion-title>
+    <ion-title>Convocatórias</ion-title>
+    <ion-buttons slot="start">
+      <button class="btn-filtro-header" [class.active]="mostrarFiltros" (click)="mostrarFiltros = !mostrarFiltros">
+        <ion-icon name="filter-outline"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true" class="conv-content">
+
+  <!-- Painel de Filtros -->
+  <div class="filtros-painel" [hidden]="!mostrarFiltros">
+    <div class="filtros-row">
+      <span class="filtros-label">Tipologia:</span>
+      <button class="filtro-chip" [class.active]="filtroTipologia === ''"
+        (click)="setFiltroTipologia('')">Todas</button>
+      <button class="filtro-chip" *ngFor="let t of tipologias" [class.active]="filtroTipologia === t"
+        [class]="'filtro-chip ' + corTipologia(t) + (filtroTipologia === t ? ' active' : '')"
+        (click)="setFiltroTipologia(t)">
+        {{ t }}
+      </button>
+    </div>
+    <div class="filtros-row">
+      <span class="filtros-label">Mostrar:</span>
+      <button class="filtro-chip" *ngFor="let n of limitesDisponiveis" [class.active]="limite === n"
+        (click)="setLimite(n)">
+        {{ n === 0 ? 'Todas' : 'Últimas ' + n }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Cabeçalho -->
+  <div class="lista-header">
+    <div class="header-data" (click)="toggleOrdem()">
+      Data
+      <ion-icon [name]="ordemDesc ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon>
+    </div>
+    <div class="header-info">Detalhe</div>
+    <div class="header-resposta">Resposta</div>
+  </div>
+
+  <!-- Lista -->
+  <div class="conv-lista">
+
+    <!-- Vazio -->
+    <div class="estado-vazio" *ngIf="convocatoriasFiltradas.length === 0">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <p>Nenhuma convocatória encontrada</p>
+    </div>
+
+    <!-- Item -->
+    <div class="conv-card" *ngFor="let conv of convocatoriasFiltradas" [class.aceite]="conv.resposta === 'aceite'"
+      [class.recusado]="conv.resposta === 'recusado'">
+
+      <!-- Indicador de tipologia -->
+      <div class="conv-indicador" [class]="corTipologia(conv.tipologia)"></div>
+
+      <!-- Info principal -->
+      <div class="conv-info">
+        <div class="conv-tipologia-badge" [class]="corTipologia(conv.tipologia)">
+          {{ conv.tipologia }}
+        </div>
+        <div class="conv-meta">
+          <span class="conv-meta-item">
+            <ion-icon name="calendar-outline"></ion-icon>
+            {{ formatarDia(conv.dia) }}
+          </span>
+          <span class="conv-meta-item">
+            <ion-icon name="time-outline"></ion-icon>
+            {{ conv.hora }}
+          </span>
+          <span class="conv-meta-item">
+            <ion-icon name="location-outline"></ion-icon>
+            {{ conv.local }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Resposta — sempre visível -->
+      <div class="conv-resposta-col">
+        <button class="btn-aceitar" [class.ativo]="conv.resposta === 'aceite'"
+          (click)="responder(conv, 'aceite', $event)">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </button>
+        <button class="btn-recusar" [class.ativo]="conv.resposta === 'recusado'"
+          (click)="responder(conv, 'recusado', $event)">
+          <ion-icon name="close-circle-outline"></ion-icon>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Contador -->
+  <div class="total-label">{{ convocatoriasFiltradas.length }} convocatórias</div>
+
+  <div class="bottom-space"></div>
+
 </ion-content>

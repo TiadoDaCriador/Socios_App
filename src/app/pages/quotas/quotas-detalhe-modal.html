@@ -1,0 +1,123 @@
+<!-- src/app/pages/quotas/quota-detalhe-modal.html -->
+<ion-header>
+  <ion-toolbar class="modal-toolbar">
+    <ion-title>Detalhe da Quota</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="fechar()" fill="clear">
+        <ion-icon name="close-outline" style="font-size:22px;color:#6b7280"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="modal-content">
+
+  <!-- Banner -->
+  <div class="quota-banner" [class]="'banner-' + quota.estado">
+    <div class="banner-left">
+      <span class="banner-label">{{ quota.periodicidade }}</span>
+      <span class="banner-desc">{{ quota.descricao }}</span>
+    </div>
+    <span class="banner-valor">{{ formatarValor(quota.valor) }}</span>
+  </div>
+
+  <div class="modal-body">
+
+    <!-- Informações -->
+    <div class="section-group">
+
+      <div class="detalhe-item">
+        <div class="detalhe-icon-wrap">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </div>
+        <div class="detalhe-info">
+          <span class="detalhe-label">Data de Vencimento</span>
+          <span class="detalhe-valor">{{ formatarData(quota.dataVencimento) }}</span>
+        </div>
+      </div>
+
+      <div class="detalhe-item">
+        <div class="detalhe-icon-wrap">
+          <ion-icon name="time-outline"></ion-icon>
+        </div>
+        <div class="detalhe-info">
+          <span class="detalhe-label">Periodicidade</span>
+          <span class="detalhe-valor">{{ quota.periodicidade }}</span>
+        </div>
+      </div>
+
+      <div class="detalhe-item">
+        <div class="detalhe-icon-wrap">
+          <ion-icon name="cash-outline"></ion-icon>
+        </div>
+        <div class="detalhe-info">
+          <span class="detalhe-label">Valor</span>
+          <span class="detalhe-valor">{{ formatarValor(quota.valor) }}</span>
+        </div>
+      </div>
+
+      <div class="detalhe-item">
+        <div class="detalhe-icon-wrap" [class]="'icon-' + quota.estado">
+          <ion-icon [name]="quota.estado === 'pago' ? 'checkmark-circle-outline' : 'alert-circle-outline'"></ion-icon>
+        </div>
+        <div class="detalhe-info">
+          <span class="detalhe-label">Estado</span>
+          <span class="detalhe-valor estado-texto" [class]="'est-' + quota.estado">
+            {{ quota.estado | titlecase }}
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Pagar -->
+    <div class="section-group" *ngIf="podePagar">
+      <div class="section-title">
+        <ion-icon name="cash-outline"></ion-icon>
+        Pagar Quota
+      </div>
+
+      <div class="metodos-grid">
+        <button
+          class="metodo-btn"
+          *ngFor="let m of metodos"
+          [class.active]="metodoPagamento === m.valor"
+          (click)="metodoPagamento = m.valor">
+          <ion-icon [name]="m.icone"></ion-icon>
+          <span>{{ m.label }}</span>
+        </button>
+      </div>
+
+      <button class="btn-pagar" (click)="pagar()"
+        [disabled]="!metodoPagamento || isSaving">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        {{ isSaving ? 'A processar...' : 'Confirmar Pagamento' }}
+      </button>
+    </div>
+
+    <!-- Histórico de Movimentos -->
+    <div class="section-group" *ngIf="quota.movimentos.length > 0">
+      <div class="section-title">
+        <ion-icon name="receipt-outline"></ion-icon>
+        Histórico de Pagamentos
+      </div>
+
+      <div class="movimento-item" *ngFor="let mov of quota.movimentos">
+        <div class="mov-left">
+          <span class="mov-data">{{ formatarData(mov.data) }}</span>
+          <span class="mov-hora">{{ formatarHora(mov.data) }}</span>
+          <span class="mov-metodo">{{ labelMetodo(mov.metodo) }}</span>
+        </div>
+        <div class="mov-right">
+          <span class="mov-valor">{{ formatarValor(mov.valor) }}</span>
+          <button class="btn-pdf" (click)="exportarPDF()" [disabled]="isExporting">
+            <ion-icon name="download-outline"></ion-icon>
+            {{ isExporting ? '...' : 'PDF' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</ion-content>
