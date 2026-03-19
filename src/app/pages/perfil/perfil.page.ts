@@ -67,19 +67,24 @@ export class PerfilPage implements OnInit {
 
   buildForm() {
     this.profileForm = this.fb.group({
-      nomeCompleto:   ['', [Validators.required, Validators.minLength(3)]],
-      genero:         ['', Validators.required],
-      dataNascimento: ['', Validators.required],
-      cartaoCidadao:  ['', Validators.required],
+      // ── Identificação — sempre bloqueados ──────────────────
+      nomeCompleto:   [{ value: '', disabled: true }],
+      genero:         [{ value: '', disabled: true }],
+      dataNascimento: [{ value: '', disabled: true }],
+      cartaoCidadao:  [{ value: '', disabled: true }],
       nif:            [{ value: '', disabled: true }],
+      numeroSocio:    [{ value: '', disabled: true }],
+
+      // ── Morada — editáveis ─────────────────────────────────
       codigoPostal:   ['', [Validators.required, Validators.pattern(/^\d{4}-\d{3}$/)]],
       morada:         ['', Validators.required],
       localidade:     ['', Validators.required],
       pais:           ['Portugal', Validators.required],
+
+      // ── Contactos — editáveis ──────────────────────────────
       telemovel1:     ['', [Validators.required, Validators.pattern(/^[29]\d{8}$/)]],
       telemovel2:     ['', Validators.pattern(/^[29]\d{8}$/)],
       email:          ['', [Validators.required, Validators.email]],
-      numeroSocio:    [{ value: '', disabled: true }],
     });
   }
 
@@ -172,7 +177,6 @@ export class PerfilPage implements OnInit {
     if (field.hasError('email'))     return 'Email inválido';
     if (field.hasError('minlength')) return 'Nome demasiado curto';
     if (field.hasError('pattern')) {
-      if (fieldName === 'nif')               return 'NIF deve ter 9 dígitos';
       if (fieldName === 'codigoPostal')      return 'Formato: 0000-000';
       if (fieldName.startsWith('telemovel')) return 'Número inválido (9 dígitos)';
     }

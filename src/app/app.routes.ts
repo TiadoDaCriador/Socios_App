@@ -7,7 +7,6 @@ export const routes: Routes = [
     redirectTo: 'tabs/home',
     pathMatch: 'full',
   },
-
   {
     path: 'tabs',
     component: TabsPage,
@@ -28,9 +27,34 @@ export const routes: Routes = [
           import('./pages/perfil/perfil.page').then(m => m.PerfilPage)
       },
       {
-        path: '',
-        redirectTo: 'home',
-        pathMatch: 'full'
+        path: 'calendario',
+        loadComponent: () =>
+          import('./pages/calendario/calendario.page').then(m => m.CalendarioPage)
+      },
+      {
+        path: 'quotas',
+        loadComponent: () =>
+          import('./pages/quotas/quotas.page').then(m => m.QuotasPage)
+      },
+      {
+        path: 'conta-corrente',
+        loadComponent: () =>
+          import('./pages/conta-corrente/conta-corrente.page').then(m => m.ContaCorrentePage)
+      },
+      {
+        path: 'definicoes',
+        loadComponent: () =>
+          import('./pages/definicoes/definicoes.page').then(m => m.DefinicoesPage)
+      },
+      {
+        path: 'convocatorias',
+        loadComponent: () =>
+          import('./pages/convocatorias/convocatorias.page').then(m => m.ConvocatoriasPage)
+      },
+      {
+        path: 'notificacoes',
+        loadComponent: () =>
+          import('./pages/notificacoes/notificacoes.page').then(m => m.NotificacoesPage)
       },
       {
         path: 'login',
@@ -38,30 +62,10 @@ export const routes: Routes = [
           import('./pages/login/login.page').then(m => m.LoginPage)
       },
       {
-  path: 'calendario',
-  loadComponent: () =>
-    import('./pages/calendario/calendario.page').then(m => m.CalendarioPage)
-},
-{
-  path: 'quotas',
-  loadComponent: () =>
-    import('./pages/quotas/quotas.page').then(m => m.QuotasPage)
-},
-{
-  path: 'conta-corrente',
-  loadComponent: () =>
-    import('./pages/conta-corrente/conta-corrente.page').then(m => m.ContaCorrentePage)
-},
-{
-  path: 'definicoes',
-  loadComponent: () =>
-    import('./pages/definicoes/definicoes.page').then(m => m.DefinicoesPage)
-},
-{
-  path: 'convocatorias',
-  loadComponent: () =>
-    import('./pages/convocatorias/convocatorias.page').then(m => m.ConvocatoriasPage)
-}
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full'
+      },
     ]
   }
 ];

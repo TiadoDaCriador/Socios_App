@@ -1,5 +1,5 @@
 // src/app/pages/conta-corrente/conta-corrente.page.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -11,6 +11,8 @@ import {
   searchOutline, filterOutline, chevronDownOutline,
   chevronUpOutline, trendingDownOutline, walletOutline,
 } from 'ionicons/icons';
+import { Subscription } from 'rxjs';
+import { ContaCorrenteService } from '../../services/conta-corrente.service';
 import { MovimentoDetalheModalComponent } from './movimento-detalhe-modal';
 
 export interface Movimento {
@@ -33,20 +35,27 @@ export interface Movimento {
     IonTitle, IonContent, IonIcon,
   ],
 })
-export class ContaCorrentePage implements OnInit {
+export class ContaCorrentePage implements OnInit, OnDestroy {
 
   pesquisa = '';
   dataInicio = '';
   dataFim = '';
   mostrarFiltros = false;
   ordemDesc = true;
-  limite = 10; // últimas N despesas
-  limitesDisponiveis = [5, 10, 20, 50, 0]; // 0 = todas
+  limite = 10;
+  limitesDisponiveis = [5, 10, 20, 50, 0];
+
+  // Saldo vindo do serviço partilhado (mesmo valor que aparece na Home)
+  saldoServico: number | null = null;
+  private sub?: Subscription;
 
   // TODO: substituir por chamada ao API
   movimentos: Movimento[] = [];
 
-  constructor(private modalCtrl: ModalController) {
+  constructor(
+    private modalCtrl: ModalController,
+    private contaService: ContaCorrenteService,
+  ) {
     addIcons({
       searchOutline, filterOutline, chevronDownOutline,
       chevronUpOutline, trendingDownOutline, walletOutline,
@@ -54,24 +63,44 @@ export class ContaCorrentePage implements OnInit {
   }
 
   ngOnInit() {
+    // Liga ao mesmo serviço que a Home usa — saldo sempre sincronizado
+    this.sub = this.contaService.account$.subscribe(acc => {
+      if (acc) this.saldoServico = acc.balance;
+    });
+
+    // Se ainda não carregou (ex: navegação direta para esta página)
+    if (!this.contaService.account) {
+      this.contaService.loadFromAssets().subscribe({ error: () => {} });
+    }
+
     // Dados de teste — apagar quando ligar ao API
     this.movimentos = [
-      { id: 1, descricao: 'Pagamento Quotas - Rui Puga (sócio n.º 1) - Taxa MB', data: new Date(2026, 2, 18, 9, 30), valor: 0.52, conta: 'CA' },
-      { id: 2, descricao: 'Pagamento Quotas - Alexandre Fernandes (sócio n.º 9004) - Taxa', data: new Date(2026, 2, 18, 9, 21), valor: 1.35, conta: 'CA' },
-      { id: 3, descricao: 'Transferência bancária - Taxa processamento', data: new Date(2026, 2, 15, 10, 0), valor: 2.50, conta: 'CA' },
+      { id: 1, descricao: 'Pagamento Quotas - Rui Puga (sócio n.º 1) - Taxa MB',                data: new Date(2026, 2, 18, 9, 30), valor: 0.52,  conta: 'CA' },
+      { id: 2, descricao: 'Pagamento Quotas - Alexandre Fernandes (sócio n.º 9004) - Taxa',     data: new Date(2026, 2, 18, 9, 21), valor: 1.35,  conta: 'CA' },
+      { id: 3, descricao: 'Transferência bancária - Taxa processamento',                         data: new Date(2026, 2, 15, 10, 0), valor: 2.50,  conta: 'CA' },
     ];
+  }
+
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
+  }
+
+  // Usa o saldo do serviço se disponível, caso contrário calcula localmente
+  get saldoTotal(): number {
+    return this.saldoServico ?? this.movimentos.reduce((acc, m) => acc - m.valor, 0);
+  }
+
+  get valorPeriodo(): number {
+    return this.movimentosFiltrados.reduce((acc, m) => acc - m.valor, 0);
   }
 
   get movimentosFiltrados(): Movimento[] {
     let lista = [...this.movimentos];
 
-    // Pesquisa por descrição
     if (this.pesquisa.trim()) {
       const p = this.pesquisa.toLowerCase();
       lista = lista.filter(m => m.descricao.toLowerCase().includes(p));
     }
-
-    // Filtro por período
     if (this.dataInicio) {
       const di = new Date(this.dataInicio);
       lista = lista.filter(m => m.data >= di);
@@ -82,26 +111,13 @@ export class ContaCorrentePage implements OnInit {
       lista = lista.filter(m => m.data <= df);
     }
 
-    // Ordenação
     lista.sort((a, b) => this.ordemDesc
       ? b.data.getTime() - a.data.getTime()
       : a.data.getTime() - b.data.getTime()
     );
 
-    // Limite de resultados (0 = todas)
-    if (this.limite > 0) {
-      lista = lista.slice(0, this.limite);
-    }
-
+    if (this.limite > 0) lista = lista.slice(0, this.limite);
     return lista;
-  }
-
-  get saldoTotal(): number {
-    return this.movimentos.reduce((acc, m) => acc - m.valor, 0);
-  }
-
-  get valorPeriodo(): number {
-    return this.movimentosFiltrados.reduce((acc, m) => acc - m.valor, 0);
   }
 
   async abrirDetalhe(mov: Movimento) {

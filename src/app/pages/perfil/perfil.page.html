@@ -53,65 +53,58 @@
 
     <form [formGroup]="profileForm" class="profile-form">
 
-      <!-- ── Identificação ── -->
+      <!-- ── Identificação (sempre bloqueada) ── -->
       <div class="section-group">
         <div class="group-label">
           <ion-icon name="person-circle-outline"></ion-icon>
           Identificação
+          <span class="group-label-lock">
+            <ion-icon name="lock-closed-outline"></ion-icon> 
+          </span>
         </div>
 
-        <div class="field-item" [class.has-error]="isFieldInvalid('nomeCompleto')">
+        <div class="field-item field-readonly">
           <label class="field-label">Nome Completo</label>
           <div class="field-input-wrap">
             <ion-icon name="person-outline" class="field-icon"></ion-icon>
-            <input class="field-input" formControlName="nomeCompleto" type="text"
-              placeholder="Nome completo" [attr.disabled]="!isEditing ? true : null" />
+            <input class="field-input" formControlName="nomeCompleto" type="text" placeholder="—" />
+            <ion-icon name="lock-closed-outline" class="field-lock-icon"></ion-icon>
           </div>
-          <span class="field-error" *ngIf="isFieldInvalid('nomeCompleto')">{{ getFieldError('nomeCompleto') }}</span>
         </div>
 
-        <div class="field-item" [class.has-error]="isFieldInvalid('genero')">
+        <div class="field-item field-readonly">
           <label class="field-label">Género</label>
-          <div class="field-input-wrap select-wrap">
+          <div class="field-input-wrap">
             <ion-icon name="transgender-outline" class="field-icon"></ion-icon>
-            <select class="field-input field-select" formControlName="genero" [attr.disabled]="!isEditing ? true : null">
-              <option value="">Selecionar</option>
-              <option value="masculino">Masculino</option>
-              <option value="feminino">Feminino</option>
-              <option value="outro">Outro</option>
-            </select>
-            <ion-icon name="chevron-down-outline" class="select-arrow"></ion-icon>
+            <input class="field-input" formControlName="genero" type="text" placeholder="—" />
+            <ion-icon name="lock-closed-outline" class="field-lock-icon"></ion-icon>
           </div>
-          <span class="field-error" *ngIf="isFieldInvalid('genero')">{{ getFieldError('genero') }}</span>
         </div>
 
-        <div class="field-item" [class.has-error]="isFieldInvalid('dataNascimento')">
+        <div class="field-item field-readonly">
           <label class="field-label">Data de Nascimento</label>
           <div class="field-input-wrap">
             <ion-icon name="calendar-outline" class="field-icon"></ion-icon>
-            <input class="field-input" formControlName="dataNascimento" type="date"
-              [attr.disabled]="!isEditing ? true : null" />
+            <input class="field-input" formControlName="dataNascimento" type="text" placeholder="—" />
+            <ion-icon name="lock-closed-outline" class="field-lock-icon"></ion-icon>
           </div>
-          <span class="field-error" *ngIf="isFieldInvalid('dataNascimento')">{{ getFieldError('dataNascimento') }}</span>
         </div>
 
-        <div class="field-item" [class.has-error]="isFieldInvalid('cartaoCidadao')">
+        <div class="field-item field-readonly">
           <label class="field-label">Cartão de Cidadão</label>
           <div class="field-input-wrap">
             <ion-icon name="id-card-outline" class="field-icon"></ion-icon>
-            <input class="field-input" formControlName="cartaoCidadao" type="text"
-              placeholder="00000000 0XX0" [attr.disabled]="!isEditing ? true : null" />
+            <input class="field-input" formControlName="cartaoCidadao" type="text" placeholder="—" />
+            <ion-icon name="lock-closed-outline" class="field-lock-icon"></ion-icon>
           </div>
-          <span class="field-error" *ngIf="isFieldInvalid('cartaoCidadao')">{{ getFieldError('cartaoCidadao') }}</span>
         </div>
 
-        <div class="field-item">
+        <div class="field-item field-readonly">
           <label class="field-label">NIF</label>
-          <div class="field-input-wrap field-nif-readonly">
+          <div class="field-input-wrap">
             <ion-icon name="document-text-outline" class="field-icon"></ion-icon>
-            <input class="field-input" formControlName="nif" type="text"
-              placeholder="000000000" tabindex="-1" maxlength="9" />
-            <ion-icon name="lock-closed-outline" style="font-size:14px;color:#9ca3af;flex-shrink:0"></ion-icon>
+            <input class="field-input" formControlName="nif" type="text" placeholder="—" />
+            <ion-icon name="lock-closed-outline" class="field-lock-icon"></ion-icon>
           </div>
         </div>
       </div>

@@ -94,6 +94,10 @@ export class NotificacoesPage implements OnInit, OnDestroy {
 
   setFiltro(c: CategoriaNotif | '') { this.filtroCategoria = this.filtroCategoria === c ? '' : c; }
 
+  labelCategoria(c: CategoriaNotif): string {
+    return this.categorias.find(x => x.valor === c)?.label ?? c;
+  }
+
   iconeCategoria(c: CategoriaNotif): string {
     return this.categorias.find(x => x.valor === c)?.icone ?? 'notifications-outline';
   }

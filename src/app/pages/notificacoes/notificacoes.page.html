@@ -1,14 +1,14 @@
 <!-- src/app/pages/notificacoes/notificacoes.page.html -->
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="start">
+    <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
       Notificações
       <ion-badge *ngIf="totalNaoLidas > 0" class="header-badge">{{ totalNaoLidas }}</ion-badge>
     </ion-title>
-    <ion-buttons slot="end">
+    <ion-buttons slot="start">
       <button class="btn-icon" *ngIf="totalNaoLidas > 0" (click)="marcarTodasLidas()" title="Marcar todas como lidas">
         <ion-icon name="checkmark-done-outline"></ion-icon>
       </button>
@@ -64,7 +64,7 @@
         </div>
         <p class="notif-msg">{{ n.mensagem }}</p>
         <span class="notif-categoria-label" [class]="corCategoria(n.categoria)">
-          {{ categorias.find(c => c.valor === n.categoria)?.label }}
+          {{ labelCategoria(n.categoria) }}
         </span>
       </div>
 

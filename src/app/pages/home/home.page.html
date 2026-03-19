@@ -1,12 +1,28 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title slot="start">Maestro</ion-title>
+    <ion-title>Maestro</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <!-- Conteúdo da página -->
+<ion-content [fullscreen]="true" class="home-content">
+
+  <!-- Conta Corrente -->
+  <div class="home-conta-wrapper">
+    <div class="home-conta-btn" *ngIf="account; else loadingConta">
+      <ion-icon name="wallet-outline"></ion-icon>
+      <span>Saldo {{ account.balance | number:'1.2-2' }} {{ account.currency }}</span>
+    </div>
+    <ng-template #loadingConta>
+      <div class="home-conta-btn">
+        <ion-skeleton-text [animated]="true" style="width:140px;height:1rem;border-radius:4px;"></ion-skeleton-text>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Calendário sem header -->
+  <app-calendario-grelha></app-calendario-grelha>
+
 </ion-content>

@@ -1,5 +1,4 @@
-// src/app/pages/calendario/calendario.page.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonHeader, IonToolbar, IonButtons, IonMenuButton,
@@ -7,8 +6,9 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { chevronBackOutline, chevronForwardOutline } from 'ionicons/icons';
+import { Subscription } from 'rxjs';
 import { EventoModalComponent } from './eventomodal/eventomodal.component';
-import { EventosService } from '../../services/eventos.service';
+import { EventosService, EventoLista } from '../../services/eventos.service';
 
 export interface Evento {
   id: number;
@@ -16,6 +16,7 @@ export interface Evento {
   data: Date;
   hora: string;
   cor: string;
+  local?: string;
 }
 
 type VistaType = 'mes' | 'semana' | 'dia';
@@ -31,7 +32,9 @@ type VistaType = 'mes' | 'semana' | 'dia';
     IonTitle, IonContent, IonIcon,
   ],
 })
-export class CalendarioPage implements OnInit {
+export class CalendarioPage implements OnInit, OnDestroy {
+
+  @Output() dateSelected = new EventEmitter<Date>();
 
   vista: VistaType = 'mes';
   dataAtual = new Date();
@@ -43,11 +46,11 @@ export class CalendarioPage implements OnInit {
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
   ];
 
-  // TODO: substituir por chamada ao serviço quando tiveres o API
   eventos: Evento[] = [];
-
   celulas: { data: Date; mesAtual: boolean }[] = [];
   horas = Array.from({ length: 14 }, (_, i) => `${String(i + 7).padStart(2, '0')}:00`);
+
+  private sub?: Subscription;
 
   constructor(
     private modalCtrl: ModalController,
@@ -58,84 +61,134 @@ export class CalendarioPage implements OnInit {
 
   ngOnInit() {
     this.gerarCelulas();
+
+    // Sincroniza com EventosService (EventoLista → Evento local)
+    this.sub = this.eventosService.eventos$.subscribe((lista: EventoLista[]) => {
+      this.eventos = lista.map(e => this.eventoListaParaEvento(e));
+    });
   }
 
-  // ─── Abrir modal para novo evento ────────────────────────
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
+  }
+
+  // ── Título da barra de navegação ────────────────────────────
+  get tituloNavegacao(): string {
+    const ano = this.dataAtual.getFullYear();
+    const mes = this.meses[this.dataAtual.getMonth()];
+
+    if (this.vista === 'mes') {
+      return `${mes} ${ano}`;
+    }
+    if (this.vista === 'semana') {
+      const dias = this.diasDaSemana;
+      const inicio = dias[0];
+      const fim = dias[dias.length - 1];
+      const dI = inicio.getDate();
+      const dF = fim.getDate();
+      const mI = this.meses[inicio.getMonth()];
+      const mF = this.meses[fim.getMonth()];
+      return mI === mF
+        ? `${dI}–${dF} ${mI} ${ano}`
+        : `${dI} ${mI} – ${dF} ${mF} ${ano}`;
+    }
+    // dia
+    return `${this.dataAtual.getDate()} ${mes} ${ano}`;
+  }
+
+  // ── Dias da semana atual (array de 7 Dates) ─────────────────
+  get diasDaSemana(): Date[] {
+    const d = new Date(this.dataAtual);
+    const dow = d.getDay() === 0 ? 6 : d.getDay() - 1; // seg=0 … dom=6
+    d.setDate(d.getDate() - dow);
+    return Array.from({ length: 7 }, (_, i) => {
+      const dia = new Date(d);
+      dia.setDate(d.getDate() + i);
+      return dia;
+    });
+  }
+
+  // ── Comparação de datas ──────────────────────────────────────
+  isHoje(data: Date): boolean {
+    return (
+      data.getDate() === this.hoje.getDate() &&
+      data.getMonth() === this.hoje.getMonth() &&
+      data.getFullYear() === this.hoje.getFullYear()
+    );
+  }
+
+  private mesmoDia(a: Date, b: Date): boolean {
+    return (
+      a.getDate() === b.getDate() &&
+      a.getMonth() === b.getMonth() &&
+      a.getFullYear() === b.getFullYear()
+    );
+  }
+
+  // ── Eventos por dia / hora ───────────────────────────────────
+  eventosNoDia(data: Date): Evento[] {
+    return this.eventos.filter(ev => this.mesmoDia(new Date(ev.data), data));
+  }
+
+  eventoNaHora(dia: Date, hora: string): Evento | undefined {
+    return this.eventosNoDia(dia).find(ev => ev.hora?.startsWith(hora.slice(0, 2)));
+  }
+
+  // ── Modais ───────────────────────────────────────────────────
   async abrirModalNovoEvento(data: Date) {
     const modal = await this.modalCtrl.create({
       component: EventoModalComponent,
-      componentProps: { dataInicial: data },
-      initialBreakpoint: 0.95,
-      breakpoints: [0, 0.95],
-      handleBehavior: 'cycle',
+      componentProps: { data },
     });
-
     await modal.present();
 
-    const { data: resultado, role } = await modal.onWillDismiss();
-
-    if (role === 'guardar' && resultado) {
-      // Adiciona ao serviço partilhado → aparece automaticamente na página de Eventos
-      const novoEvento = this.eventosService.adicionarDoCalendario({
+    const { data: resultado } = await modal.onWillDismiss();
+    if (resultado) {
+      this.eventosService.adicionarDoCalendario({
         titulo: resultado.titulo,
         data:   resultado.data,
         hora:   resultado.hora,
         cor:    resultado.cor,
         local:  resultado.local,
       });
-
-      // Adiciona também à lista local do calendário
-      this.eventos = [...this.eventos, {
-        id:     novoEvento.id,
-        titulo: novoEvento.nome,
-        data:   resultado.data,
-        hora:   resultado.hora,
-        cor:    resultado.cor,
-      }];
-    }
-
-    if (role === 'eliminar' && resultado?.id) {
-      this.eventos = this.eventos.filter(e => e.id !== resultado.id);
-      this.eventosService.eliminar(resultado.id);
     }
   }
 
-  // ─── Abrir modal para editar evento existente ────────────
-  async abrirModalEditar(evento: Evento, $event: MouseEvent) {
-    $event.stopPropagation(); // evita abrir o modal de novo evento por baixo
+  async abrirModalEditar(ev: Evento, $event: Event) {
+    $event.stopPropagation();
 
     const modal = await this.modalCtrl.create({
       component: EventoModalComponent,
-      componentProps: { dataInicial: evento.data, evento },
-      initialBreakpoint: 0.95,
-      breakpoints: [0, 0.95],
-      handleBehavior: 'cycle',
+      componentProps: { evento: ev, modoEdicao: true },
     });
-
     await modal.present();
 
     const { data: resultado, role } = await modal.onWillDismiss();
 
-    if (role === 'guardar' && resultado) {
-      this.eventos = this.eventos.map(e =>
-        e.id === evento.id ? { ...e, ...resultado } : e
-      );
-      this.eventosService.atualizar(evento.id, {
-        nome: resultado.titulo,
-        cor:  resultado.cor,
-      });
-    }
-
     if (role === 'eliminar') {
-      this.eventos = this.eventos.filter(e => e.id !== evento.id);
-      this.eventosService.eliminar(evento.id);
+      this.eventosService.eliminar(ev.id);
+      return;
+    }
+    if (resultado) {
+      this.eventosService.atualizar(ev.id, {
+        nome:      resultado.titulo,
+        tipo:      resultado.tipo ?? ev.cor,
+        cor:       resultado.cor,
+        dataInicio: resultado.data,
+        dataFim:   resultado.data,
+        local:     resultado.local ?? '',
+      });
     }
   }
 
-  // ─── Navegação ────────────────────────────────────────────
+  // ── Navegação ────────────────────────────────────────────────
+  selecionarDia(celula: { data: Date }) {
+    this.dateSelected.emit(celula.data);
+  }
+
   anterior() {
     const d = new Date(this.dataAtual);
-    if (this.vista === 'mes')    d.setMonth(d.getMonth() - 1);
+    if (this.vista === 'mes') d.setMonth(d.getMonth() - 1);
     else if (this.vista === 'semana') d.setDate(d.getDate() - 7);
     else d.setDate(d.getDate() - 1);
     this.dataAtual = d;
@@ -144,7 +197,7 @@ export class CalendarioPage implements OnInit {
 
   proximo() {
     const d = new Date(this.dataAtual);
-    if (this.vista === 'mes')    d.setMonth(d.getMonth() + 1);
+    if (this.vista === 'mes') d.setMonth(d.getMonth() + 1);
     else if (this.vista === 'semana') d.setDate(d.getDate() + 7);
     else d.setDate(d.getDate() + 1);
     this.dataAtual = d;
@@ -161,7 +214,7 @@ export class CalendarioPage implements OnInit {
     this.gerarCelulas();
   }
 
-  // ─── Geração de células ───────────────────────────────────
+  // ── Geração de células do mês ────────────────────────────────
   gerarCelulas() {
     this.celulas = [];
     const ano = this.dataAtual.getFullYear();
@@ -185,47 +238,18 @@ export class CalendarioPage implements OnInit {
     }
   }
 
-  // ─── Helpers ──────────────────────────────────────────────
-  get diasDaSemana(): Date[] {
-    const d = new Date(this.dataAtual);
-    const diaSemana = d.getDay() === 0 ? 6 : d.getDay() - 1;
-    d.setDate(d.getDate() - diaSemana);
-    return Array.from({ length: 7 }, (_, i) => {
-      const dia = new Date(d);
-      dia.setDate(d.getDate() + i);
-      return dia;
-    });
-  }
-
-  eventosNoDia(data: Date): Evento[] {
-    return this.eventos.filter(e =>
-      e.data.getFullYear() === data.getFullYear() &&
-      e.data.getMonth()    === data.getMonth()    &&
-      e.data.getDate()     === data.getDate()
-    );
-  }
-
-  eventoNaHora(data: Date, hora: string): Evento | null {
-    return this.eventos.find(e =>
-      e.data.getFullYear() === data.getFullYear() &&
-      e.data.getMonth()    === data.getMonth()    &&
-      e.data.getDate()     === data.getDate()     &&
-      e.hora === hora.replace(':00', 'h')
-    ) ?? null;
-  }
-
-  isHoje(data: Date): boolean {
-    return data.getFullYear() === this.hoje.getFullYear() &&
-           data.getMonth()    === this.hoje.getMonth()    &&
-           data.getDate()     === this.hoje.getDate();
-  }
-
-  get tituloNavegacao(): string {
-    const m = this.meses[this.dataAtual.getMonth()];
-    const a = this.dataAtual.getFullYear();
-    if (this.vista === 'mes') return `${m.toUpperCase()} ${a}`;
-    if (this.vista === 'dia') return `${this.dataAtual.getDate()} ${m} ${a}`;
-    const dias = this.diasDaSemana;
-    return `${dias[0].getDate()} - ${dias[6].getDate()} ${m} ${a}`;
+  // ── Conversão EventoLista → Evento local ────────────────────
+  private eventoListaParaEvento(e: EventoLista): Evento {
+    const dataInicio = new Date(e.dataInicio);
+    const hh = String(dataInicio.getHours()).padStart(2, '0');
+    const mm = String(dataInicio.getMinutes()).padStart(2, '0');
+    return {
+      id:     e.id as unknown as number,
+      titulo: e.nome,
+      data:   dataInicio,
+      hora:   `${hh}h${mm}`,
+      cor:    e.cor,
+      local:  e.local,
+    };
   }
 }

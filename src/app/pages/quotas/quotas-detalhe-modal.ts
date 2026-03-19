@@ -18,8 +18,8 @@ import { QuotasService } from './quotas.service';
 
 @Component({
   selector: 'app-quota-detalhe-modal',
-templateUrl: './quotas-detalhe-modal.html',
-styleUrls: ['./quotas-detalhe-modal.scss'],
+  templateUrl: './quotas-detalhe-modal.html',
+  styleUrls: ['./quotas-detalhe-modal.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -38,15 +38,15 @@ export class QuotaDetalheModalComponent implements OnInit {
   isExporting = false;
 
   metodos: { valor: MetodoPagamento; label: string; icone: string }[] = [
-    { valor: 'mbway',        label: 'MB Way',               icone: 'phone-portrait-outline' },
-    { valor: 'multibanco',   label: 'Referência Multibanco', icone: 'card-outline'           },
-    { valor: 'transferencia',label: 'Transferência Bancária', icone: 'swap-horizontal-outline'},
-    { valor: 'cartao',       label: 'Cartão de Crédito',    icone: 'card-outline'           },
+    { valor: 'mbway', label: 'MB Way', icone: 'phone-portrait-outline' },
+    { valor: 'multibanco', label: 'Referência Multibanco', icone: 'card-outline' },
+    { valor: 'transferencia', label: 'Transferência Bancária', icone: 'swap-horizontal-outline' },
+    { valor: 'cartao', label: 'Cartão de Crédito', icone: 'card-outline' },
   ];
 
   constructor(
-    private modalCtrl:    ModalController,
-    private toastCtrl:    ToastController,
+    private modalCtrl: ModalController,
+    private toastCtrl: ToastController,
     private quotasService: QuotasService,
   ) {
     addIcons({
@@ -57,7 +57,7 @@ export class QuotaDetalheModalComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   fechar() { this.modalCtrl.dismiss(); }
 

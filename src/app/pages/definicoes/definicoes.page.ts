@@ -13,11 +13,11 @@ import {
   logOutOutline, chevronForwardOutline,
 } from 'ionicons/icons';
 import { AuthService } from '../../services/auth.service';
-import { AcessibilidadeModalComponent }  from './acessibilidade-modal';
+import { AcessibilidadeModalComponent } from './acessibilidade-modal';
 import { NotificacoesModalComponent } from './notificacoes-modal';
-import { CartoesModalComponent }         from './cartoes-modal';
-import { TermosModalComponent }          from './termos-modal';
-import { ModalController }               from '@ionic/angular/standalone';
+import { CartoesModalComponent } from './cartoes-modal';
+import { TermosModalComponent } from './termos-modal';
+import { ModalController } from '@ionic/angular/standalone';
 
 export interface OpcaoDefinicao {
   id: string;
@@ -42,20 +42,20 @@ export interface OpcaoDefinicao {
 export class DefinicoesPage {
 
   opcoes: OpcaoDefinicao[] = [
-    { id: 'acessibilidade', label: 'Acessibilidade',      descricao: 'Fonte, tema, idioma',          icone: 'accessibility-outline'   },
-    { id: 'suporte',        label: 'Suporte',             descricao: 'Enviar email de suporte',       icone: 'help-circle-outline'     },
-    { id: 'password',       label: 'Palavra-passe',       descricao: 'Alterar palavra-passe',         icone: 'lock-closed-outline'     },
-    { id: 'cartoes',        label: 'Cartões Associados',  descricao: 'Gerir cartões de pagamento',    icone: 'card-outline'            },
-    { id: 'notificacoes',   label: 'Gerir Notificações',  descricao: 'Eventos, quotas, convocatórias',icone: 'notifications-outline'   },
-    { id: 'termos',         label: 'Termos e Permissões', descricao: 'Ver termos de utilização',      icone: 'document-text-outline'   },
-    { id: 'logout',         label: 'Terminar Sessão',     icone: 'log-out-outline', danger: true      },
+    { id: 'acessibilidade', label: 'Acessibilidade', descricao: 'Fonte, tema, idioma', icone: 'accessibility-outline' },
+    { id: 'suporte', label: 'Suporte', descricao: 'Enviar email de suporte', icone: 'help-circle-outline' },
+    { id: 'password', label: 'Palavra-passe', descricao: 'Alterar palavra-passe', icone: 'lock-closed-outline' },
+    { id: 'cartoes', label: 'Cartões Associados', descricao: 'Gerir cartões de pagamento', icone: 'card-outline' },
+    { id: 'notificacoes', label: 'Gerir Notificações', descricao: 'Eventos, quotas, convocatórias', icone: 'notifications-outline' },
+    { id: 'termos', label: 'Termos e Permissões', descricao: 'Ver termos de utilização', icone: 'document-text-outline' },
+    { id: 'logout', label: 'Terminar Sessão', icone: 'log-out-outline', danger: true },
   ];
 
   constructor(
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
-    private auth:      AuthService,
+    private auth: AuthService,
   ) {
     addIcons({
       accessibilityOutline, helpCircleOutline, lockClosedOutline,
@@ -111,9 +111,9 @@ export class DefinicoesPage {
     const alert = await this.alertCtrl.create({
       header: 'Alterar Palavra-passe',
       inputs: [
-        { name: 'atual',     type: 'password', placeholder: 'Palavra-passe atual'  },
-        { name: 'nova',      type: 'password', placeholder: 'Nova palavra-passe'   },
-        { name: 'confirmar', type: 'password', placeholder: 'Confirmar nova'       },
+        { name: 'atual', type: 'password', placeholder: 'Palavra-passe atual' },
+        { name: 'nova', type: 'password', placeholder: 'Nova palavra-passe' },
+        { name: 'confirmar', type: 'password', placeholder: 'Confirmar nova' },
       ],
       buttons: [
         { text: 'Cancelar', role: 'cancel' },

@@ -21,18 +21,14 @@
       <span class="filtros-label">Tipologia:</span>
       <button class="filtro-chip" [class.active]="filtroTipologia === ''"
         (click)="setFiltroTipologia('')">Todas</button>
-      <button class="filtro-chip" *ngFor="let t of tipologias" [class.active]="filtroTipologia === t"
+      <button class="filtro-chip" *ngFor="let t of tipologias"
         [class]="'filtro-chip ' + corTipologia(t) + (filtroTipologia === t ? ' active' : '')"
-        (click)="setFiltroTipologia(t)">
-        {{ t }}
-      </button>
+        (click)="setFiltroTipologia(t)">{{ t }}</button>
     </div>
     <div class="filtros-row">
       <span class="filtros-label">Mostrar:</span>
       <button class="filtro-chip" *ngFor="let n of limitesDisponiveis" [class.active]="limite === n"
-        (click)="setLimite(n)">
-        {{ n === 0 ? 'Todas' : 'Últimas ' + n }}
-      </button>
+        (click)="setLimite(n)">{{ n === 0 ? 'Todas' : 'Últimas ' + n }}</button>
     </div>
   </div>
 
@@ -49,20 +45,18 @@
   <!-- Lista -->
   <div class="conv-lista">
 
-    <!-- Vazio -->
     <div class="estado-vazio" *ngIf="convocatoriasFiltradas.length === 0">
       <ion-icon name="calendar-outline"></ion-icon>
       <p>Nenhuma convocatória encontrada</p>
     </div>
 
-    <!-- Item -->
-    <div class="conv-card" *ngFor="let conv of convocatoriasFiltradas" [class.aceite]="conv.resposta === 'aceite'"
-      [class.recusado]="conv.resposta === 'recusado'">
+    <div class="conv-card"
+      *ngFor="let conv of convocatoriasFiltradas"
+      [class.aceite]="conv.resposta === 'aceite' && !conv.emEdicao"
+      [class.recusado]="conv.resposta === 'recusado' && !conv.emEdicao">
 
-      <!-- Indicador de tipologia -->
       <div class="conv-indicador" [class]="corTipologia(conv.tipologia)"></div>
 
-      <!-- Info principal -->
       <div class="conv-info">
         <div class="conv-tipologia-badge" [class]="corTipologia(conv.tipologia)">
           {{ conv.tipologia }}
@@ -83,24 +77,36 @@
         </div>
       </div>
 
-      <!-- Resposta — sempre visível -->
+      <!-- Resposta -->
       <div class="conv-resposta-col">
-        <button class="btn-aceitar" [class.ativo]="conv.resposta === 'aceite'"
-          (click)="responder(conv, 'aceite', $event)">
-          <ion-icon name="checkmark-circle-outline"></ion-icon>
-        </button>
-        <button class="btn-recusar" [class.ativo]="conv.resposta === 'recusado'"
-          (click)="responder(conv, 'recusado', $event)">
-          <ion-icon name="close-circle-outline"></ion-icon>
-        </button>
+
+        <!-- Pendente ou em edição: mostrar botões aceitar/recusar -->
+        <ng-container *ngIf="conv.resposta === 'pendente' || conv.emEdicao">
+          <button class="btn-aceitar" (click)="responder(conv, 'aceite', $event)">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+          </button>
+          <button class="btn-recusar" (click)="responder(conv, 'recusado', $event)">
+            <ion-icon name="close-circle-outline"></ion-icon>
+          </button>
+        </ng-container>
+
+        <!-- Já respondeu: mostrar estado + botão editar -->
+        <ng-container *ngIf="conv.resposta !== 'pendente' && !conv.emEdicao">
+          <div class="conv-estado" [class.aceite]="conv.resposta === 'aceite'" [class.recusado]="conv.resposta === 'recusado'">
+            <ion-icon [name]="conv.resposta === 'aceite' ? 'checkmark-circle-outline' : 'close-circle-outline'"></ion-icon>
+            <span>{{ conv.resposta === 'aceite' ? 'Aceite' : 'Recusado' }}</span>
+          </div>
+          <button class="btn-editar" (click)="editarResposta(conv, $event)" title="Alterar resposta">
+            <ion-icon name="create-outline"></ion-icon>
+          </button>
+        </ng-container>
+
       </div>
 
     </div>
   </div>
 
-  <!-- Contador -->
   <div class="total-label">{{ convocatoriasFiltradas.length }} convocatórias</div>
-
   <div class="bottom-space"></div>
 
 </ion-content>
