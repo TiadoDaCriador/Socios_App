@@ -1,5 +1,5 @@
 // src/app/pages/definicoes/notificacoes-modal.ts
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -8,6 +8,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { closeOutline, notificationsOutline } from 'ionicons/icons';
+import { NotificacoesService } from '../notificacoes/notificacoes.service';
 
 @Component({
   selector: 'app-notificacoes-modal',
@@ -17,21 +18,47 @@ import { closeOutline, notificationsOutline } from 'ionicons/icons';
   imports: [CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle,
     IonContent, IonButtons, IonButton, IonIcon, IonToggle],
 })
-export class NotificacoesModalComponent {
-  notifEventos = true;
-  notifQuotas = true;
-  notifConvocatorias = true;
-  notifNoticias = false;
+export class NotificacoesModalComponent implements OnInit {
 
-  constructor(private modalCtrl: ModalController, private toastCtrl: ToastController) {
+  notifEventos       = true;
+  notifQuotas        = true;
+  notifConvocatorias = true;
+  notifNoticias      = false;
+
+  constructor(
+    private modalCtrl:  ModalController,
+    private toastCtrl:  ToastController,
+    private notifService: NotificacoesService,
+  ) {
     addIcons({ closeOutline, notificationsOutline });
+  }
+
+  ngOnInit() {
+    // Carrega as preferências atuais do serviço
+    const prefs = this.notifService.prefs;
+    this.notifEventos       = prefs.eventos;
+    this.notifQuotas        = prefs.quotas;
+    this.notifConvocatorias = prefs.convocatorias;
+    this.notifNoticias      = prefs.noticias;
   }
 
   fechar() { this.modalCtrl.dismiss(); }
 
   async guardar() {
-    // TODO: this.prefsService.guardarNotificacoes({...})
-    const t = await this.toastCtrl.create({ message: 'Notificações guardadas!', duration: 2000, position: 'bottom', color: 'success' });
+    // Guarda as preferências no serviço
+    this.notifService.guardarPrefs({
+      eventos:       this.notifEventos,
+      quotas:        this.notifQuotas,
+      convocatorias: this.notifConvocatorias,
+      noticias:      this.notifNoticias,
+    });
+
+    const t = await this.toastCtrl.create({
+      message:  'Notificações guardadas!',
+      duration: 2000,
+      position: 'bottom',
+      color:    'success',
+    });
     await t.present();
     this.modalCtrl.dismiss();
   }

@@ -66,6 +66,11 @@ export const routes: Routes = [
         redirectTo: 'home',
         pathMatch: 'full'
       },
+      {
+        path: 'documentos',
+        loadComponent: () =>
+          import('./pages/documentos/documentos.page').then(m => m.DocumentosPage)
+      },
     ]
   }
 ];

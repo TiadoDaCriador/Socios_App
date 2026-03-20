@@ -15,10 +15,13 @@ export class ContaCorrenteService {
   private _account = new BehaviorSubject<Account | null>(null);
   account$: Observable<Account | null> = this._account.asObservable();
 
-  // se preferires, altera para o endpoint real da API
   private url = 'assets/data/account.json';
 
   constructor(private http: HttpClient) {}
+
+  get account(): Account | null {
+    return this._account.getValue();
+  }
 
   loadFromAssets(): Observable<Account> {
     return this.http.get<Account>(this.url).pipe(
@@ -26,7 +29,6 @@ export class ContaCorrenteService {
     );
   }
 
-  // método para atualizar localmente (ex: após operação)
   setAccount(acc: Account) {
     this._account.next(acc);
   }

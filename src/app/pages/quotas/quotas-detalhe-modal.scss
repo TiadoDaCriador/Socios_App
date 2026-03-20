@@ -1,25 +1,13 @@
-// src/app/pages/quotas/quota-detalhe-modal.scss
-
-$primary:  #1a6fdb;
-$pago:     #2e7d32;
-$pendente: #e65100;
-$vencido:  #c62828;
-$bg:       #f5f7fb;
-$card:     #ffffff;
-$border:   #e2e8f0;
-$text:     #1a1a2e;
-$muted:    #6b7280;
-$radius-sm: 6px;
-
 .modal-toolbar {
-  --background: #{$card};
-  --color: #{$text};
-  --border-color: #{$border};
+  --background: var(--color-card);
+  --color: var(--color-text);
+  --border-color: var(--color-border);
 }
 
-.modal-content { --background: #{$bg}; }
+.modal-content {
+  --background: var(--color-bg);
+}
 
-// ── Banner ─────────────────────────────────────────────────
 .quota-banner {
   display: flex;
   align-items: center;
@@ -27,9 +15,17 @@ $radius-sm: 6px;
   padding: 20px 18px;
   gap: 12px;
 
-  &.banner-pago     { background: linear-gradient(135deg, #1b5e20, #2e7d32); }
-  &.banner-pendente { background: linear-gradient(135deg, #bf360c, #e65100); }
-  &.banner-vencido  { background: linear-gradient(135deg, #b71c1c, #c62828); }
+  &.banner-pago {
+    background: linear-gradient(135deg, #1b5e20, #2e7d32);
+  }
+
+  &.banner-pendente {
+    background: linear-gradient(135deg, #bf360c, #e65100);
+  }
+
+  &.banner-vencido {
+    background: linear-gradient(135deg, #b71c1c, #c62828);
+  }
 }
 
 .banner-left {
@@ -45,7 +41,7 @@ $radius-sm: 6px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .banner-desc {
@@ -62,7 +58,6 @@ $radius-sm: 6px;
   flex-shrink: 0;
 }
 
-// ── Body ───────────────────────────────────────────────────
 .modal-body {
   padding: 12px 16px;
   display: flex;
@@ -71,9 +66,9 @@ $radius-sm: 6px;
 }
 
 .section-group {
-  background: $card;
-  border-radius: $radius-sm;
-  border: 1px solid $border;
+  background: var(--color-card);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
   padding: 14px;
   display: flex;
   flex-direction: column;
@@ -88,65 +83,31 @@ $radius-sm: 6px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: $primary;
+  color: var(--color-primary);
   padding-bottom: 8px;
-  border-bottom: 1px solid $border;
+  border-bottom: 1px solid var(--color-border);
 
-  ion-icon { font-size: 15px; }
-}
-
-// ── Detalhe items ──────────────────────────────────────────
-.detalhe-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.detalhe-icon-wrap {
-  width: 32px;
-  height: 32px;
-  background: #e8f0fc;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-
-  ion-icon { font-size: 16px; color: $primary; }
-
-  &.icon-pago     ion-icon { color: $pago; }
-  &.icon-pendente ion-icon { color: $pendente; }
-  &.icon-vencido  ion-icon { color: $vencido; }
-}
-
-.detalhe-info {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.detalhe-label {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: $muted !important;
-}
-
-.detalhe-valor {
-  font-size: 14px;
-  font-weight: 500;
-  color: $text !important;
+  ion-icon {
+    font-size: 15px;
+  }
 }
 
 .estado-texto {
   font-weight: 700 !important;
-  &.est-pago     { color: $pago !important; }
-  &.est-pendente { color: $pendente !important; }
-  &.est-vencido  { color: $vencido !important; }
+
+  &.est-pago {
+    color: #2e7d32 !important;
+  }
+
+  &.est-pendente {
+    color: #e65100 !important;
+  }
+
+  &.est-vencido {
+    color: #c62828 !important;
+  }
 }
 
-// ── Métodos de Pagamento ───────────────────────────────────
 .metodos-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -159,23 +120,24 @@ $radius-sm: 6px;
   align-items: center;
   gap: 5px;
   padding: 12px 8px;
-  border: 1.5px solid $border;
-  border-radius: $radius-sm;
-  background: $bg;
-  color: $muted;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-muted);
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s;
   text-align: center;
 
-  ion-icon { font-size: 22px; }
+  ion-icon {
+    font-size: 22px;
+  }
 
   &.active {
-    border-color: $primary;
+    border-color: var(--color-primary);
     background: #e8f0fc;
-    color: $primary;
-    ion-icon { color: $primary; }
+    color: var(--color-primary);
   }
 }
 
@@ -187,26 +149,33 @@ $radius-sm: 6px;
   gap: 7px;
   padding: 13px;
   border: none;
-  border-radius: $radius-sm;
-  background: $primary;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
   color: #ffffff;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
 
-  ion-icon { font-size: 18px; }
-  &:disabled { opacity: 0.5; cursor: not-allowed; }
+  ion-icon {
+    font-size: 18px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
-// ── Histórico ──────────────────────────────────────────────
 .movimento-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px 0;
-  border-bottom: 1px solid $border;
+  border-bottom: 1px solid var(--color-border);
 
-  &:last-child { border-bottom: none; }
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .mov-left {
@@ -215,9 +184,21 @@ $radius-sm: 6px;
   gap: 2px;
 }
 
-.mov-data   { font-size: 13px; font-weight: 700; color: $text !important; }
-.mov-hora   { font-size: 11px; color: $muted !important; }
-.mov-metodo { font-size: 11px; color: $muted !important; }
+.mov-data {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text) !important;
+}
+
+.mov-hora {
+  font-size: 11px;
+  color: var(--color-muted) !important;
+}
+
+.mov-metodo {
+  font-size: 11px;
+  color: var(--color-muted) !important;
+}
 
 .mov-right {
   display: flex;
@@ -228,7 +209,7 @@ $radius-sm: 6px;
 .mov-valor {
   font-size: 14px;
   font-weight: 700;
-  color: $pago !important;
+  color: #2e7d32 !important;
 }
 
 .btn-pdf {
@@ -236,14 +217,19 @@ $radius-sm: 6px;
   align-items: center;
   gap: 4px;
   padding: 5px 10px;
-  border: 1.5px solid $primary;
-  border-radius: $radius-sm;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-sm);
   background: transparent;
-  color: $primary;
+  color: var(--color-primary);
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
 
-  ion-icon { font-size: 13px; }
-  &:disabled { opacity: 0.5; }
+  ion-icon {
+    font-size: 13px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
 }

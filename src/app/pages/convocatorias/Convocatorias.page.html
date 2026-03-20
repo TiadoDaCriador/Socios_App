@@ -6,7 +6,7 @@
     </ion-buttons>
     <ion-title>Convocatórias</ion-title>
     <ion-buttons slot="start">
-      <button class="btn-filtro-header" [class.active]="mostrarFiltros" (click)="mostrarFiltros = !mostrarFiltros">
+      <button class="btn-icon" [class.active]="mostrarFiltros" (click)="mostrarFiltros = !mostrarFiltros">
         <ion-icon name="filter-outline"></ion-icon>
       </button>
     </ion-buttons>
@@ -19,15 +19,19 @@
   <div class="filtros-painel" [hidden]="!mostrarFiltros">
     <div class="filtros-row">
       <span class="filtros-label">Tipologia:</span>
-      <button class="filtro-chip" [class.active]="filtroTipologia === ''"
+      <button class="filtro-chip"
+        [class.active]="filtroTipologia === ''"
         (click)="setFiltroTipologia('')">Todas</button>
-      <button class="filtro-chip" *ngFor="let t of tipologias"
-        [class]="'filtro-chip ' + corTipologia(t) + (filtroTipologia === t ? ' active' : '')"
+      <button class="filtro-chip"
+        *ngFor="let t of tipologias"
+        [ngClass]="[corTipologia(t), filtroTipologia === t ? 'active' : '']"
         (click)="setFiltroTipologia(t)">{{ t }}</button>
     </div>
     <div class="filtros-row">
       <span class="filtros-label">Mostrar:</span>
-      <button class="filtro-chip" *ngFor="let n of limitesDisponiveis" [class.active]="limite === n"
+      <button class="filtro-chip"
+        *ngFor="let n of limitesDisponiveis"
+        [class.active]="limite === n"
         (click)="setLimite(n)">{{ n === 0 ? 'Todas' : 'Últimas ' + n }}</button>
     </div>
   </div>
@@ -55,10 +59,10 @@
       [class.aceite]="conv.resposta === 'aceite' && !conv.emEdicao"
       [class.recusado]="conv.resposta === 'recusado' && !conv.emEdicao">
 
-      <div class="conv-indicador" [class]="corTipologia(conv.tipologia)"></div>
+      <div class="conv-indicador" [ngClass]="corTipologia(conv.tipologia)"></div>
 
       <div class="conv-info">
-        <div class="conv-tipologia-badge" [class]="corTipologia(conv.tipologia)">
+        <div class="conv-tipologia-badge" [ngClass]="corTipologia(conv.tipologia)">
           {{ conv.tipologia }}
         </div>
         <div class="conv-meta">
@@ -80,7 +84,7 @@
       <!-- Resposta -->
       <div class="conv-resposta-col">
 
-        <!-- Pendente ou em edição: mostrar botões aceitar/recusar -->
+        <!-- Pendente ou em edição -->
         <ng-container *ngIf="conv.resposta === 'pendente' || conv.emEdicao">
           <button class="btn-aceitar" (click)="responder(conv, 'aceite', $event)">
             <ion-icon name="checkmark-circle-outline"></ion-icon>
@@ -90,9 +94,11 @@
           </button>
         </ng-container>
 
-        <!-- Já respondeu: mostrar estado + botão editar -->
+        <!-- Já respondeu -->
         <ng-container *ngIf="conv.resposta !== 'pendente' && !conv.emEdicao">
-          <div class="conv-estado" [class.aceite]="conv.resposta === 'aceite'" [class.recusado]="conv.resposta === 'recusado'">
+          <div class="conv-estado"
+            [class.aceite]="conv.resposta === 'aceite'"
+            [class.recusado]="conv.resposta === 'recusado'">
             <ion-icon [name]="conv.resposta === 'aceite' ? 'checkmark-circle-outline' : 'close-circle-outline'"></ion-icon>
             <span>{{ conv.resposta === 'aceite' ? 'Aceite' : 'Recusado' }}</span>
           </div>

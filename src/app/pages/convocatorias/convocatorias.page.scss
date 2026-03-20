@@ -1,98 +1,55 @@
-// src/app/pages/convocatorias/convocatorias.page.scss
-
-$primary: #1a6fdb;
-$bg: #f5f7fb;
-$card: #ffffff;
-$border: #e2e8f0;
-$text: #1a1a2e;
-$muted: #6b7280;
-$aceite: #2e7d32;
-$recusado: #c62828;
-$radius: 10px;
-$radius-sm: 6px;
+// convocatorias.page.scss
 
 .conv-content {
-    --background: #{$bg};
+    --background: var(--color-bg);
 }
 
-ion-header ion-toolbar {
-    --background: #{$card};
-    --color: #{$text};
-    --border-color: #{$border};
-}
-
-// ── Botão filtro no header ─────────────────────────────────
-.btn-filtro-header {
-    width: 36px;
-    height: 36px;
+.conv-lista {
+    padding: 0 16px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    border-radius: $radius-sm;
-    color: $muted;
-    font-size: 20px;
-    cursor: pointer;
-    margin-right: 8px;
-
-    &.active {
-        color: $primary;
-    }
-}
-
-// ── Filtros ────────────────────────────────────────────────
-.filtros-painel {
-    padding: 10px 16px 12px;
-    background: $card;
-    border-bottom: 1px solid $border;
-    animation: slideDown 0.2s ease;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-8px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.filtros-row {
-    display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 6px;
-    flex-wrap: wrap;
 }
 
-.filtros-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: $muted;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.lista-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px 4px;
+    gap: 8px;
 }
 
-.filtro-chip {
-    padding: 5px 12px;
-    border: 1.5px solid $border;
-    border-radius: 20px;
-    background: transparent;
-    color: $muted;
+.header-data {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
+    color: var(--color-muted);
     cursor: pointer;
-    transition: all 0.15s;
+    flex: 0 0 auto;
 
-    &.active {
-        background: $primary;
-        border-color: $primary;
-        color: #ffffff !important;
+    ion-icon {
+        font-size: 13px;
     }
+}
 
+.header-info {
+    flex: 1;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-muted);
+}
+
+.header-resposta {
+    width: 80px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-muted);
+    text-align: center;
+}
+
+// ── Chips de tipologia com cor só no active ────────────────
+.filtro-chip {
     &.cor-red.active {
         background: #c62828;
         border-color: #c62828;
@@ -114,78 +71,13 @@ ion-header ion-toolbar {
     }
 }
 
-// ── Cabeçalho lista ────────────────────────────────────────
-.lista-header {
-    display: flex;
-    align-items: center;
-    padding: 8px 16px 4px;
-    gap: 8px;
-}
-
-.header-data {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    font-weight: 700;
-    color: $muted;
-    cursor: pointer;
-    flex: 0 0 auto;
-
-    ion-icon {
-        font-size: 13px;
-    }
-}
-
-.header-info {
-    flex: 1;
-    font-size: 12px;
-    font-weight: 700;
-    color: $muted;
-}
-
-.header-resposta {
-    width: 80px;
-    font-size: 12px;
-    font-weight: 700;
-    color: $muted;
-    text-align: center;
-}
-
-// ── Lista ──────────────────────────────────────────────────
-.conv-lista {
-    padding: 0 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.estado-vazio {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 48px 16px;
-    gap: 10px;
-
-    ion-icon {
-        font-size: 40px;
-        color: #c4c9d4;
-    }
-
-    p {
-        margin: 0;
-        font-size: 14px;
-        color: $muted;
-    }
-}
-
 // ── Card ───────────────────────────────────────────────────
 .conv-card {
     display: flex;
     align-items: center;
-    background: $card;
-    border-radius: $radius-sm;
-    border: 1px solid $border;
+    background: var(--color-card);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
     overflow: hidden;
     transition: box-shadow 0.15s;
 
@@ -200,7 +92,6 @@ ion-header ion-toolbar {
     }
 }
 
-// Barra colorida esquerda
 .conv-indicador {
     width: 4px;
     align-self: stretch;
@@ -269,16 +160,15 @@ ion-header ion-toolbar {
     align-items: center;
     gap: 5px;
     font-size: 12px;
-    color: $muted !important;
+    color: var(--color-muted) !important;
 
     ion-icon {
         font-size: 13px;
-        color: $primary;
+        color: var(--color-primary);
         flex-shrink: 0;
     }
 }
 
-// ── Resposta ───────────────────────────────────────────────
 .conv-resposta-col {
     width: 80px;
     display: flex;
@@ -289,9 +179,39 @@ ion-header ion-toolbar {
     flex-shrink: 0;
 }
 
-.resposta-botoes {
+.conv-estado {
     display: flex;
-    gap: 6px;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 10px;
+    font-weight: 700;
+
+    ion-icon {
+        font-size: 20px;
+    }
+
+    &.aceite {
+        color: #2e7d32;
+    }
+
+    &.recusado {
+        color: #c62828;
+    }
+}
+
+.btn-editar {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f4ff;
+    border: none;
+    border-radius: 50%;
+    color: var(--color-primary);
+    font-size: 14px;
+    cursor: pointer;
 }
 
 .btn-aceitar,
@@ -314,35 +234,24 @@ ion-header ion-toolbar {
 
 .btn-aceitar {
     background: rgba(46, 125, 50, 0.1);
-    color: $aceite;
+    color: #2e7d32;
 
     &.ativo {
-        background: $aceite;
+        background: #2e7d32;
         color: #ffffff;
-        border-color: $aceite;
+        border-color: #2e7d32;
         box-shadow: 0 2px 8px rgba(46, 125, 50, 0.35);
     }
 }
 
 .btn-recusar {
     background: rgba(198, 40, 40, 0.1);
-    color: $recusado;
+    color: #c62828;
 
     &.ativo {
-        background: $recusado;
+        background: #c62828;
         color: #ffffff;
-        border-color: $recusado;
+        border-color: #c62828;
         box-shadow: 0 2px 8px rgba(198, 40, 40, 0.35);
     }
-}
-
-// ── Total ──────────────────────────────────────────────────
-.total-label {
-    padding: 10px 16px;
-    font-size: 12px;
-    color: $muted !important;
-}
-
-.bottom-space {
-    height: 24px;
 }

@@ -1,38 +1,343 @@
-/*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
- */
-
-/* Core CSS required for Ionic components to work properly */
+// ─────────────────────────────────────────────
+// IONIC IMPORTS
+// ─────────────────────────────────────────────
 @import "@ionic/angular/css/core.css";
-
-/* Basic CSS for apps built with Ionic */
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
-
-/* Optional CSS utils that can be commented out */
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
-
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
 
+// ─────────────────────────────────────────────
+// VARIÁVEIS GLOBAIS
+// ─────────────────────────────────────────────
+:root {
+    --color-primary: #1a6fdb;
+    --color-success: #2e7d32;
+    --color-danger: #e53935;
+    --color-warning: #e65100;
+    --color-vencido: #c62828;
+    --color-bg: #f5f7fb;
+    --color-card: #ffffff;
+    --color-border: #e2e8f0;
+    --color-text: #1a1a2e;
+    --color-muted: #6b7280;
+    --color-hoje-bg: #e8f0fc;
+    --radius: 10px;
+    --radius-sm: 6px;
+}
+
+// ─────────────────────────────────────────────
+// TOOLBAR (todas as páginas)
+// ─────────────────────────────────────────────
+ion-header ion-toolbar {
+    --background: var(--color-card);
+    --color: var(--color-text);
+    --border-color: var(--color-border);
+}
+
+// ─────────────────────────────────────────────
+// PESQUISA (eventos, documentos, conta-corrente)
+// ─────────────────────────────────────────────
+.toolbar-pesquisa {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px 8px;
+}
+
+.pesquisa-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-card);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+
+    &:focus-within {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(26, 111, 219, 0.1);
+    }
+}
+
+.pesquisa-icon {
+    color: var(--color-muted);
+    font-size: 17px;
+    flex-shrink: 0;
+}
+
+.pesquisa-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: var(--color-text) !important;
+    -webkit-text-fill-color: var(--color-text) !important;
+    caret-color: var(--color-primary);
+
+    &::placeholder {
+        color: #c4c9d4 !important;
+        -webkit-text-fill-color: #c4c9d4 !important;
+    }
+}
+
+.btn-filtro {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-card);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-muted);
+    font-size: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &.active {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: #ffffff;
+    }
+}
+
+// ─────────────────────────────────────────────
+// FILTROS (eventos, documentos, conta-corrente, quotas, notificações, convocatórias)
+// ─────────────────────────────────────────────
+.filtros-painel {
+    padding: 8px 16px 12px;
+    background: var(--color-card);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.filtros-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.filtros-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filtro-chip {
+    padding: 5px 12px;
+    border: 1.5px solid var(--color-border);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--color-muted);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &.active {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: #ffffff !important;
+    }
+}
+
+.filtro-data {
+    flex: 1;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 6px 8px;
+    font-size: 12px;
+    color: var(--color-text) !important;
+    background: var(--color-card);
+    outline: none;
+    min-width: 0;
+}
+
+// ─────────────────────────────────────────────
+// ESTADO VAZIO (todas as listas)
+// ─────────────────────────────────────────────
+.estado-vazio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 16px;
+    gap: 10px;
+
+    ion-icon {
+        font-size: 40px;
+        color: #c4c9d4;
+    }
+
+    p {
+        margin: 0;
+        font-size: 14px;
+        color: var(--color-muted);
+    }
+}
+
+// ─────────────────────────────────────────────
+// TOTAL / CONTADOR (todas as listas)
+// ─────────────────────────────────────────────
+.total-label {
+    padding: 10px 16px;
+    font-size: 12px;
+    color: var(--color-muted) !important;
+}
+
+.bottom-space {
+    height: 24px;
+}
+
+// ─────────────────────────────────────────────
+// CORES DE CATEGORIAS/EVENTOS
+// ─────────────────────────────────────────────
+.cor-green {
+    background: #2e7d32;
+}
+
+.cor-red {
+    background: #c62828;
+}
+
+.cor-blue {
+    background: #1565c0;
+}
+
+.cor-orange {
+    background: #e65100;
+}
+
+// ─────────────────────────────────────────────
+// INDICADOR LATERAL (eventos, convocatórias, quotas)
+// ─────────────────────────────────────────────
+.indicador {
+    width: 4px;
+    align-self: stretch;
+    flex-shrink: 0;
+
+    &.cor-blue {
+        background: #1565c0;
+    }
+
+    &.cor-green {
+        background: #2e7d32;
+    }
+
+    &.cor-red {
+        background: #c62828;
+    }
+
+    &.cor-orange {
+        background: #e65100;
+    }
+}
+
+// ─────────────────────────────────────────────
+// DETALHE ITEM (evento-detalhe, quota-detalhe)
+// ─────────────────────────────────────────────
+.detalhe-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px;
+    background: var(--color-card);
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+}
+
+.detalhe-icon-wrap {
+    width: 36px;
+    height: 36px;
+    background: #e8f0fc;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    ion-icon {
+        font-size: 18px;
+        color: var(--color-primary);
+    }
+}
+
+.detalhe-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+}
+
+.detalhe-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-muted) !important;
+}
+
+.detalhe-valor {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text) !important;
+    line-height: 1.4;
+}
+
+// ─────────────────────────────────────────────
+// BTN ICON HEADER (notificações, quotas, convocatórias)
+// ─────────────────────────────────────────────
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--color-muted);
+    font-size: 20px;
+    cursor: pointer;
+
+    &.active {
+        color: var(--color-primary);
+    }
+}
+
+// ─────────────────────────────────────────────
+// NOTIF ICON (tab bar)
+// ─────────────────────────────────────────────
+ion-tab-button .notif-icon-wrap ion-icon {
+    font-size: 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    min-height: 24px !important;
+}

@@ -13,21 +13,48 @@ export interface Notificacao {
   lida: boolean;
 }
 
+export interface PrefsNotificacoes {
+  eventos: boolean;
+  quotas: boolean;
+  convocatorias: boolean;
+  noticias: boolean;
+}
+
 @Injectable({ providedIn: 'root' })
 export class NotificacoesService {
 
   private _notificacoes = new BehaviorSubject<Notificacao[]>([]);
   notificacoes$ = this._notificacoes.asObservable();
 
+  private _prefs = new BehaviorSubject<PrefsNotificacoes>({
+    eventos:       true,
+    quotas:        true,
+    convocatorias: true,
+    noticias:      false,
+  });
+  prefs$ = this._prefs.asObservable();
+
   get notificacoes(): Notificacao[] {
     return this._notificacoes.getValue();
+  }
+
+  get prefs(): PrefsNotificacoes {
+    return this._prefs.getValue();
   }
 
   get totalNaoLidas(): number {
     return this.notificacoes.filter(n => !n.lida).length;
   }
 
+  guardarPrefs(prefs: PrefsNotificacoes) {
+    this._prefs.next(prefs);
+    // TODO: this.http.post(`${API_URL}/prefs/notificacoes`, prefs).subscribe()
+  }
+
   adicionar(dados: { titulo: string; mensagem: string; categoria: CategoriaNotif }) {
+    // Verifica se a categoria está ativa nas preferências
+    if (!this.prefs[dados.categoria]) return;
+
     const nova: Notificacao = {
       id:        Date.now(),
       titulo:    dados.titulo,

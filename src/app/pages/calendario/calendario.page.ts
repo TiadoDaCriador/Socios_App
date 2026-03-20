@@ -62,7 +62,6 @@ export class CalendarioPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.gerarCelulas();
 
-    // Sincroniza com EventosService (EventoLista → Evento local)
     this.sub = this.eventosService.eventos$.subscribe((lista: EventoLista[]) => {
       this.eventos = lista.map(e => this.eventoListaParaEvento(e));
     });
@@ -77,9 +76,8 @@ export class CalendarioPage implements OnInit, OnDestroy {
     const ano = this.dataAtual.getFullYear();
     const mes = this.meses[this.dataAtual.getMonth()];
 
-    if (this.vista === 'mes') {
-      return `${mes} ${ano}`;
-    }
+    if (this.vista === 'mes') return `${mes} ${ano}`;
+
     if (this.vista === 'semana') {
       const dias = this.diasDaSemana;
       const inicio = dias[0];
@@ -92,14 +90,14 @@ export class CalendarioPage implements OnInit, OnDestroy {
         ? `${dI}–${dF} ${mI} ${ano}`
         : `${dI} ${mI} – ${dF} ${mF} ${ano}`;
     }
-    // dia
+
     return `${this.dataAtual.getDate()} ${mes} ${ano}`;
   }
 
-  // ── Dias da semana atual (array de 7 Dates) ─────────────────
+  // ── Dias da semana atual ─────────────────────────────────────
   get diasDaSemana(): Date[] {
     const d = new Date(this.dataAtual);
-    const dow = d.getDay() === 0 ? 6 : d.getDay() - 1; // seg=0 … dom=6
+    const dow = d.getDay() === 0 ? 6 : d.getDay() - 1;
     d.setDate(d.getDate() - dow);
     return Array.from({ length: 7 }, (_, i) => {
       const dia = new Date(d);
@@ -115,6 +113,14 @@ export class CalendarioPage implements OnInit, OnDestroy {
       data.getMonth() === this.hoje.getMonth() &&
       data.getFullYear() === this.hoje.getFullYear()
     );
+  }
+
+  isPassado(data: Date): boolean {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    const d = new Date(data);
+    d.setHours(0, 0, 0, 0);
+    return d < hoje;
   }
 
   private mesmoDia(a: Date, b: Date): boolean {
@@ -136,9 +142,15 @@ export class CalendarioPage implements OnInit, OnDestroy {
 
   // ── Modais ───────────────────────────────────────────────────
   async abrirModalNovoEvento(data: Date) {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    const dataClicada = new Date(data);
+    dataClicada.setHours(0, 0, 0, 0);
+    if (dataClicada < hoje) return; // 👈 bloqueia dias passados
+
     const modal = await this.modalCtrl.create({
       component: EventoModalComponent,
-      componentProps: { data },
+      componentProps: { dataInicial: data },
     });
     await modal.present();
 
@@ -171,12 +183,12 @@ export class CalendarioPage implements OnInit, OnDestroy {
     }
     if (resultado) {
       this.eventosService.atualizar(ev.id, {
-        nome:      resultado.titulo,
-        tipo:      resultado.tipo ?? ev.cor,
-        cor:       resultado.cor,
+        nome:       resultado.titulo,
+        tipo:       resultado.tipo ?? ev.cor,
+        cor:        resultado.cor,
         dataInicio: resultado.data,
-        dataFim:   resultado.data,
-        local:     resultado.local ?? '',
+        dataFim:    resultado.data,
+        local:      resultado.local ?? '',
       });
     }
   }

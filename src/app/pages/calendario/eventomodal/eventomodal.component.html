@@ -20,12 +20,8 @@
         Tipo de Evento
       </label>
       <div class="tipo-grid">
-        <button
-          type="button"
-          class="tipo-btn"
-          *ngFor="let tipo of tiposEvento"
-          [class.selected]="form.get('tipo')?.value === tipo.valor"
-          [class]="'tipo-btn cor-' + tipo.cor + (form.get('tipo')?.value === tipo.valor ? ' selected' : '')"
+        <button type="button" *ngFor="let tipo of tiposEvento"
+          [ngClass]="['tipo-btn', 'cor-' + tipo.cor, form.get('tipo')?.value === tipo.valor ? 'selected' : '']"
           (click)="form.get('tipo')?.setValue(tipo.valor)">
           {{ tipo.label }}
         </button>
@@ -66,9 +62,12 @@
         Data
       </label>
       <div class="field-input-wrap">
-        <input class="field-input" formControlName="data" type="date" />
+        <input class="field-input" formControlName="data" type="date"
+          [min]="dataMinima"
+          [attr.min]="dataMinima"
+          (change)="onDataChange($event)" />
       </div>
-      <span class="field-error" *ngIf="isFieldInvalid('data')">Campo obrigatório</span>
+      <span class="field-error" *ngIf="isFieldInvalid('data')">{{ erroData }}</span>
     </div>
 
     <!-- Hora Início / Fim -->
@@ -96,7 +95,7 @@
       </div>
     </div>
 
-    <!-- Google Calendar (preparado para implementar) -->
+    <!-- Google Calendar -->
     <div class="google-cal-info">
       <ion-icon name="logo-google"></ion-icon>
       <span>Este evento será adicionado ao Google Calendar</span>
@@ -107,7 +106,8 @@
       <button class="btn-eliminar" *ngIf="modoEdicao" (click)="eliminar()">
         Eliminar
       </button>
-      <button class="btn-guardar" (click)="guardar()" [disabled]="isSaving">
+      <button class="btn-guardar" (click)="guardar()"
+        [disabled]="isSaving || form.invalid">
         <ion-icon name="checkmark-circle-outline"></ion-icon>
         {{ isSaving ? 'A guardar...' : 'Guardar' }}
       </button>

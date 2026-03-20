@@ -29,7 +29,8 @@ import {
   calendarOutline,
   personOutline,
   menuOutline,
-  logOutOutline, // ← adicionado
+  logOutOutline,
+  documentOutline, // 👈 adicionado
 } from 'ionicons/icons';
 
 import { MenuController } from '@ionic/angular';
@@ -59,13 +60,14 @@ import { AuthService } from './services/auth.service';
 export class AppComponent {
 
   public appPages = [
-    { title: 'Perfil',          url: '/tabs/perfil',          icon: 'person'         },
-    { title: 'Eventos',         url: '/tabs/eventos',         icon: 'calendar'       },
-    { title: 'Calendário',      url: '/tabs/calendario',      icon: 'calendar-clear' },
-    { title: 'Conta Corrente',  url: '/tabs/conta-corrente',  icon: 'card'           },
-    { title: 'Convocatórias',   url: '/tabs/convocatorias',   icon: 'mail'           },
-    { title: 'Quotas',          url: '/tabs/quotas',          icon: 'wallet'         },
-    { title: 'Definições',      url: '/tabs/definicoes',      icon: 'settings'       },
+    { title: 'Perfil',          url: '/tabs/perfil',          icon: 'person'           },
+    { title: 'Eventos',         url: '/tabs/eventos',         icon: 'calendar'         },
+    { title: 'Calendário',      url: '/tabs/calendario',      icon: 'calendar-clear'   },
+    { title: 'Conta Corrente',  url: '/tabs/conta-corrente',  icon: 'card'             },
+    { title: 'Convocatórias',   url: '/tabs/convocatorias',   icon: 'mail'             },
+    { title: 'Quotas',          url: '/tabs/quotas',          icon: 'wallet'           },
+    { title: 'Definições',      url: '/tabs/definicoes',      icon: 'settings'         },
+    { title: 'Documentos',      url: '/tabs/documentos',      icon: 'document-outline' }, // 👈 corrigido
   ];
 
   constructor(
@@ -84,7 +86,8 @@ export class AppComponent {
       calendarOutline,
       personOutline,
       menuOutline,
-      logOutOutline, // ← adicionado
+      logOutOutline,
+      documentOutline, // 👈 adicionado
     });
   }
 

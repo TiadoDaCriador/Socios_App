@@ -1,162 +1,189 @@
 // src/app/pages/notificacoes/notificacoes.page.scss
 
-$primary:  #1a6fdb;
-$bg:       #f5f7fb;
-$card:     #ffffff;
-$border:   #e2e8f0;
-$text:     #1a1a2e;
-$muted:    #6b7280;
-$danger:   #e53935;
-$radius:   10px;
-$radius-sm: 6px;
-
-.notif-content { --background: #{$bg}; }
-
-ion-header ion-toolbar {
-  --background: #{$card};
-  --color: #{$text};
-  --border-color: #{$border};
+.notif-content {
+  --background: var(--color-bg);
 }
 
-// ── Header badge ───────────────────────────────────────────
 .header-badge {
-  --background: #{$danger};
+  --background: var(--color-danger);
   --color: #ffffff;
   font-size: 10px;
   margin-left: 4px;
   vertical-align: middle;
 }
 
-.btn-icon {
-  width: 36px; height: 36px;
-  display: flex; align-items: center; justify-content: center;
-  background: transparent; border: none; border-radius: $radius-sm;
-  color: $muted; font-size: 20px; cursor: pointer; margin-right: 4px;
-  &.active { color: $primary; }
-}
-
-// ── Filtros ────────────────────────────────────────────────
-.filtros-painel {
-  padding: 10px 16px 12px;
-  background: $card;
-  border-bottom: 1px solid $border;
-}
-
-.filtros-row {
-  display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
-}
-
+// ── Chips de categoria com cor só no active ────────────────
 .filtro-chip {
-  display: flex; align-items: center; gap: 4px;
-  padding: 5px 12px;
-  border: 1.5px solid $border; border-radius: 20px;
-  background: transparent; color: $muted;
-  font-size: 12px; font-weight: 600; cursor: pointer;
-  transition: all 0.15s;
+  &.cor-blue.active {
+    background: #1565c0;
+    border-color: #1565c0;
+  }
 
-  ion-icon { font-size: 13px; }
+  &.cor-orange.active {
+    background: #e65100;
+    border-color: #e65100;
+  }
 
-  &.active { color: #ffffff !important; border-color: transparent; }
+  &.cor-green.active {
+    background: #2e7d32;
+    border-color: #2e7d32;
+  }
 
-  &.cor-blue.active   { background: #1565c0; }
-  &.cor-orange.active { background: #e65100; }
-  &.cor-green.active  { background: #2e7d32; }
-  &.cor-purple.active { background: #6a1b9a; }
+  &.cor-purple.active {
+    background: #6a1b9a;
+    border-color: #6a1b9a;
+  }
 }
 
 // ── Lista ──────────────────────────────────────────────────
 .notif-lista {
   padding: 8px 16px;
-  display: flex; flex-direction: column; gap: 6px;
-}
-
-.estado-vazio {
-  display: flex; flex-direction: column; align-items: center;
-  padding: 60px 16px; gap: 10px;
-  ion-icon { font-size: 48px; color: #c4c9d4; }
-  p { margin: 0; font-size: 14px; color: $muted; }
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 // ── Card ───────────────────────────────────────────────────
 .notif-card {
-  display: flex; align-items: flex-start; gap: 12px;
-  background: $card; border-radius: $radius;
-  border: 1px solid $border; padding: 14px;
-  cursor: pointer; transition: box-shadow 0.15s;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--color-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  padding: 14px;
+  cursor: pointer;
+  transition: box-shadow 0.15s;
 
   &.nao-lida {
     background: #f0f5ff;
-    border-color: rgba(26,111,219,0.2);
+    border-color: rgba(26, 111, 219, 0.2);
   }
 
-  &:active { box-shadow: 0 2px 12px rgba(26,111,219,0.1); }
+  &:active {
+    box-shadow: 0 2px 12px rgba(26, 111, 219, 0.1);
+  }
 }
 
 // ── Ícone categoria ────────────────────────────────────────
 .notif-icone {
-  width: 40px; height: 40px; border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 
-  ion-icon { font-size: 20px; color: #ffffff; }
+  ion-icon {
+    font-size: 20px;
+    color: #ffffff;
+  }
 
-  &.cor-blue   { background: #1565c0; }
-  &.cor-orange { background: #e65100; }
-  &.cor-green  { background: #2e7d32; }
-  &.cor-purple { background: #6a1b9a; }
+  &.cor-blue {
+    background: #1565c0;
+  }
+
+  &.cor-orange {
+    background: #e65100;
+  }
+
+  &.cor-green {
+    background: #2e7d32;
+  }
+
+  &.cor-purple {
+    background: #6a1b9a;
+  }
 }
 
 // ── Body ───────────────────────────────────────────────────
 .notif-body {
-  flex: 1; min-width: 0;
-  display: flex; flex-direction: column; gap: 4px;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .notif-top {
-  display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
 }
 
 .notif-titulo {
-  font-size: 14px; font-weight: 700; color: $text !important;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text) !important;
   flex: 1;
 }
 
 .notif-tempo {
-  font-size: 11px; color: $muted !important; flex-shrink: 0;
+  font-size: 11px;
+  color: var(--color-muted) !important;
+  flex-shrink: 0;
 }
 
 .notif-msg {
-  margin: 0; font-size: 13px; color: $muted !important; line-height: 1.4;
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-muted) !important;
+  line-height: 1.4;
 }
 
 .notif-categoria-label {
-  font-size: 11px; font-weight: 700; padding: 2px 8px;
-  border-radius: 20px; color: #ffffff; align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  color: #ffffff;
+  align-self: flex-start;
 
-  &.cor-blue   { background: #1565c0; }
-  &.cor-orange { background: #e65100; }
-  &.cor-green  { background: #2e7d32; }
-  &.cor-purple { background: #6a1b9a; }
+  &.cor-blue {
+    background: #1565c0;
+  }
+
+  &.cor-orange {
+    background: #e65100;
+  }
+
+  &.cor-green {
+    background: #2e7d32;
+  }
+
+  &.cor-purple {
+    background: #6a1b9a;
+  }
 }
 
 // ── Actions ────────────────────────────────────────────────
 .notif-actions {
-  display: flex; flex-direction: column;
-  align-items: center; gap: 8px; flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .ponto-nao-lida {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: $primary;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
 }
 
 .btn-eliminar {
-  width: 28px; height: 28px;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(229,57,53,0.08); border: none; border-radius: 50%;
-  color: $danger; font-size: 14px; cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(229, 57, 53, 0.08);
+  border: none;
+  border-radius: 50%;
+  color: var(--color-danger);
+  font-size: 14px;
+  cursor: pointer;
 }
-
-// ── Total ──────────────────────────────────────────────────
-.total-label { padding: 8px 16px; font-size: 12px; color: $muted !important; }
-.bottom-space { height: 24px; }

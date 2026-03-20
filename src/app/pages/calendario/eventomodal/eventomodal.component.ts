@@ -1,7 +1,7 @@
 // src/app/pages/calendario/evento-modal/evento-modal.component.ts
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent,
   IonButtons, IonButton, IonIcon, ModalController,
@@ -13,15 +13,24 @@ import {
 } from 'ionicons/icons';
 import { Evento } from '../calendario.page';
 
-// TODO: carregar do API → this.eventoService.getTipos()
 export const TIPOS_EVENTO = [
-  { valor: 'treino',  label: 'Treino',       cor: 'green'  },
-  { valor: 'jogo',    label: 'Jogo',         cor: 'red'    },
-  { valor: 'reuniao', label: 'Reunião',      cor: 'blue'   },
-  { valor: 'torneio', label: 'Torneio',      cor: 'orange' },
-  { valor: 'convoc',  label: 'Convocatória', cor: 'blue'   },
-  { valor: 'outro',   label: 'Outro',        cor: 'green'  },
+  { valor: 'treino', label: 'Treino', cor: 'green' },
+  { valor: 'jogo', label: 'Jogo', cor: 'red' },
+  { valor: 'reuniao', label: 'Reunião', cor: 'blue' },
+  { valor: 'torneio', label: 'Torneio', cor: 'orange' },
+  { valor: 'convoc', label: 'Convocatória', cor: 'blue' },
+  { valor: 'outro', label: 'Outro', cor: 'green' },
 ];
+
+// ── Validator fora da classe ───────────────────────────────
+function dataNaoPassada(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) return null;
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const selecionada = new Date(control.value);
+  selecionada.setHours(0, 0, 0, 0);
+  return selecionada < hoje ? { dataPassada: true } : null;
+}
 
 @Component({
   selector: 'app-evento-modal',
@@ -37,9 +46,7 @@ export const TIPOS_EVENTO = [
 })
 export class EventoModalComponent implements OnInit {
 
-  // Data pré-selecionada ao abrir o modal
   @Input() dataInicial: Date = new Date();
-  // Se vier um evento existente, entra em modo edição
   @Input() evento: Evento | null = null;
 
   form!: FormGroup;
@@ -48,7 +55,7 @@ export class EventoModalComponent implements OnInit {
   modoEdicao = false;
 
   constructor(
-    private fb:       FormBuilder,
+    private fb: FormBuilder,
     private modalCtrl: ModalController,
   ) {
     addIcons({
@@ -66,13 +73,31 @@ export class EventoModalComponent implements OnInit {
     const dataStr = this.formatarData(this.dataInicial);
 
     this.form = this.fb.group({
-      tipo:       [this.evento?.cor    ?? '',    Validators.required],
-      nome:       [this.evento?.titulo ?? '',    [Validators.required, Validators.minLength(2)]],
-      local:      ['',                           Validators.required],
-      data:       [dataStr,                      Validators.required],
-      horaInicio: [this.evento?.hora   ?? '',    Validators.required],
-      horaFim:    ['',                           Validators.required],
+      tipo: [this.evento?.cor ?? '', Validators.required],
+      nome: [this.evento?.titulo ?? '', [Validators.required, Validators.minLength(2)]],
+      local: [this.evento?.local ?? '', Validators.required],
+      data: [dataStr, [Validators.required, dataNaoPassada]],
+      horaInicio: [this.evento?.hora ?? '', Validators.required],
+      horaFim: ['', Validators.required],
     });
+  }
+
+  // ── Repõe para hoje se alguém forçar data passada ──────────
+  onDataChange(event: any) {
+    const valor = event.target.value;
+    if (!valor) return;
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    const selecionada = new Date(valor);
+    selecionada.setHours(0, 0, 0, 0);
+    if (selecionada < hoje) {
+      this.form.get('data')?.setValue(this.dataMinima);
+    }
+  }
+
+  // ── Data mínima para o input[type=date] ────────────────────
+  get dataMinima(): string {
+    return this.formatarData(new Date());
   }
 
   fechar() {
@@ -88,13 +113,12 @@ export class EventoModalComponent implements OnInit {
     this.isSaving = true;
     const dados = this.form.value;
 
-    // Constrói o objeto evento para devolver à página
     const novoEvento: Partial<Evento> = {
       titulo: dados.nome,
-      data:   new Date(dados.data),
-      hora:   dados.horaInicio,
-      cor:    this.tipoSelecionado?.cor ?? 'blue',
-      
+      data: new Date(dados.data),
+      hora: dados.horaInicio,
+      cor: this.tipoSelecionado?.cor ?? 'blue',
+      local: dados.local,
     };
 
     // TODO: Guardar no API
@@ -124,6 +148,13 @@ export class EventoModalComponent implements OnInit {
 
   get tipoSelecionado() {
     return this.tiposEvento.find(t => t.valor === this.form.get('tipo')?.value);
+  }
+
+  get erroData(): string {
+    const erros = this.form.get('data')?.errors;
+    if (erros?.['dataPassada']) return 'Não é possível criar eventos em datas passadas';
+    if (erros?.['required']) return 'Data obrigatória';
+    return '';
   }
 
   isFieldInvalid(field: string): boolean {

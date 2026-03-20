@@ -45,11 +45,9 @@ export class ContaCorrentePage implements OnInit, OnDestroy {
   limite = 10;
   limitesDisponiveis = [5, 10, 20, 50, 0];
 
-  // Saldo vindo do serviço partilhado (mesmo valor que aparece na Home)
   saldoServico: number | null = null;
   private sub?: Subscription;
 
-  // TODO: substituir por chamada ao API
   movimentos: Movimento[] = [];
 
   constructor(
@@ -63,21 +61,18 @@ export class ContaCorrentePage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // Liga ao mesmo serviço que a Home usa — saldo sempre sincronizado
     this.sub = this.contaService.account$.subscribe(acc => {
       if (acc) this.saldoServico = acc.balance;
     });
 
-    // Se ainda não carregou (ex: navegação direta para esta página)
     if (!this.contaService.account) {
       this.contaService.loadFromAssets().subscribe({ error: () => {} });
     }
 
-    // Dados de teste — apagar quando ligar ao API
     this.movimentos = [
-      { id: 1, descricao: 'Pagamento Quotas - Rui Puga (sócio n.º 1) - Taxa MB',                data: new Date(2026, 2, 18, 9, 30), valor: 0.52,  conta: 'CA' },
-      { id: 2, descricao: 'Pagamento Quotas - Alexandre Fernandes (sócio n.º 9004) - Taxa',     data: new Date(2026, 2, 18, 9, 21), valor: 1.35,  conta: 'CA' },
-      { id: 3, descricao: 'Transferência bancária - Taxa processamento',                         data: new Date(2026, 2, 15, 10, 0), valor: 2.50,  conta: 'CA' },
+      { id: 1, descricao: 'Pagamento Quotas - Rui Puga (sócio n.º 1) - Taxa MB',            data: new Date(2026, 2, 18, 9, 30), valor: 0.52, conta: 'CA' },
+      { id: 2, descricao: 'Pagamento Quotas - Alexandre Fernandes (sócio n.º 9004) - Taxa', data: new Date(2026, 2, 18, 9, 21), valor: 1.35, conta: 'CA' },
+      { id: 3, descricao: 'Transferência bancária - Taxa processamento',                     data: new Date(2026, 2, 15, 10, 0), valor: 2.50, conta: 'CA' },
     ];
   }
 
@@ -85,7 +80,6 @@ export class ContaCorrentePage implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  // Usa o saldo do serviço se disponível, caso contrário calcula localmente
   get saldoTotal(): number {
     return this.saldoServico ?? this.movimentos.reduce((acc, m) => acc - m.valor, 0);
   }

@@ -1,0 +1,97 @@
+<!-- src/app/pages/documentos/documentos.page.html -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Lista de Documentos</ion-title>
+    <ion-buttons slot="start">
+      <button class="btn-novo" (click)="triggerUpload()">
+        <ion-icon name="add-outline"></ion-icon>
+        NOVO
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="docs-content">
+
+  <!-- Pesquisa e filtros -->
+  <div class="toolbar-pesquisa">
+    <div class="pesquisa-wrap">
+      <ion-icon name="search-outline" class="pesquisa-icon"></ion-icon>
+      <input class="pesquisa-input" type="text" placeholder="Pesquisar..."
+        [(ngModel)]="pesquisa" />
+    </div>
+    <button class="btn-filtro" [class.active]="mostrarFiltros"
+      (click)="mostrarFiltros = !mostrarFiltros">
+      <ion-icon name="filter-outline"></ion-icon>
+    </button>
+  </div>
+
+  <!-- Painel de filtros -->
+  <div class="filtros-painel" [hidden]="!mostrarFiltros">
+    <div class="filtros-row">
+      <span class="filtros-label">De:</span>
+      <input class="filtro-data" type="date" [(ngModel)]="dataInicio" />
+      <span class="filtros-label">Até:</span>
+      <input class="filtro-data" type="date" [(ngModel)]="dataFim" />
+    </div>
+    <div class="filtros-row">
+      <span class="filtros-label">Ordenar:</span>
+      <button class="filtro-chip" [class.active]="ordem === 'data-desc'" (click)="toggleOrdem('data')">Data ↓</button>
+      <button class="filtro-chip" [class.active]="ordem === 'data-asc'"  (click)="toggleOrdem('data')">Data ↑</button>
+      <button class="filtro-chip" [class.active]="ordem === 'nome-asc'"  (click)="toggleOrdem('nome')">Nome A-Z</button>
+      <button class="filtro-chip" [class.active]="ordem === 'nome-desc'" (click)="toggleOrdem('nome')">Nome Z-A</button>
+    </div>
+  </div>
+
+  <!-- Lista -->
+  <div class="docs-lista">
+
+    <div class="estado-vazio" *ngIf="documentosFiltrados.length === 0">
+      <ion-icon name="document-outline"></ion-icon>
+      <p>Nenhum documento encontrado</p>
+    </div>
+
+    <div class="doc-card" *ngFor="let doc of documentosFiltrados">
+
+      <!-- Linha 1: Nome do documento -->
+      <div class="doc-top">
+        <ion-icon name="document-outline" class="doc-icone"></ion-icon>
+        <span class="doc-nome">{{ doc.nomeDocumento }}</span>
+      </div>
+
+      <!-- Linha 2: Meta + Ações -->
+      <div class="doc-bottom">
+        <div class="doc-meta">
+          <span class="doc-data">{{ formatarData(doc.dataUpload) }}</span>
+          <span class="doc-hora">{{ formatarHora(doc.dataUpload) }}</span>
+          <span class="doc-ficheiro">{{ doc.nomeFicheiro }}</span>
+          <span class="doc-tamanho" *ngIf="doc.tamanho">· {{ doc.tamanho }}</span>
+        </div>
+        <div class="doc-acoes">
+          <button class="btn-acao" (click)="verPDF(doc)" title="Ver">
+            <ion-icon name="eye-outline"></ion-icon>
+          </button>
+          <button class="btn-acao" (click)="downloadPDF(doc)" title="Download">
+            <ion-icon name="download-outline"></ion-icon>
+          </button>
+          <button class="btn-acao" (click)="partilhar(doc)" title="Partilhar">
+            <ion-icon name="share-outline"></ion-icon>
+          </button>
+          <button class="btn-acao danger" (click)="eliminar(doc)" title="Eliminar">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Contador -->
+  <div class="total-label">{{ documentosFiltrados.length }} de {{ documentos.length }} Gestão Documental</div>
+
+  <div class="bottom-space"></div>
+
+</ion-content>

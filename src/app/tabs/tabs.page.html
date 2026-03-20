@@ -12,7 +12,12 @@
     </ion-tab-button>
 
     <ion-tab-button tab="notificacoes">
-      <ion-icon name="notifications-outline"></ion-icon>
+      <div class="notif-icon-wrap">
+        <ion-icon name="notifications-outline"></ion-icon>
+        <ion-badge *ngIf="totalNaoLidas > 0" class="notif-badge">
+          {{ totalNaoLidas > 9 ? '9+' : totalNaoLidas }}
+        </ion-badge>
+      </div>
       <ion-label>Notificações</ion-label>
     </ion-tab-button>
 
