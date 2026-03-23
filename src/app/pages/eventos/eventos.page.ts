@@ -4,21 +4,20 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   IonHeader, IonToolbar, IonButtons, IonMenuButton,
-  IonTitle, IonContent, IonIcon,
-  ModalController,
+  IonTitle, IonContent, IonIcon, AlertController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   searchOutline, calendarOutline, timeOutline,
-  locationOutline, filterOutline, ellipsisVertical,
-  chevronDownOutline, chevronUpOutline,
+  locationOutline, filterOutline, trashOutline,
+  chevronDownOutline, chevronUpOutline, pricetagOutline,
 } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { EventosService, EventoLista } from '../../services/eventos.service';
-import { EventoDetalheModalComponent } from './evento-detalhe-modal';
+import { TIPOS_EVENTO } from '../../shared/tipos-eventos';
 
 export { EventoLista };
-
 type OrdemTipo = 'data-asc' | 'data-desc' | 'nome-asc' | 'nome-desc';
 
 @Component({
@@ -27,8 +26,7 @@ type OrdemTipo = 'data-asc' | 'data-desc' | 'nome-asc' | 'nome-desc';
   styleUrls: ['./eventos.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    FormsModule,
+    CommonModule, FormsModule, TranslateModule,
     IonHeader, IonToolbar, IonButtons, IonMenuButton,
     IonTitle, IonContent, IonIcon,
   ],
@@ -38,38 +36,31 @@ export class EventosPage implements OnInit, OnDestroy {
   pesquisa = '';
   ordem: OrdemTipo = 'data-desc';
   mostrarFiltros = false;
-  filtroTipo = '';
   eventos: EventoLista[] = [];
-  tiposDisponiveis: string[] = [];
-
   private sub!: Subscription;
 
   constructor(
-    private modalCtrl:     ModalController,
     private eventosService: EventosService,
+    private alertCtrl: AlertController,
+    private translate: TranslateService,
   ) {
     addIcons({
       searchOutline, calendarOutline, timeOutline,
-      locationOutline, filterOutline, ellipsisVertical,
-      chevronDownOutline, chevronUpOutline,
+      locationOutline, filterOutline, trashOutline,
+      chevronDownOutline, chevronUpOutline, pricetagOutline,
     });
   }
 
   ngOnInit() {
-    // Subscreve ao serviço — atualiza automaticamente quando o calendário adicionar eventos
     this.sub = this.eventosService.eventos$.subscribe(eventos => {
       this.eventos = eventos;
-      this.tiposDisponiveis = [...new Set(eventos.map(e => e.tipo))];
     });
   }
 
-  ngOnDestroy() {
-    this.sub?.unsubscribe();
-  }
+  ngOnDestroy() { this.sub?.unsubscribe(); }
 
   get eventosFiltrados(): EventoLista[] {
     let lista = [...this.eventos];
-
     if (this.pesquisa.trim()) {
       const p = this.pesquisa.toLowerCase();
       lista = lista.filter(e =>
@@ -78,39 +69,41 @@ export class EventosPage implements OnInit, OnDestroy {
         e.tipo.toLowerCase().includes(p)
       );
     }
-
-    if (this.filtroTipo) {
-      lista = lista.filter(e => e.tipo === this.filtroTipo);
-    }
-
     lista.sort((a, b) => {
       switch (this.ordem) {
-        case 'data-asc':  return a.dataInicio.getTime() - b.dataInicio.getTime();
+        case 'data-asc': return a.dataInicio.getTime() - b.dataInicio.getTime();
         case 'data-desc': return b.dataInicio.getTime() - a.dataInicio.getTime();
-        case 'nome-asc':  return a.nome.localeCompare(b.nome);
+        case 'nome-asc': return a.nome.localeCompare(b.nome);
         case 'nome-desc': return b.nome.localeCompare(a.nome);
       }
     });
-
     return lista;
   }
 
-  async abrirDetalhe(evento: EventoLista) {
-    const modal = await this.modalCtrl.create({
-      component: EventoDetalheModalComponent,
-      componentProps: { evento },
-      initialBreakpoint: 0.75,
-      breakpoints: [0, 0.75, 1],
-      handleBehavior: 'cycle',
+  async eliminar(evento: EventoLista) {
+    const header = this.translate.instant('EVENTOS.ELIMINAR');
+    const message = `${this.translate.instant('EVENTOS.ELIMINAR_CONFIRM')} "${evento.nome}"?`;
+    const alert = await this.alertCtrl.create({
+      header, message,
+      buttons: [
+        { text: this.translate.instant('COMUM.CANCELAR'), role: 'cancel' },
+        {
+          text: this.translate.instant('COMUM.ELIMINAR'), role: 'destructive',
+          cssClass: 'alert-btn-danger', handler: () => this.eventosService.eliminar(evento.id)
+        },
+      ],
     });
-    await modal.present();
+    await alert.present();
   }
 
-  setOrdem(o: OrdemTipo)      { this.ordem = o; }
-  setFiltroTipo(tipo: string) { this.filtroTipo = this.filtroTipo === tipo ? '' : tipo; }
+  labelTipo(valor: string): string {
+    return TIPOS_EVENTO.find(t => t.valor === valor)?.label ?? valor;
+  }
+
+  setOrdem(o: OrdemTipo) { this.ordem = o; }
 
   formatarData(d: Date): string {
-    return d.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: '2-digit' });
+    return d.toLocaleDateString('pt-PT', { weekday: 'short', day: '2-digit', month: '2-digit', year: '2-digit' });
   }
 
   formatarHora(d: Date): string {

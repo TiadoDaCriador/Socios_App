@@ -10,15 +10,18 @@ import { addIcons } from 'ionicons';
 import {
   filterOutline, chevronDownOutline, chevronUpOutline,
   locationOutline, timeOutline, calendarOutline,
-  checkmarkCircleOutline, closeCircleOutline, helpCircleOutline,
-  pricetagOutline, createOutline,
+  checkmarkCircleOutline, closeCircleOutline, createOutline,
 } from 'ionicons/icons';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConvocatoriasService } from './convocatorias.service';
+import { TIPOS_EVENTO } from '../../shared/tipos-eventos';
 
 export type RespostaType = 'aceite' | 'recusado' | 'pendente';
 
 export interface Convocatoria {
   id: number;
+  titulo: string;
+  descricao: string;
   dia: Date;
   hora: string;
   local: string;
@@ -33,80 +36,62 @@ export interface Convocatoria {
   styleUrls: ['./convocatorias.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    FormsModule,
+    CommonModule, FormsModule, TranslateModule,
     IonHeader, IonToolbar, IonButtons, IonMenuButton,
     IonTitle, IonContent, IonIcon,
   ],
 })
 export class ConvocatoriasPage implements OnInit {
 
-  filtroTipologia = '';
   mostrarFiltros = false;
   ordemDesc = true;
   limite = 10;
   limitesDisponiveis = [5, 10, 20, 0];
-  tipologias: string[] = [];
 
   convocatorias: Convocatoria[] = [
-    { id: 1, dia: new Date(2026, 2, 25, 10, 0), hora: '10:00', local: 'Estádio Municipal', tipologia: 'Jogo',    resposta: 'pendente' },
-    { id: 2, dia: new Date(2026, 2, 20, 9, 0),  hora: '09:00', local: 'Campo de Treinos',  tipologia: 'Treino',  resposta: 'pendente' },
-    { id: 3, dia: new Date(2026, 2, 18, 18, 0), hora: '18:00', local: 'Sede do Clube',     tipologia: 'Reunião', resposta: 'pendente' },
-    { id: 4, dia: new Date(2026, 3, 5, 14, 0),  hora: '14:00', local: 'Pavilhão Norte',    tipologia: 'Torneio', resposta: 'pendente' },
+    { id: 1, titulo: 'Concerto Municipal', descricao: 'Foste convocado para participar no concerto municipal no Estádio Municipal às 10:00H no dia 25 de março.', dia: new Date(2026, 2, 25, 10, 0), hora: '10:00', local: 'Estádio Municipal', tipologia: 'concertos', resposta: 'pendente' },
+    { id: 2, titulo: 'Aula de Formação', descricao: 'Foste convocado para a aula de formação no Campo de Treinos às 09:00H no dia 20 de março.', dia: new Date(2026, 2, 20, 9, 0), hora: '09:00', local: 'Campo de Treinos', tipologia: 'aulas', resposta: 'pendente' },
+    { id: 3, titulo: 'Ensaio Geral', descricao: 'Foste convocado para o ensaio geral na Sede do Clube às 18:00H no dia 18 de março.', dia: new Date(2026, 2, 18, 18, 0), hora: '18:00', local: 'Sede do Clube', tipologia: 'ensaio-geral', resposta: 'pendente' },
+    { id: 4, titulo: 'Desfile de Abril', descricao: 'Foste convocado para o desfile no Pavilhão Norte às 14:00H no dia 5 de abril.', dia: new Date(2026, 3, 5, 14, 0), hora: '14:00', local: 'Pavilhão Norte', tipologia: 'desfile', resposta: 'pendente' },
   ];
 
   constructor(
-    private toastCtrl:          ToastController,
-    private alertCtrl:          AlertController,
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController,
     private convocatoriasService: ConvocatoriasService,
+    private translate: TranslateService,
   ) {
-    addIcons({
-      filterOutline, chevronDownOutline, chevronUpOutline,
-      locationOutline, timeOutline, calendarOutline,
-      checkmarkCircleOutline, closeCircleOutline, helpCircleOutline,
-      pricetagOutline, createOutline,
-    });
+    addIcons({ filterOutline, chevronDownOutline, chevronUpOutline, locationOutline, timeOutline, calendarOutline, checkmarkCircleOutline, closeCircleOutline, createOutline });
   }
 
-  ngOnInit() {
-    this.tipologias = [...new Set(this.convocatorias.map(c => c.tipologia))];
-  }
+  ngOnInit() { }
 
   get convocatoriasFiltradas(): Convocatoria[] {
     let lista = [...this.convocatorias];
-    if (this.filtroTipologia) {
-      lista = lista.filter(c => c.tipologia === this.filtroTipologia);
-    }
-    lista.sort((a, b) => this.ordemDesc
-      ? b.dia.getTime() - a.dia.getTime()
-      : a.dia.getTime() - b.dia.getTime()
-    );
+    lista.sort((a, b) => this.ordemDesc ? b.dia.getTime() - a.dia.getTime() : a.dia.getTime() - b.dia.getTime());
     if (this.limite > 0) lista = lista.slice(0, this.limite);
     return lista;
   }
 
   async responder(conv: Convocatoria, resposta: RespostaType, event: MouseEvent) {
     event.stopPropagation();
-
-    // Não fazer nada se já está selecionada (e não está em edição)
     if (conv.resposta === resposta && !conv.emEdicao) return;
 
-    const label = resposta === 'aceite' ? 'aceitar' : 'recusar';
+    const msgKey = resposta === 'aceite' ? 'CONVOCATORIAS.CONFIRMAR_ACEITAR' : 'CONVOCATORIAS.CONFIRMAR_RECUSAR';
     const alert = await this.alertCtrl.create({
-      header: 'Confirmar resposta',
-      message: `Tens a certeza que queres <strong>${label}</strong> esta convocatória?`,
+      header: this.translate.instant('CONVOCATORIAS.CONFIRMAR_HEADER'),
+      message: this.translate.instant(msgKey),
       buttons: [
-        { text: 'Cancelar', role: 'cancel' },
+        { text: this.translate.instant('CONVOCATORIAS.CANCELAR'), role: 'cancel' },
         {
-          text: 'Confirmar',
+          text: this.translate.instant('CONVOCATORIAS.CONFIRMAR'),
           handler: async () => {
             conv.resposta = resposta;
             conv.emEdicao = false;
             this.convocatoriasService.responder(conv, resposta);
-
-            const msg   = resposta === 'aceite' ? 'Convocatória aceite!' : 'Convocatória recusada.';
+            const msgToast = resposta === 'aceite' ? 'CONVOCATORIAS.TOAST_ACEITE' : 'CONVOCATORIAS.TOAST_RECUSADO';
             const color = resposta === 'aceite' ? 'success' : 'danger';
-            const toast = await this.toastCtrl.create({ message: msg, duration: 2500, position: 'bottom', color });
+            const toast = await this.toastCtrl.create({ message: this.translate.instant(msgToast), duration: 2500, position: 'bottom', color });
             await toast.present();
           },
         },
@@ -121,17 +106,15 @@ export class ConvocatoriasPage implements OnInit {
   }
 
   setLimite(n: number) { this.limite = n; }
-  setFiltroTipologia(t: string) { this.filtroTipologia = this.filtroTipologia === t ? '' : t; }
   toggleOrdem() { this.ordemDesc = !this.ordemDesc; }
 
-  formatarDia(d: Date): string {
-    return d.toLocaleDateString('pt-PT', { weekday: 'short', day: '2-digit', month: '2-digit', year: '2-digit' });
+  corTipologia(t: string): string {
+    const tipo = TIPOS_EVENTO.find(e => e.valor === t);
+    return tipo ? `cor-${tipo.cor}` : 'cor-blue';
   }
 
-  corTipologia(t: string): string {
-    const mapa: Record<string, string> = {
-      'Jogo': 'cor-red', 'Treino': 'cor-green', 'Reunião': 'cor-blue', 'Torneio': 'cor-orange',
-    };
-    return mapa[t] ?? 'cor-blue';
+  labelTipologia(t: string): string {
+    const tipo = TIPOS_EVENTO.find(e => e.valor === t);
+    return tipo ? tipo.label : t;
   }
 }

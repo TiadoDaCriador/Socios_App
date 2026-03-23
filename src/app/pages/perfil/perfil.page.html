@@ -1,15 +1,9 @@
-<!-- src/app/pages/perfil/perfil.page.html -->
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Perfil</ion-title>
+    <ion-buttons slot="end"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>{{ 'MENU.PERFIL' | translate }}</ion-title>
     <ion-buttons slot="start">
-      <ion-button
-        *ngIf="!isLoading && !loadError"
-        (click)="toggleEdit()"
-        [color]="isEditing ? 'danger' : 'primary'">
+      <ion-button *ngIf="!isLoading && !loadError" (click)="toggleEdit()" [color]="isEditing ? 'danger' : 'primary'">
         <ion-icon slot="icon-only" [name]="isEditing ? 'close-outline' : 'create-outline'"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -18,23 +12,19 @@
 
 <ion-content [fullscreen]="true" class="profile-content">
 
-  <!-- A carregar -->
   <div class="state-center" *ngIf="isLoading">
     <ion-spinner name="crescent"></ion-spinner>
-    <p>A carregar perfil...</p>
+    <p>{{ 'PERFIL.CARREGANDO' | translate }}</p>
   </div>
 
-  <!-- Erro -->
   <div class="state-center state-error" *ngIf="!isLoading && loadError">
     <ion-icon name="alert-circle-outline"></ion-icon>
-    <p>Não foi possível carregar o perfil.</p>
-    <button class="btn-retry" (click)="loadPerfil()">Tentar novamente</button>
+    <p>{{ 'PERFIL.ERRO_LOAD' | translate }}</p>
+    <button class="btn-retry" (click)="loadPerfil()">{{ 'PERFIL.TENTAR_NOVAMENTE' | translate }}</button>
   </div>
 
-  <!-- Conteúdo principal -->
   <ng-container *ngIf="!isLoading && !loadError">
 
-    <!-- Hero / Avatar -->
     <div class="profile-hero">
       <div class="avatar-wrapper" [class.editable]="isEditing" (click)="isEditing && fileInput.click()">
         <div class="avatar-ring">
@@ -47,109 +37,103 @@
       </div>
       <input #fileInput type="file" accept="image/*" (change)="onPhotoChange($event)" hidden />
       <div class="hero-info">
-        <h2 class="hero-name">{{ profileForm.get('nomeCompleto')?.value || 'Sem Nome' }}</h2>
+        <h2 class="hero-name">{{ profileForm.get('nomeCompleto')?.value || '---' }}</h2>
       </div>
     </div>
 
     <form [formGroup]="profileForm" class="profile-form">
 
-      <!-- ── Identificação (sempre bloqueada) ── -->
       <div class="section-group">
         <div class="group-label">
           <ion-icon name="person-circle-outline"></ion-icon>
-          Identificação
-          <span class="group-label-lock">
-            <ion-icon name="lock-closed-outline"></ion-icon> 
-          </span>
+          {{ 'PERFIL.TITULO_ID' | translate }}
+          <span class="group-label-lock"><ion-icon name="lock-closed-outline"></ion-icon></span>
         </div>
 
         <div class="field-item field-readonly">
-          <label class="field-label">Nome Completo</label>
+          <label class="field-label">{{ 'PERFIL.NOME' | translate }}</label>
           <div class="field-input-wrap">
             <ion-icon name="person-outline" class="field-icon"></ion-icon>
-            <input class="field-input" formControlName="nomeCompleto" type="text" placeholder="—" />
+            <input class="field-input" formControlName="nomeCompleto" type="text" />
             <ion-icon name="lock-closed-outline" class="field-lock-icon"></ion-icon>
           </div>
         </div>
 
         <div class="field-item field-readonly">
-          <label class="field-label">Género</label>
+          <label class="field-label">{{ 'PERFIL.GENERO' | translate }}</label>
           <div class="field-input-wrap">
             <ion-icon name="transgender-outline" class="field-icon"></ion-icon>
-            <input class="field-input" formControlName="genero" type="text" placeholder="—" />
+            <input class="field-input" formControlName="genero" type="text" />
             <ion-icon name="lock-closed-outline" class="field-lock-icon"></ion-icon>
           </div>
         </div>
 
         <div class="field-item field-readonly">
-          <label class="field-label">Data de Nascimento</label>
+          <label class="field-label">{{ 'PERFIL.DATA_NASCIMENTO' | translate }}</label>
           <div class="field-input-wrap">
             <ion-icon name="calendar-outline" class="field-icon"></ion-icon>
-            <input class="field-input" formControlName="dataNascimento" type="text" placeholder="—" />
+            <input class="field-input" formControlName="dataNascimento" type="text" />
             <ion-icon name="lock-closed-outline" class="field-lock-icon"></ion-icon>
           </div>
         </div>
 
         <div class="field-item field-readonly">
-          <label class="field-label">Cartão de Cidadão</label>
+          <label class="field-label">{{ 'PERFIL.CC' | translate }}</label>
           <div class="field-input-wrap">
             <ion-icon name="id-card-outline" class="field-icon"></ion-icon>
-            <input class="field-input" formControlName="cartaoCidadao" type="text" placeholder="—" />
+            <input class="field-input" formControlName="cartaoCidadao" type="text" />
             <ion-icon name="lock-closed-outline" class="field-lock-icon"></ion-icon>
           </div>
         </div>
 
         <div class="field-item field-readonly">
-          <label class="field-label">NIF</label>
+          <label class="field-label">{{ 'LOGIN.NIF' | translate }}</label>
           <div class="field-input-wrap">
             <ion-icon name="document-text-outline" class="field-icon"></ion-icon>
-            <input class="field-input" formControlName="nif" type="text" placeholder="—" />
+            <input class="field-input" formControlName="nif" type="text" />
             <ion-icon name="lock-closed-outline" class="field-lock-icon"></ion-icon>
           </div>
         </div>
       </div>
 
-      <!-- ── Morada ── -->
       <div class="section-group">
-        <div class="group-label">
-          <ion-icon name="location-outline"></ion-icon>
-          Morada
+        <div class="group-label"><ion-icon name="location-outline"></ion-icon> {{ 'PERFIL.TITULO_MORADA' | translate }}
         </div>
 
         <div class="field-item" [class.has-error]="isFieldInvalid('morada')">
-          <label class="field-label">Morada</label>
+          <label class="field-label">{{ 'PERFIL.MORADA' | translate }}</label>
           <div class="field-input-wrap">
             <ion-icon name="home-outline" class="field-icon"></ion-icon>
             <input class="field-input" formControlName="morada" type="text"
-              placeholder="Rua, Número, Andar" [attr.disabled]="!isEditing ? true : null" />
+              [placeholder]="'PERFIL.MORADA_PLACEHOLDER' | translate" [attr.disabled]="!isEditing ? true : null" />
           </div>
           <span class="field-error" *ngIf="isFieldInvalid('morada')">{{ getFieldError('morada') }}</span>
         </div>
 
         <div class="field-row">
           <div class="field-item field-half" [class.has-error]="isFieldInvalid('codigoPostal')">
-            <label class="field-label">Código Postal</label>
+            <label class="field-label">{{ 'PERFIL.CODIGO_POSTAL' | translate }}</label>
             <div class="field-input-wrap">
               <ion-icon name="map-outline" class="field-icon"></ion-icon>
-              <input class="field-input" formControlName="codigoPostal" type="text"
-                placeholder="0000-000" [attr.disabled]="!isEditing ? true : null" />
+              <input class="field-input" formControlName="codigoPostal" type="text" placeholder="0000-000"
+                [attr.disabled]="!isEditing ? true : null" />
             </div>
             <span class="field-error" *ngIf="isFieldInvalid('codigoPostal')">{{ getFieldError('codigoPostal') }}</span>
           </div>
 
           <div class="field-item field-half" [class.has-error]="isFieldInvalid('localidade')">
-            <label class="field-label">Localidade</label>
+            <label class="field-label">{{ 'PERFIL.LOCALIDADE' | translate }}</label>
             <div class="field-input-wrap">
               <ion-icon name="business-outline" class="field-icon"></ion-icon>
               <input class="field-input" formControlName="localidade" type="text"
-                placeholder="Cidade" [attr.disabled]="!isEditing ? true : null" />
+                [placeholder]="'PERFIL.LOCALIDADE' | translate" [attr.disabled]="!isEditing ? true : null" />
             </div>
             <span class="field-error" *ngIf="isFieldInvalid('localidade')">{{ getFieldError('localidade') }}</span>
           </div>
         </div>
 
         <div class="field-item">
-          <label class="field-label">País</label>
+          <label class="field-label">{{ 'PERFIL.PAIS' | translate }}</label>
           <div class="field-input-wrap select-wrap">
             <ion-icon name="globe-outline" class="field-icon"></ion-icon>
             <select class="field-input field-select" formControlName="pais" [attr.disabled]="!isEditing ? true : null">
@@ -160,56 +144,49 @@
         </div>
       </div>
 
-      <!-- ── Contactos ── -->
       <div class="section-group">
-        <div class="group-label">
-          <ion-icon name="call-outline"></ion-icon>
-          Contactos
+        <div class="group-label"><ion-icon name="call-outline"></ion-icon> {{ 'PERFIL.TITULO_CONTACTOS' | translate }}
         </div>
 
         <div class="field-item" [class.has-error]="isFieldInvalid('telemovel1')">
-          <label class="field-label">Telemóvel Principal</label>
+          <label class="field-label">{{ 'PERFIL.TELEM_PRINCIPAL' | translate }}</label>
           <div class="field-input-wrap">
             <ion-icon name="phone-portrait-outline" class="field-icon"></ion-icon>
-            <input class="field-input" formControlName="telemovel1" type="tel"
-              placeholder="9XX XXX XXX" [attr.disabled]="!isEditing ? true : null" />
+            <input class="field-input" formControlName="telemovel1" type="tel" placeholder="9XX XXX XXX"
+              [attr.disabled]="!isEditing ? true : null" />
           </div>
           <span class="field-error" *ngIf="isFieldInvalid('telemovel1')">{{ getFieldError('telemovel1') }}</span>
         </div>
 
         <div class="field-item" [class.has-error]="isFieldInvalid('telemovel2')">
-          <label class="field-label">
-            Telemóvel Alternativo
-            <span class="optional">(opcional)</span>
-          </label>
+          <label class="field-label">{{ 'PERFIL.TELEM_ALT' | translate }} <span class="optional">{{ 'PERFIL.OPCIONAL' |
+              translate }}</span></label>
           <div class="field-input-wrap">
             <ion-icon name="phone-portrait-outline" class="field-icon"></ion-icon>
-            <input class="field-input" formControlName="telemovel2" type="tel"
-              placeholder="9XX XXX XXX" [attr.disabled]="!isEditing ? true : null" />
+            <input class="field-input" formControlName="telemovel2" type="tel" placeholder="9XX XXX XXX"
+              [attr.disabled]="!isEditing ? true : null" />
           </div>
-          <span class="field-error" *ngIf="isFieldInvalid('telemovel2')">{{ getFieldError('telemovel2') }}</span>
         </div>
 
         <div class="field-item" [class.has-error]="isFieldInvalid('email')">
-          <label class="field-label">Email</label>
+          <label class="field-label">{{ 'REGISTER.EMAIL' | translate }}</label>
           <div class="field-input-wrap">
             <ion-icon name="mail-outline" class="field-icon"></ion-icon>
-            <input class="field-input" formControlName="email" type="email"
-              placeholder="email@exemplo.com" [attr.disabled]="!isEditing ? true : null" />
+            <input class="field-input" formControlName="email" type="email" placeholder="email@exemplo.com"
+              [attr.disabled]="!isEditing ? true : null" />
           </div>
           <span class="field-error" *ngIf="isFieldInvalid('email')">{{ getFieldError('email') }}</span>
         </div>
       </div>
 
-      <!-- ── Nº de Sócio ── -->
       <div class="socio-footer">
         <div class="socio-footer-inner">
           <div class="socio-footer-left">
             <ion-icon name="card-outline"></ion-icon>
-            <span class="socio-footer-label">Nº de Sócio</span>
+            <span class="socio-footer-label">{{ 'PERFIL.NUM_SOCIO' | translate }}</span>
           </div>
           <div class="socio-footer-right">
-            <span class="socio-footer-value">{{ profileForm.get('numeroSocio')?.value || '—' }}</span>
+            <span class="socio-footer-value">{{ profileForm.get('numeroSocio')?.value || '---' }}</span>
             <ion-icon name="lock-closed-outline" class="socio-lock"></ion-icon>
           </div>
         </div>
@@ -217,18 +194,16 @@
 
     </form>
 
-    <!-- Barra de guardar -->
     <div class="save-bar" *ngIf="isEditing">
       <button class="btn-save" (click)="saveProfile()" [disabled]="isSaving">
         <ion-spinner *ngIf="isSaving" name="crescent" class="save-spinner"></ion-spinner>
         <ion-icon *ngIf="!isSaving" name="checkmark-circle-outline"></ion-icon>
-        {{ isSaving ? 'A guardar...' : 'Guardar Alterações' }}
+        {{ isSaving ? ('PERFIL.GUARDANDO' | translate) : ('COMUM.GUARDAR' | translate) }}
       </button>
-      <button class="btn-cancel" (click)="toggleEdit()" [disabled]="isSaving">Cancelar</button>
+      <button class="btn-cancel" (click)="toggleEdit()" [disabled]="isSaving">
+        {{ 'COMUM.CANCELAR' | translate }}
+      </button>
     </div>
 
   </ng-container>
-
-  <div class="bottom-space"></div>
-
 </ion-content>

@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar class="modal-toolbar">
-    <ion-title>Termos e Permissões</ion-title>
+    <ion-title>{{ 'TERMOS.TITULO' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="fechar()" fill="clear">
         <ion-icon name="close-outline" style="font-size:22px;color:#6b7280"></ion-icon>
@@ -11,17 +11,9 @@
 <ion-content class="modal-content">
   <div class="modal-body termos-body">
     <ion-icon name="document-text-outline" class="termos-icon"></ion-icon>
-    <h2 class="termos-titulo">Termos de Utilização</h2>
-    <p class="termos-texto">
-      <!-- TODO: Substituir pelo texto real dos termos -->
-      Ao utilizar esta aplicação, o utilizador aceita os termos e condições
-      estabelecidos pela associação. Os dados pessoais são tratados de acordo
-      com a política de privacidade e o RGPD.
-    </p>
-    <p class="termos-texto">
-      Para consultar os termos completos, visita o nosso website ou contacta
-      o suporte.
-    </p>
-    <button class="btn-guardar" (click)="fechar()">Fechar</button>
+    <h2 class="termos-titulo">{{ 'TERMOS.SUBTITULO' | translate }}</h2>
+    <p class="termos-texto">{{ 'TERMOS.TEXTO1' | translate }}</p>
+    <p class="termos-texto">{{ 'TERMOS.TEXTO2' | translate }}</p>
+    <button class="btn-guardar" (click)="fechar()">{{ 'TERMOS.FECHAR' | translate }}</button>
   </div>
 </ion-content>

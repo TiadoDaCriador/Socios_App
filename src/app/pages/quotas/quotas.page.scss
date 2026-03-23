@@ -48,6 +48,51 @@
   font-weight: 800;
 }
 
+// ── Chips de filtro com cores por estado ──────────────────
+.filtro-chip {
+
+  // ✅ Todos — azul (herda do global.scss)
+  &.estado-pago {
+    &.active {
+      background: #2e7d32 !important;
+      border-color: #2e7d32 !important;
+      color: #ffffff !important;
+    }
+
+    &:not(.active):hover {
+      border-color: #2e7d32;
+      color: #2e7d32;
+    }
+  }
+
+  &.estado-pendente {
+    &.active {
+      background: #e65100 !important;
+      border-color: #e65100 !important;
+      color: #ffffff !important;
+    }
+
+    &:not(.active):hover {
+      border-color: #e65100;
+      color: #e65100;
+    }
+  }
+
+  &.estado-vencido {
+    &.active {
+      background: #c62828 !important;
+      border-color: #c62828 !important;
+      color: #ffffff !important;
+    }
+
+    &:not(.active):hover {
+      border-color: #c62828;
+      color: #c62828;
+    }
+  }
+}
+
+// ── Header lista ──────────────────────────────────────────
 .lista-header {
   display: flex;
   align-items: center;
@@ -85,6 +130,7 @@
   text-align: right;
 }
 
+// ── Lista ─────────────────────────────────────────────────
 .quotas-lista {
   padding: 0 16px;
   display: flex;
@@ -213,5 +259,22 @@
 
   &.badge-vencido {
     background: #c62828;
+  }
+}
+
+.btn-filtro-header {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--color-muted);
+  font-size: 20px;
+  cursor: pointer;
+
+  &.active {
+    color: var(--color-primary);
   }
 }

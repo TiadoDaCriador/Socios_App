@@ -1,13 +1,9 @@
-<!-- src/app/pages/quotas/quotas.page.html -->
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Quotas</ion-title>
+    <ion-buttons slot="end"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>{{ 'QUOTAS.TITULO' | translate }}</ion-title>
     <ion-buttons slot="start">
-      <button class="btn-filtro-header" [class.active]="mostrarFiltros"
-        (click)="mostrarFiltros = !mostrarFiltros">
+      <button class="btn-filtro-header" [class.active]="mostrarFiltros" (click)="mostrarFiltros = !mostrarFiltros">
         <ion-icon name="filter-outline"></ion-icon>
       </button>
     </ion-buttons>
@@ -16,68 +12,62 @@
 
 <ion-content [fullscreen]="true" class="quotas-content">
 
-  <!-- Resumo -->
   <div class="resumo-row">
     <div class="resumo-card pago">
       <ion-icon name="checkmark-circle-outline"></ion-icon>
       <div class="resumo-info">
-        <span class="resumo-label">Pago</span>
+        <span class="resumo-label">{{ 'QUOTAS.PAGO' | translate }}</span>
         <span class="resumo-valor">{{ formatarValor(totalPago) }}</span>
       </div>
     </div>
     <div class="resumo-card pendente">
       <ion-icon name="alert-circle-outline"></ion-icon>
       <div class="resumo-info">
-        <span class="resumo-label">Em dívida</span>
+        <span class="resumo-label">{{ 'QUOTAS.EM_DIVIDA' | translate }}</span>
         <span class="resumo-valor">{{ formatarValor(totalPendente) }}</span>
       </div>
     </div>
   </div>
 
-  <!-- Filtros -->
   <div class="filtros-painel" [hidden]="!mostrarFiltros">
     <div class="filtros-row">
-      <span class="filtros-label">Estado:</span>
-      <button class="filtro-chip" [class.active]="filtroEstado === ''" (click)="setFiltroEstado('')">Todos</button>
-      <button class="filtro-chip estado-pago"     [class.active]="filtroEstado === 'pago'"     (click)="setFiltroEstado('pago')">Pago</button>
-      <button class="filtro-chip estado-pendente" [class.active]="filtroEstado === 'pendente'" (click)="setFiltroEstado('pendente')">Pendente</button>
-      <button class="filtro-chip estado-vencido"  [class.active]="filtroEstado === 'vencido'"  (click)="setFiltroEstado('vencido')">Vencido</button>
+      <span class="filtros-label">{{ 'QUOTAS.ESTADO' | translate }}</span>
+      <button class="filtro-chip" [class.active]="filtroEstado === ''" (click)="setFiltroEstado('')">{{ 'QUOTAS.TODOS' |
+        translate }}</button>
+      <button class="filtro-chip estado-pago" [class.active]="filtroEstado === 'pago'"
+        (click)="setFiltroEstado('pago')">{{ 'QUOTAS.PAGO' | translate }}</button>
+      <button class="filtro-chip estado-pendente" [class.active]="filtroEstado === 'pendente'"
+        (click)="setFiltroEstado('pendente')">{{ 'QUOTAS.PENDENTE' | translate }}</button>
+      <button class="filtro-chip estado-vencido" [class.active]="filtroEstado === 'vencido'"
+        (click)="setFiltroEstado('vencido')">{{ 'QUOTAS.VENCIDO' | translate }}</button>
     </div>
   </div>
 
-  <!-- Cabeçalho lista -->
   <div class="lista-header">
     <div class="header-venc" (click)="toggleOrdem()">
-      Vencimento
+      {{ 'QUOTAS.VENCIMENTO' | translate }}
       <ion-icon [name]="ordemDesc ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon>
     </div>
-    <div class="header-desc">Descrição</div>
-    <div class="header-valor">Valor</div>
+    <div class="header-desc">{{ 'QUOTAS.DESCRICAO' | translate }}</div>
+    <div class="header-valor">{{ 'QUOTAS.VALOR' | translate }}</div>
   </div>
 
-  <!-- Lista -->
   <div class="quotas-lista">
-
     <div class="estado-vazio" *ngIf="quotasFiltradas.length === 0">
       <ion-icon name="receipt-outline"></ion-icon>
-      <p>Nenhuma quota encontrada</p>
+      <p>{{ 'QUOTAS.NENHUMA' | translate }}</p>
     </div>
 
-    <div class="quota-card" *ngFor="let q of quotasFiltradas"
-      [class]="'quota-card estado-' + q.estado"
+    <div class="quota-card" *ngFor="let q of quotasFiltradas" [class]="'quota-card estado-' + q.estado"
       (click)="abrirDetalhe(q)">
-
       <div class="quota-indicador" [class]="'ind-' + q.estado"></div>
-
       <div class="quota-venc-col">
         <span class="quota-data">{{ formatarData(q.dataVencimento) }}</span>
         <span class="quota-period">{{ q.periodicidade }}</span>
       </div>
-
       <div class="quota-desc-col">
         <span class="quota-desc">{{ q.descricao }}</span>
       </div>
-
       <div class="quota-right-col">
         <span class="quota-valor">{{ formatarValor(q.valor) }}</span>
         <div class="estado-badge" [class]="'badge-' + q.estado">
@@ -85,11 +75,9 @@
           {{ q.estado | titlecase }}
         </div>
       </div>
-
     </div>
   </div>
 
-  <div class="total-label">{{ quotasFiltradas.length }} quotas</div>
+  <div class="total-label">{{ quotasFiltradas.length }} {{ 'QUOTAS.TOTAL' | translate }}</div>
   <div class="bottom-space"></div>
-
 </ion-content>

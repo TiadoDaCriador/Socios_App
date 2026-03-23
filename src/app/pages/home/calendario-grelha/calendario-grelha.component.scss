@@ -1,16 +1,7 @@
-// Cópia exata dos estilos do calendario.page.scss mas sem o ion-header e .cal-content
+.cal-content {
+  --background: var(--color-bg);
+}
 
-$primary: #1a6fdb;
-$bg: #f5f7fb;
-$card: #ffffff;
-$border: #e2e8f0;
-$text: #1a1a2e;
-$muted: #6b7280;
-$hoje-bg: #e8f0fc;
-$radius: 10px;
-$radius-sm: 6px;
-
-// ── Barra de vistas ────────────────────────────────────────
 .vista-bar {
   display: flex;
   align-items: center;
@@ -20,10 +11,10 @@ $radius-sm: 6px;
 
 .vista-btn {
   padding: 7px 16px;
-  border: 1.5px solid $border;
+  border: 1.5px solid var(--color-border);
   border-radius: 20px;
-  background: $card;
-  color: $muted;
+  background: var(--color-card);
+  color: var(--color-muted);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -31,14 +22,13 @@ $radius-sm: 6px;
   transition: all 0.2s;
 
   &.active {
-    background: $primary;
-    border-color: $primary;
+    background: var(--color-primary);
+    border-color: var(--color-primary);
     color: #ffffff;
     box-shadow: 0 2px 8px rgba(26, 111, 219, 0.3);
   }
 }
 
-// ── Barra de navegação ─────────────────────────────────────
 .nav-bar {
   display: flex;
   align-items: center;
@@ -54,10 +44,10 @@ $radius-sm: 6px;
 
 .today-btn {
   padding: 6px 12px;
-  border: 1.5px solid $border;
-  border-radius: $radius-sm;
-  background: $card;
-  color: $text;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-card);
+  color: var(--color-text);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -69,14 +59,14 @@ $radius-sm: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid $border;
-  border-radius: $radius-sm;
-  background: $card;
-  color: $text;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-card);
+  color: var(--color-text);
   font-size: 16px;
 
   &:active {
-    background: $bg;
+    background: var(--color-bg);
   }
 }
 
@@ -84,13 +74,11 @@ $radius-sm: 6px;
   margin-left: 4px;
   font-size: 14px;
   font-weight: 700;
-  color: $text;
+  color: var(--color-text);
   letter-spacing: 0.3px;
 }
 
-// ══════════════════════════════════════════════
-// VISTA MÊS
-// ══════════════════════════════════════════════
+// ── Vista Mês ──
 .cal-mes {
   padding: 0 8px;
 }
@@ -105,7 +93,7 @@ $radius-sm: 6px;
   text-align: center;
   font-size: 11px;
   font-weight: 700;
-  color: $muted;
+  color: var(--color-muted);
   padding: 6px 0;
 }
 
@@ -117,8 +105,8 @@ $radius-sm: 6px;
 
 .mes-celula {
   min-height: 64px;
-  background: $card;
-  border-radius: $radius-sm;
+  background: var(--color-card);
+  border-radius: var(--radius-sm);
   padding: 4px 3px;
   display: flex;
   flex-direction: column;
@@ -134,11 +122,11 @@ $radius-sm: 6px;
   }
 
   &.hoje {
-    border-color: $primary;
-    background: $hoje-bg;
+    border-color: var(--color-primary);
+    background: var(--color-hoje-bg);
 
     .celula-num {
-      background: $primary;
+      background: var(--color-primary);
       color: #ffffff;
       border-radius: 50%;
       width: 22px;
@@ -148,12 +136,23 @@ $radius-sm: 6px;
       justify-content: center;
     }
   }
+
+  // ✅ Dias passados
+  &.passado {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+
+    .celula-num {
+      color: var(--color-muted);
+    }
+  }
 }
 
 .celula-num {
   font-size: 12px;
   font-weight: 600;
-  color: $text;
+  color: var(--color-text);
   line-height: 1;
   padding: 1px 3px;
 }
@@ -174,40 +173,22 @@ $radius-sm: 6px;
   line-height: 1.3;
 }
 
-.cor-green {
-  background: #2e7d32;
-}
-
-.cor-red {
-  background: #c62828;
-}
-
-.cor-blue {
-  background: #1565c0;
-}
-
-.cor-orange {
-  background: #e65100;
-}
-
-// ══════════════════════════════════════════════
-// VISTA SEMANA
-// ══════════════════════════════════════════════
+// ── Vista Semana ──
 .cal-semana {
   padding: 0 8px;
-  background: $card;
-  border-radius: $radius;
+  background: var(--color-card);
+  border-radius: var(--radius);
   margin: 0 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   overflow: hidden;
 }
 
 .semana-header {
   display: flex;
-  border-bottom: 2px solid $border;
+  border-bottom: 2px solid var(--color-border);
   position: sticky;
   top: 0;
-  background: $card;
+  background: var(--color-card);
   z-index: 10;
 }
 
@@ -226,21 +207,31 @@ $radius-sm: 6px;
   gap: 2px;
 
   &.hoje {
-    background: $hoje-bg;
+    background: var(--color-hoje-bg);
+  }
+
+  // ✅ Cabeçalho de dias passados
+  &.passado {
+    opacity: 0.4;
+
+    .semana-dia-nome,
+    .semana-dia-num {
+      color: var(--color-muted);
+    }
   }
 }
 
 .semana-dia-nome {
   font-size: 10px;
   font-weight: 700;
-  color: $muted;
+  color: var(--color-muted);
   letter-spacing: 0.5px;
 }
 
 .semana-dia-num {
   font-size: 14px;
   font-weight: 700;
-  color: $text;
+  color: var(--color-text);
   width: 28px;
   height: 28px;
   display: flex;
@@ -249,7 +240,7 @@ $radius-sm: 6px;
   border-radius: 50%;
 
   &.hoje-num {
-    background: $primary;
+    background: var(--color-primary);
     color: #ffffff;
   }
 }
@@ -261,7 +252,7 @@ $radius-sm: 6px;
 
 .semana-linha {
   display: flex;
-  border-bottom: 1px solid $border;
+  border-bottom: 1px solid var(--color-border);
   min-height: 48px;
 }
 
@@ -269,19 +260,37 @@ $radius-sm: 6px;
   width: 48px;
   flex-shrink: 0;
   font-size: 10px;
-  color: $muted;
+  color: var(--color-muted);
   padding: 4px 4px 0;
   text-align: right;
 }
 
 .semana-celula {
   flex: 1;
-  border-left: 1px solid $border;
+  border-left: 1px solid var(--color-border);
   padding: 2px;
   position: relative;
 
   &.hoje-col {
-    background: rgba(26, 111, 219, .03);
+    background: rgba(26, 111, 219, 0.03);
+  }
+
+  // ✅ Células de horas em dias passados
+  &.passado {
+    cursor: not-allowed;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      135deg,
+      transparent,
+      transparent 4px,
+      rgba(0, 0, 0, 0.03) 4px,
+      rgba(0, 0, 0, 0.03) 8px
+    );
+
+    .semana-evento {
+      pointer-events: auto;
+      opacity: 0.5;
+    }
   }
 }
 
@@ -294,30 +303,39 @@ $radius-sm: 6px;
   margin: 1px;
 }
 
-// ══════════════════════════════════════════════
-// VISTA DIA
-// ══════════════════════════════════════════════
+// ── Vista Dia ──
 .cal-dia {
   padding: 0 8px;
-  background: $card;
-  border-radius: $radius;
+  background: var(--color-card);
+  border-radius: var(--radius);
   margin: 0 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   overflow: hidden;
 }
 
 .dia-linha {
   display: flex;
   align-items: stretch;
-  border-bottom: 1px solid $border;
+  border-bottom: 1px solid var(--color-border);
   min-height: 52px;
+
+  // ✅ Vista Dia passado
+  &.passado {
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.4;
+
+    .dia-evento {
+      opacity: 0.5;
+    }
+  }
 }
 
 .dia-hora-label {
   width: 52px;
   flex-shrink: 0;
   font-size: 11px;
-  color: $muted;
+  color: var(--color-muted);
   padding: 6px 8px 0;
   text-align: right;
   font-weight: 500;
@@ -325,7 +343,7 @@ $radius-sm: 6px;
 
 .dia-celula {
   flex: 1;
-  border-left: 1px solid $border;
+  border-left: 1px solid var(--color-border);
   padding: 4px 8px;
 }
 
@@ -347,16 +365,4 @@ $radius-sm: 6px;
 .dia-evento-titulo {
   font-size: 13px;
   font-weight: 600;
-}
-.mes-celula.passado {
-  opacity: 0.4;
-  cursor: not-allowed;
-  pointer-events: none;
-  .celula-num { color: var(--color-muted); }
-}
-
-.passado-col {
-  opacity: 0.4;
-  cursor: not-allowed;
-  pointer-events: none;
 }

@@ -12,15 +12,12 @@ import {
   chevronUpOutline, trendingDownOutline, walletOutline,
 } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 import { ContaCorrenteService } from '../../services/conta-corrente.service';
 import { MovimentoDetalheModalComponent } from './movimento-detalhe-modal';
 
 export interface Movimento {
-  id: number;
-  descricao: string;
-  data: Date;
-  valor: number;
-  conta: string;
+  id: number; descricao: string; data: Date; valor: number; conta: string;
 }
 
 @Component({
@@ -29,46 +26,35 @@ export interface Movimento {
   styleUrls: ['./conta-corrente.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    FormsModule,
+    CommonModule, FormsModule, TranslateModule,
     IonHeader, IonToolbar, IonButtons, IonMenuButton,
     IonTitle, IonContent, IonIcon,
   ],
 })
 export class ContaCorrentePage implements OnInit, OnDestroy {
 
-  pesquisa = '';
-  dataInicio = '';
-  dataFim = '';
-  mostrarFiltros = false;
-  ordemDesc = true;
-  limite = 10;
+  pesquisa = ''; dataInicio = ''; dataFim = '';
+  mostrarFiltros = false; ordemDesc = true; limite = 10;
   limitesDisponiveis = [5, 10, 20, 50, 0];
-
   saldoServico: number | null = null;
   private sub?: Subscription;
 
   movimentos: Movimento[] = [];
 
   constructor(
-    private modalCtrl: ModalController,
+    private modalCtrl:    ModalController,
     private contaService: ContaCorrenteService,
   ) {
-    addIcons({
-      searchOutline, filterOutline, chevronDownOutline,
-      chevronUpOutline, trendingDownOutline, walletOutline,
-    });
+    addIcons({ searchOutline, filterOutline, chevronDownOutline, chevronUpOutline, trendingDownOutline, walletOutline });
   }
 
   ngOnInit() {
     this.sub = this.contaService.account$.subscribe(acc => {
       if (acc) this.saldoServico = acc.balance;
     });
-
     if (!this.contaService.account) {
       this.contaService.loadFromAssets().subscribe({ error: () => {} });
     }
-
     this.movimentos = [
       { id: 1, descricao: 'Pagamento Quotas - Rui Puga (sócio n.º 1) - Taxa MB',            data: new Date(2026, 2, 18, 9, 30), valor: 0.52, conta: 'CA' },
       { id: 2, descricao: 'Pagamento Quotas - Alexandre Fernandes (sócio n.º 9004) - Taxa', data: new Date(2026, 2, 18, 9, 21), valor: 1.35, conta: 'CA' },
@@ -76,66 +62,28 @@ export class ContaCorrentePage implements OnInit, OnDestroy {
     ];
   }
 
-  ngOnDestroy() {
-    this.sub?.unsubscribe();
-  }
+  ngOnDestroy() { this.sub?.unsubscribe(); }
 
-  get saldoTotal(): number {
-    return this.saldoServico ?? this.movimentos.reduce((acc, m) => acc - m.valor, 0);
-  }
-
-  get valorPeriodo(): number {
-    return this.movimentosFiltrados.reduce((acc, m) => acc - m.valor, 0);
-  }
+  get saldoTotal(): number { return this.saldoServico ?? this.movimentos.reduce((acc, m) => acc - m.valor, 0); }
+  get valorPeriodo(): number { return this.movimentosFiltrados.reduce((acc, m) => acc - m.valor, 0); }
 
   get movimentosFiltrados(): Movimento[] {
     let lista = [...this.movimentos];
-
-    if (this.pesquisa.trim()) {
-      const p = this.pesquisa.toLowerCase();
-      lista = lista.filter(m => m.descricao.toLowerCase().includes(p));
-    }
-    if (this.dataInicio) {
-      const di = new Date(this.dataInicio);
-      lista = lista.filter(m => m.data >= di);
-    }
-    if (this.dataFim) {
-      const df = new Date(this.dataFim);
-      df.setHours(23, 59, 59);
-      lista = lista.filter(m => m.data <= df);
-    }
-
-    lista.sort((a, b) => this.ordemDesc
-      ? b.data.getTime() - a.data.getTime()
-      : a.data.getTime() - b.data.getTime()
-    );
-
+    if (this.pesquisa.trim()) lista = lista.filter(m => m.descricao.toLowerCase().includes(this.pesquisa.toLowerCase()));
+    if (this.dataInicio) lista = lista.filter(m => m.data >= new Date(this.dataInicio));
+    if (this.dataFim) { const df = new Date(this.dataFim); df.setHours(23,59,59); lista = lista.filter(m => m.data <= df); }
+    lista.sort((a, b) => this.ordemDesc ? b.data.getTime() - a.data.getTime() : a.data.getTime() - b.data.getTime());
     if (this.limite > 0) lista = lista.slice(0, this.limite);
     return lista;
   }
 
   async abrirDetalhe(mov: Movimento) {
-    const modal = await this.modalCtrl.create({
-      component: MovimentoDetalheModalComponent,
-      componentProps: { movimento: mov },
-      initialBreakpoint: 0.85,
-      breakpoints: [0, 0.85],
-      handleBehavior: 'cycle',
-    });
+    const modal = await this.modalCtrl.create({ component: MovimentoDetalheModalComponent, componentProps: { movimento: mov }, initialBreakpoint: 0.85, breakpoints: [0, 0.85], handleBehavior: 'cycle' });
     await modal.present();
   }
 
   toggleOrdem() { this.ordemDesc = !this.ordemDesc; }
-
-  formatarData(d: Date): string {
-    return d.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: '2-digit' });
-  }
-
-  formatarHora(d: Date): string {
-    return d.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
-  }
-
-  formatarValor(v: number): string {
-    return v.toFixed(2).replace('.', ',') + ' €';
-  }
+  formatarData(d: Date): string { return d.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: '2-digit' }); }
+  formatarHora(d: Date): string { return d.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }); }
+  formatarValor(v: number): string { return v.toFixed(2).replace('.', ',') + ' €'; }
 }

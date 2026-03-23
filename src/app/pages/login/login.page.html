@@ -1,16 +1,38 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Login</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="ion-padding">
-  <h2>Bem-vindo</h2>
-
-  <ion-input placeholder="Email"></ion-input>
-  <ion-input placeholder="Password" type="password"></ion-input>
-
-  <ion-button expand="block" color="primary">
-    Entrar
-  </ion-button>
+<ion-content class="login-content">
+  <div class="login-wrap">
+    <div class="login-header">
+      <div class="login-logo"><ion-icon name="card-outline"></ion-icon></div>
+      <h1 class="login-titulo">{{ 'LOGIN.TITULO' | translate }}</h1>
+      <p class="login-subtitulo">{{ 'LOGIN.SUBTITULO' | translate }}</p>
+    </div>
+    <div class="login-form">
+      <div class="field-group">
+        <label class="field-label">{{ 'LOGIN.NIF' | translate }}</label>
+        <div class="field-wrap">
+          <ion-icon name="card-outline" class="field-icon"></ion-icon>
+          <input class="field-input" type="text" inputmode="numeric" maxlength="9" placeholder="123456789"
+            [(ngModel)]="nif" (keyup.enter)="entrar()" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">{{ 'LOGIN.PASSWORD' | translate }}</label>
+        <div class="field-wrap">
+          <ion-icon name="lock-closed-outline" class="field-icon"></ion-icon>
+          <input class="field-input" [type]="mostrarPassword ? 'text' : 'password'" placeholder="••••••••"
+            [(ngModel)]="password" (keyup.enter)="entrar()" />
+          <button class="field-eye" (click)="mostrarPassword = !mostrarPassword" type="button">
+            <ion-icon [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </button>
+        </div>
+      </div>
+      <button class="btn-entrar" (click)="entrar()" [disabled]="carregando">
+        <span *ngIf="!carregando">{{ 'LOGIN.ENTRAR' | translate }}</span>
+        <span *ngIf="carregando" class="spinner"></span>
+      </button>
+      <div class="login-footer">
+        <span>{{ 'LOGIN.SEM_CONTA' | translate }}</span>
+        <button class="btn-link" (click)="irParaRegisto()">{{ 'LOGIN.REGISTAR' | translate }}</button>
+      </div>
+    </div>
+  </div>
 </ion-content>

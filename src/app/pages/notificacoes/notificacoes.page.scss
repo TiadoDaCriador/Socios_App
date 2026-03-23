@@ -12,26 +12,31 @@
   vertical-align: middle;
 }
 
-// ── Chips de categoria com cor só no active ────────────────
+// ── Chips de categoria — cor só quando active ─────────────
+// Os chips inativos herdam o estilo neutro do global.scss
 .filtro-chip {
-  &.cor-blue.active {
-    background: #1565c0;
-    border-color: #1565c0;
+  &.active-blue {
+    background: #1565c0 !important;
+    border-color: #1565c0 !important;
+    color: #ffffff !important;
   }
 
-  &.cor-orange.active {
-    background: #e65100;
-    border-color: #e65100;
+  &.active-orange {
+    background: #e65100 !important;
+    border-color: #e65100 !important;
+    color: #ffffff !important;
   }
 
-  &.cor-green.active {
-    background: #2e7d32;
-    border-color: #2e7d32;
+  &.active-green {
+    background: #2e7d32 !important;
+    border-color: #2e7d32 !important;
+    color: #ffffff !important;
   }
 
-  &.cor-purple.active {
-    background: #6a1b9a;
-    border-color: #6a1b9a;
+  &.active-red {
+    background: #c62828 !important;
+    border-color: #c62828 !important;
+    color: #ffffff !important;
   }
 }
 
@@ -92,8 +97,8 @@
     background: #2e7d32;
   }
 
-  &.cor-purple {
-    background: #6a1b9a;
+  &.cor-red {
+    background: #c62828;
   }
 }
 
@@ -153,8 +158,8 @@
     background: #2e7d32;
   }
 
-  &.cor-purple {
-    background: #6a1b9a;
+  &.cor-red {
+    background: #c62828;
   }
 }
 

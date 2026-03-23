@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar class="modal-toolbar">
-    <ion-title>Cartões Associados</ion-title>
+    <ion-title>{{ 'CARTOES.TITULO' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="fechar()" fill="clear">
         <ion-icon name="close-outline" style="font-size:22px;color:#6b7280"></ion-icon>
@@ -28,12 +28,12 @@
 
     <div class="vazio" *ngIf="cartoes.length === 0">
       <ion-icon name="card-outline"></ion-icon>
-      <p>Nenhum cartão associado</p>
+      <p>{{ 'CARTOES.NENHUM' | translate }}</p>
     </div>
 
     <button class="btn-adicionar" (click)="adicionar()">
       <ion-icon name="add-circle-outline"></ion-icon>
-      Adicionar Cartão
+      {{ 'CARTOES.ADICIONAR' | translate }}
     </button>
 
   </div>

@@ -1,4 +1,3 @@
-// src/app/pages/perfil/perfil.page.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -17,7 +16,9 @@ import {
   checkmarkCircleOutline, chevronDownOutline, locationOutline,
   alertCircleOutline,
 } from 'ionicons/icons';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PerfilService, PerfilLocal } from '../../services/perfil.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-perfil',
@@ -25,8 +26,7 @@ import { PerfilService, PerfilLocal } from '../../services/perfil.service';
   styleUrls: ['./perfil.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
+    CommonModule, ReactiveFormsModule, TranslateModule,
     IonHeader, IonToolbar, IonButtons, IonMenuButton,
     IonTitle, IonContent, IonButton, IonIcon, IonSpinner,
   ],
@@ -34,20 +34,18 @@ import { PerfilService, PerfilLocal } from '../../services/perfil.service';
 export class PerfilPage implements OnInit {
   profileForm!: FormGroup;
   profileImagePreview: string | null = null;
-  isEditing  = false;
-  isLoading  = false;
-  isSaving   = false;
-  loadError  = false;
+  isEditing = false;
+  isLoading = false;
+  isSaving = false;
+  loadError = false;
 
-  paisList = [
-    'Portugal', 'Brasil', 'Espanha', 'França', 'Alemanha',
-    'Reino Unido', 'Itália', 'Angola', 'Moçambique', 'Cabo Verde', 'Outro',
-  ];
+  paisList = ['Portugal', 'Brasil', 'Espanha', 'França', 'Alemanha', 'Reino Unido', 'Itália', 'Angola', 'Moçambique', 'Cabo Verde', 'Outro'];
 
   constructor(
-    private fb:            FormBuilder,
+    private fb: FormBuilder,
     private perfilService: PerfilService,
-    private toastCtrl:     ToastController,
+    private toastCtrl: ToastController,
+    private translate: TranslateService
   ) {
     addIcons({
       createOutline, closeOutline, cameraOutline, personOutline,
@@ -67,38 +65,31 @@ export class PerfilPage implements OnInit {
 
   buildForm() {
     this.profileForm = this.fb.group({
-      // ── Identificação — sempre bloqueados ──────────────────
-      nomeCompleto:   [{ value: '', disabled: true }],
-      genero:         [{ value: '', disabled: true }],
+      nomeCompleto: [{ value: '', disabled: true }],
+      genero: [{ value: '', disabled: true }],
       dataNascimento: [{ value: '', disabled: true }],
-      cartaoCidadao:  [{ value: '', disabled: true }],
-      nif:            [{ value: '', disabled: true }],
-      numeroSocio:    [{ value: '', disabled: true }],
-
-      // ── Morada — editáveis ─────────────────────────────────
-      codigoPostal:   ['', [Validators.required, Validators.pattern(/^\d{4}-\d{3}$/)]],
-      morada:         ['', Validators.required],
-      localidade:     ['', Validators.required],
-      pais:           ['Portugal', Validators.required],
-
-      // ── Contactos — editáveis ──────────────────────────────
-      telemovel1:     ['', [Validators.required, Validators.pattern(/^[29]\d{8}$/)]],
-      telemovel2:     ['', Validators.pattern(/^[29]\d{8}$/)],
-      email:          ['', [Validators.required, Validators.email]],
+      cartaoCidadao: [{ value: '', disabled: true }],
+      nif: [{ value: '', disabled: true }],
+      numeroSocio: [{ value: '', disabled: true }],
+      codigoPostal: ['', [Validators.required, Validators.pattern(/^\d{4}-\d{3}$/)]],
+      morada: ['', Validators.required],
+      localidade: ['', Validators.required],
+      pais: ['Portugal', Validators.required],
+      telemovel1: ['', [Validators.required, Validators.pattern(/^[29]\d{8}$/)]],
+      telemovel2: ['', Validators.pattern(/^[29]\d{8}$/)],
+      email: ['', [Validators.required, Validators.email]],
     });
   }
 
   loadPerfil() {
     this.isLoading = true;
     this.loadError = false;
-
     this.perfilService.getPerfil().subscribe({
       next: (perfil) => {
         this.applyPerfil(perfil);
         this.isLoading = false;
       },
-      error: (err) => {
-        console.error('Erro ao carregar perfil:', err);
+      error: () => {
         this.isLoading = false;
         this.loadError = true;
       },
@@ -111,9 +102,7 @@ export class PerfilPage implements OnInit {
   }
 
   toggleEdit() {
-    if (this.isEditing) {
-      this.loadPerfil();
-    }
+    if (this.isEditing) this.loadPerfil();
     this.isEditing = !this.isEditing;
   }
 
@@ -128,7 +117,7 @@ export class PerfilPage implements OnInit {
     }
   }
 
-  saveProfile() {
+  async saveProfile() {
     if (this.profileForm.invalid) {
       this.profileForm.markAllAsTouched();
       return;
@@ -137,20 +126,21 @@ export class PerfilPage implements OnInit {
     this.isSaving = true;
     const dados: PerfilLocal = {
       ...this.profileForm.getRawValue(),
-      fotoPerfil: this.profileImagePreview,
+      fotoPerfil: this.profileImagePreview
     };
 
     this.perfilService.updatePerfil(dados).subscribe({
       next: async (perfil) => {
         this.applyPerfil(perfil);
-        this.isSaving  = false;
-        this.isEditing = false;
-        await this.showToast('Perfil guardado com sucesso!', 'success');
-      },
-      error: async (err) => {
-        console.error('Erro ao guardar perfil:', err);
         this.isSaving = false;
-        await this.showToast('Erro ao guardar. Tenta novamente.', 'danger');
+        this.isEditing = false;
+        const msg = await firstValueFrom(this.translate.get('PERFIL.SUCESSO'));
+        await this.showToast(msg, 'success');
+      },
+      error: async () => {
+        this.isSaving = false;
+        const msg = await firstValueFrom(this.translate.get('PERFIL.ERRO_SAVE'));
+        await this.showToast(msg, 'danger');
       },
     });
   }
@@ -160,7 +150,7 @@ export class PerfilPage implements OnInit {
       message,
       duration: 3000,
       position: 'bottom',
-      color,
+      color
     });
     await toast.present();
   }
@@ -173,11 +163,12 @@ export class PerfilPage implements OnInit {
   getFieldError(fieldName: string): string {
     const field = this.profileForm.get(fieldName);
     if (!field) return '';
-    if (field.hasError('required'))  return 'Campo obrigatório';
-    if (field.hasError('email'))     return 'Email inválido';
-    if (field.hasError('minlength')) return 'Nome demasiado curto';
+
+    if (field.hasError('required')) return 'Campo obrigatório';
+    if (field.hasError('email')) return 'Email inválido';
+
     if (field.hasError('pattern')) {
-      if (fieldName === 'codigoPostal')      return 'Formato: 0000-000';
+      if (fieldName === 'codigoPostal') return 'Formato: 0000-000';
       if (fieldName.startsWith('telemovel')) return 'Número inválido (9 dígitos)';
     }
     return '';
@@ -185,6 +176,12 @@ export class PerfilPage implements OnInit {
 
   get initials(): string {
     const name: string = this.profileForm.get('nomeCompleto')?.value || '';
-    return name.split(' ').slice(0, 2).map((n: string) => n[0]).join('').toUpperCase();
+    if (!name) return '??';
+    return name.split(' ')
+      .filter(n => n.length > 0)
+      .slice(0, 2)
+      .map((n: string) => n[0])
+      .join('')
+      .toUpperCase();
   }
 }

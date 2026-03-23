@@ -136,6 +136,17 @@
       justify-content: center;
     }
   }
+
+  // ✅ Dias passados
+  &.passado {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+
+    .celula-num {
+      color: var(--color-muted);
+    }
+  }
 }
 
 .celula-num {
@@ -198,6 +209,16 @@
   &.hoje {
     background: var(--color-hoje-bg);
   }
+
+  // ✅ Cabeçalho dias passados
+  &.passado {
+    opacity: 0.4;
+
+    .semana-dia-nome,
+    .semana-dia-num {
+      color: var(--color-muted);
+    }
+  }
 }
 
 .semana-dia-nome {
@@ -253,6 +274,22 @@
   &.hoje-col {
     background: rgba(26, 111, 219, 0.03);
   }
+
+  // ✅ Células de horas em dias passados
+  &.passado {
+    cursor: not-allowed;
+    pointer-events: none;
+    background: repeating-linear-gradient(135deg,
+        transparent,
+        transparent 4px,
+        rgba(0, 0, 0, 0.03) 4px,
+        rgba(0, 0, 0, 0.03) 8px);
+
+    .semana-evento {
+      pointer-events: auto;
+      opacity: 0.5;
+    }
+  }
 }
 
 .semana-evento {
@@ -279,6 +316,17 @@
   align-items: stretch;
   border-bottom: 1px solid var(--color-border);
   min-height: 52px;
+
+  // ✅ Vista Dia passado
+  &.passado {
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.4;
+
+    .dia-evento {
+      opacity: 0.5;
+    }
+  }
 }
 
 .dia-hora-label {
@@ -315,17 +363,4 @@
 .dia-evento-titulo {
   font-size: 13px;
   font-weight: 600;
-}
-.mes-celula.passado {
-  opacity: 0.4;
-  cursor: not-allowed;
-  pointer-events: none;
-
-  .celula-num { color: var(--color-muted); }
-}
-
-.passado-col {
-  opacity: 0.4;
-  cursor: not-allowed;
-  pointer-events: none;
 }

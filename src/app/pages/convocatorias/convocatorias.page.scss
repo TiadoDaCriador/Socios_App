@@ -1,257 +1,172 @@
 // convocatorias.page.scss
 
 .conv-content {
-    --background: var(--color-bg);
+  --background: var(--color-bg);
 }
 
-.conv-lista {
-    padding: 0 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+// ── Filtros ────────────────────────────────────────────────
+.filtros-painel {
+  padding: 8px 16px;
 }
 
-.lista-header {
-    display: flex;
-    align-items: center;
-    padding: 8px 16px 4px;
-    gap: 8px;
+.filtros-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-.header-data {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--color-muted);
-    cursor: pointer;
-    flex: 0 0 auto;
-
-    ion-icon {
-        font-size: 13px;
-    }
+.filtros-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-muted);
 }
 
-.header-info {
-    flex: 1;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--color-muted);
-}
-
-.header-resposta {
-    width: 80px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--color-muted);
-    text-align: center;
-}
-
-// ── Chips de tipologia com cor só no active ────────────────
 .filtro-chip {
-    &.cor-red.active {
-        background: #c62828;
-        border-color: #c62828;
-    }
+  padding: 5px 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-card);
+  color: var(--color-muted);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
 
-    &.cor-green.active {
-        background: #2e7d32;
-        border-color: #2e7d32;
-    }
+  &.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #ffffff;
+  }
+}
 
-    &.cor-blue.active {
-        background: #1565c0;
-        border-color: #1565c0;
-    }
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--color-muted);
+  font-size: 20px;
+  cursor: pointer;
 
-    &.cor-orange.active {
-        background: #e65100;
-        border-color: #e65100;
-    }
+  &.active { color: var(--color-primary); }
+}
+
+// ── Lista ──────────────────────────────────────────────────
+.conv-lista {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.estado-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+  color: var(--color-muted);
+
+  ion-icon { font-size: 48px; margin-bottom: 12px; }
+  p { font-size: 14px; }
 }
 
 // ── Card ───────────────────────────────────────────────────
 .conv-card {
-    display: flex;
-    align-items: center;
-    background: var(--color-card);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--color-border);
-    overflow: hidden;
-    transition: box-shadow 0.15s;
+  background: var(--color-card);
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-border);
+  overflow: hidden;
+  transition: border-color 0.2s, background 0.2s;
 
-    &.aceite {
-        border-color: rgba(46, 125, 50, 0.3);
-        background: rgba(46, 125, 50, 0.03);
-    }
+  &.aceite {
+    border-color: #2e7d32;
+    background: rgba(46, 125, 50, 0.03);
+  }
 
-    &.recusado {
-        border-color: rgba(198, 40, 40, 0.3);
-        background: rgba(198, 40, 40, 0.03);
-    }
+  &.recusado {
+    border-color: #c62828;
+    background: rgba(198, 40, 40, 0.03);
+  }
 }
 
-.conv-indicador {
-    width: 4px;
-    align-self: stretch;
-    flex-shrink: 0;
-
-    &.cor-red {
-        background: #c62828;
-    }
-
-    &.cor-green {
-        background: #2e7d32;
-    }
-
-    &.cor-blue {
-        background: #1565c0;
-    }
-
-    &.cor-orange {
-        background: #e65100;
-    }
+.conv-body {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.conv-info {
-    flex: 1;
-    padding: 12px 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    min-width: 0;
+// ── Título ─────────────────────────────────────────────────
+.conv-titulo {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text);
+
+  .aceite & { color: #2e7d32; }
+  .recusado & { color: #c62828; }
 }
 
-.conv-tipologia-badge {
-    display: inline-flex;
-    align-self: flex-start;
-    padding: 2px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-    color: #ffffff;
-
-    &.cor-red {
-        background: #c62828;
-    }
-
-    &.cor-green {
-        background: #2e7d32;
-    }
-
-    &.cor-blue {
-        background: #1565c0;
-    }
-
-    &.cor-orange {
-        background: #e65100;
-    }
+// ── Descrição ──────────────────────────────────────────────
+.conv-descricao {
+  font-size: 13px;
+  color: var(--color-muted);
+  line-height: 1.5;
 }
 
-.conv-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.conv-meta-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 12px;
-    color: var(--color-muted) !important;
-
-    ion-icon {
-        font-size: 13px;
-        color: var(--color-primary);
-        flex-shrink: 0;
-    }
-}
-
-.conv-resposta-col {
-    width: 80px;
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 8px;
-    flex-shrink: 0;
-}
-
-.conv-estado {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    font-size: 10px;
-    font-weight: 700;
-
-    ion-icon {
-        font-size: 20px;
-    }
-
-    &.aceite {
-        color: #2e7d32;
-    }
-
-    &.recusado {
-        color: #c62828;
-    }
-}
-
-.btn-editar {
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f0f4ff;
-    border: none;
-    border-radius: 50%;
-    color: var(--color-primary);
-    font-size: 14px;
-    cursor: pointer;
+// ── Ações ──────────────────────────────────────────────────
+.conv-acoes {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
 }
 
 .btn-aceitar,
-.btn-recusar {
-    width: 34px;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid transparent;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 20px;
-    transition: transform 0.15s, background 0.15s;
+.btn-recusar,
+.btn-editar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
 
-    &:active {
-        transform: scale(0.9);
-    }
+  ion-icon { font-size: 16px; }
+
+  &:active { transform: scale(0.96); opacity: 0.85; }
 }
 
 .btn-aceitar {
-    background: rgba(46, 125, 50, 0.1);
-    color: #2e7d32;
-
-    &.ativo {
-        background: #2e7d32;
-        color: #ffffff;
-        border-color: #2e7d32;
-        box-shadow: 0 2px 8px rgba(46, 125, 50, 0.35);
-    }
+  background: rgba(46, 125, 50, 0.12);
+  color: #2e7d32;
 }
 
 .btn-recusar {
-    background: rgba(198, 40, 40, 0.1);
-    color: #c62828;
-
-    &.ativo {
-        background: #c62828;
-        color: #ffffff;
-        border-color: #c62828;
-        box-shadow: 0 2px 8px rgba(198, 40, 40, 0.35);
-    }
+  background: rgba(198, 40, 40, 0.1);
+  color: #c62828;
 }
+
+.btn-editar {
+  background: rgba(26, 111, 219, 0.1);
+  color: var(--color-primary);
+}
+
+// ── Total ──────────────────────────────────────────────────
+.total-label {
+  padding: 4px 16px 12px;
+  font-size: 12px;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.bottom-space { height: 80px; }

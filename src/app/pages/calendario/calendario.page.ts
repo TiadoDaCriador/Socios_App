@@ -1,25 +1,14 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   IonHeader, IonToolbar, IonButtons, IonMenuButton,
-  IonTitle, IonContent, IonIcon, ModalController,
+  IonTitle, IonContent, IonIcon
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { chevronBackOutline, chevronForwardOutline } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
-import { EventoModalComponent } from './eventomodal/eventomodal.component';
-import { EventosService, EventoLista } from '../../services/eventos.service';
-
-export interface Evento {
-  id: number;
-  titulo: string;
-  data: Date;
-  hora: string;
-  cor: string;
-  local?: string;
-}
-
-type VistaType = 'mes' | 'semana' | 'dia';
+import { EventosService } from '../../services/eventos.service';
 
 @Component({
   selector: 'app-calendario',
@@ -27,241 +16,154 @@ type VistaType = 'mes' | 'semana' | 'dia';
   styleUrls: ['./calendario.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    IonHeader, IonToolbar, IonButtons, IonMenuButton,
-    IonTitle, IonContent, IonIcon,
+    CommonModule, 
+    TranslateModule, 
+    IonHeader, 
+    IonToolbar, 
+    IonButtons, 
+    IonMenuButton, 
+    IonTitle, 
+    IonContent, 
+    IonIcon
   ],
 })
 export class CalendarioPage implements OnInit, OnDestroy {
-
-  @Output() dateSelected = new EventEmitter<Date>();
-
-  vista: VistaType = 'mes';
+  vista: 'mes' | 'semana' | 'dia' = 'mes';
   dataAtual = new Date();
   hoje = new Date();
-
-  diasSemana = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB', 'DOM'];
-  meses = [
-    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-  ];
-
-  eventos: Evento[] = [];
-  celulas: { data: Date; mesAtual: boolean }[] = [];
+  diasSemana: string[] = [];
+  meses: string[] = [];
+  eventos: any[] = [];
+  celulas: any[] = [];
   horas = Array.from({ length: 14 }, (_, i) => `${String(i + 7).padStart(2, '0')}:00`);
 
   private sub?: Subscription;
+  private langSub?: Subscription;
 
   constructor(
-    private modalCtrl: ModalController,
-    private eventosService: EventosService,
+    private eventosService: EventosService, 
+    private translate: TranslateService
   ) {
     addIcons({ chevronBackOutline, chevronForwardOutline });
   }
 
   ngOnInit() {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.carregarTraducoes());
+    this.carregarTraducoes();
     this.gerarCelulas();
 
-    this.sub = this.eventosService.eventos$.subscribe((lista: EventoLista[]) => {
-      this.eventos = lista.map(e => this.eventoListaParaEvento(e));
+    this.sub = this.eventosService.eventos$.subscribe(lista => {
+      this.eventos = lista.map(e => {
+        const d = new Date(e.dataInicio);
+        return { 
+          ...e, 
+          titulo: e.nome, 
+          data: d, 
+          hora: `${String(d.getHours()).padStart(2, '0')}:00` 
+        };
+      });
     });
   }
 
-  ngOnDestroy() {
-    this.sub?.unsubscribe();
+  private carregarTraducoes() {
+    this.translate.get(['CALENDARIO.MESES', 'CALENDARIO.DIAS_CURTO']).subscribe(res => {
+      this.meses = res['CALENDARIO.MESES'];
+      this.diasSemana = res['CALENDARIO.DIAS_CURTO'];
+    });
   }
 
-  // ── Título da barra de navegação ────────────────────────────
+  setVista(v: 'mes' | 'semana' | 'dia') { 
+    this.vista = v; 
+    this.gerarCelulas(); 
+  }
+
+  irParaHoje() { 
+    this.dataAtual = new Date(); 
+    this.gerarCelulas(); 
+  }
+
+  anterior() { this.navegar(-1); }
+  proximo() { this.navegar(1); }
+
+  private navegar(dir: number) {
+    const d = new Date(this.dataAtual);
+    if (this.vista === 'mes') d.setMonth(d.getMonth() + dir);
+    else if (this.vista === 'semana') d.setDate(d.getDate() + (dir * 7));
+    else d.setDate(d.getDate() + dir);
+    this.dataAtual = d; 
+    this.gerarCelulas();
+  }
+
   get tituloNavegacao(): string {
+    if (!this.meses || this.meses.length === 0) return '';
     const ano = this.dataAtual.getFullYear();
-    const mes = this.meses[this.dataAtual.getMonth()];
-
-    if (this.vista === 'mes') return `${mes} ${ano}`;
-
-    if (this.vista === 'semana') {
-      const dias = this.diasDaSemana;
-      const inicio = dias[0];
-      const fim = dias[dias.length - 1];
-      const dI = inicio.getDate();
-      const dF = fim.getDate();
-      const mI = this.meses[inicio.getMonth()];
-      const mF = this.meses[fim.getMonth()];
-      return mI === mF
-        ? `${dI}–${dF} ${mI} ${ano}`
-        : `${dI} ${mI} – ${dF} ${mF} ${ano}`;
-    }
-
-    return `${this.dataAtual.getDate()} ${mes} ${ano}`;
+    if (this.vista === 'mes') return `${this.meses[this.dataAtual.getMonth()]} ${ano}`;
+    const dias = this.diasDaSemana;
+    return `${dias[0].getDate()} – ${dias[6].getDate()} ${this.meses[dias[6].getMonth()]} ${ano}`;
   }
 
-  // ── Dias da semana atual ─────────────────────────────────────
   get diasDaSemana(): Date[] {
     const d = new Date(this.dataAtual);
     const dow = d.getDay() === 0 ? 6 : d.getDay() - 1;
     d.setDate(d.getDate() - dow);
     return Array.from({ length: 7 }, (_, i) => {
-      const dia = new Date(d);
-      dia.setDate(d.getDate() + i);
+      const dia = new Date(d); 
+      dia.setDate(d.getDate() + i); 
       return dia;
     });
   }
 
-  // ── Comparação de datas ──────────────────────────────────────
-  isHoje(data: Date): boolean {
-    return (
-      data.getDate() === this.hoje.getDate() &&
-      data.getMonth() === this.hoje.getMonth() &&
-      data.getFullYear() === this.hoje.getFullYear()
-    );
-  }
+  // ✅ Função restaurada para corrigir o erro do Template
+  isHoraPassada = (dia: Date, hora: string) => {
+    const agora = new Date();
+    const d = new Date(dia);
+    const h = parseInt(hora.split(':')[0]);
+    d.setHours(h, 0, 0, 0);
+    return d < agora;
+  };
 
-  isPassado(data: Date): boolean {
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-    const d = new Date(data);
-    d.setHours(0, 0, 0, 0);
-    return d < hoje;
-  }
+  isHoje = (d: Date) => this.mesmoDia(d, this.hoje);
+  
+  isPassado = (d: Date) => {
+    const h = new Date(); h.setHours(0,0,0,0);
+    const temp = new Date(d); temp.setHours(0,0,0,0);
+    return temp < h;
+  };
 
-  private mesmoDia(a: Date, b: Date): boolean {
-    return (
-      a.getDate() === b.getDate() &&
-      a.getMonth() === b.getMonth() &&
-      a.getFullYear() === b.getFullYear()
-    );
-  }
+  eventosNoDia = (d: Date) => this.eventos.filter(e => this.mesmoDia(e.data, d));
+  
+  eventoNaHora = (dia: Date, hora: string) => 
+    this.eventosNoDia(dia).find(e => e.hora.startsWith(hora.split(':')[0]));
 
-  // ── Eventos por dia / hora ───────────────────────────────────
-  eventosNoDia(data: Date): Evento[] {
-    return this.eventos.filter(ev => this.mesmoDia(new Date(ev.data), data));
-  }
+  private mesmoDia = (a: Date, b: Date) => 
+    a.getDate() === b.getDate() && 
+    a.getMonth() === b.getMonth() && 
+    a.getFullYear() === b.getFullYear();
 
-  eventoNaHora(dia: Date, hora: string): Evento | undefined {
-    return this.eventosNoDia(dia).find(ev => ev.hora?.startsWith(hora.slice(0, 2)));
-  }
-
-  // ── Modais ───────────────────────────────────────────────────
-  async abrirModalNovoEvento(data: Date) {
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-    const dataClicada = new Date(data);
-    dataClicada.setHours(0, 0, 0, 0);
-    if (dataClicada < hoje) return; // 👈 bloqueia dias passados
-
-    const modal = await this.modalCtrl.create({
-      component: EventoModalComponent,
-      componentProps: { dataInicial: data },
-    });
-    await modal.present();
-
-    const { data: resultado } = await modal.onWillDismiss();
-    if (resultado) {
-      this.eventosService.adicionarDoCalendario({
-        titulo: resultado.titulo,
-        data:   resultado.data,
-        hora:   resultado.hora,
-        cor:    resultado.cor,
-        local:  resultado.local,
-      });
-    }
-  }
-
-  async abrirModalEditar(ev: Evento, $event: Event) {
-    $event.stopPropagation();
-
-    const modal = await this.modalCtrl.create({
-      component: EventoModalComponent,
-      componentProps: { evento: ev, modoEdicao: true },
-    });
-    await modal.present();
-
-    const { data: resultado, role } = await modal.onWillDismiss();
-
-    if (role === 'eliminar') {
-      this.eventosService.eliminar(ev.id);
-      return;
-    }
-    if (resultado) {
-      this.eventosService.atualizar(ev.id, {
-        nome:       resultado.titulo,
-        tipo:       resultado.tipo ?? ev.cor,
-        cor:        resultado.cor,
-        dataInicio: resultado.data,
-        dataFim:    resultado.data,
-        local:      resultado.local ?? '',
-      });
-    }
-  }
-
-  // ── Navegação ────────────────────────────────────────────────
-  selecionarDia(celula: { data: Date }) {
-    this.dateSelected.emit(celula.data);
-  }
-
-  anterior() {
-    const d = new Date(this.dataAtual);
-    if (this.vista === 'mes') d.setMonth(d.getMonth() - 1);
-    else if (this.vista === 'semana') d.setDate(d.getDate() - 7);
-    else d.setDate(d.getDate() - 1);
-    this.dataAtual = d;
-    this.gerarCelulas();
-  }
-
-  proximo() {
-    const d = new Date(this.dataAtual);
-    if (this.vista === 'mes') d.setMonth(d.getMonth() + 1);
-    else if (this.vista === 'semana') d.setDate(d.getDate() + 7);
-    else d.setDate(d.getDate() + 1);
-    this.dataAtual = d;
-    this.gerarCelulas();
-  }
-
-  irParaHoje() {
-    this.dataAtual = new Date();
-    this.gerarCelulas();
-  }
-
-  setVista(v: VistaType) {
-    this.vista = v;
-    this.gerarCelulas();
-  }
-
-  // ── Geração de células do mês ────────────────────────────────
   gerarCelulas() {
     this.celulas = [];
     const ano = this.dataAtual.getFullYear();
     const mes = this.dataAtual.getMonth();
-
-    const primeiroDia = new Date(ano, mes, 1);
-    const ultimoDia   = new Date(ano, mes + 1, 0);
-
-    let inicioSemana = primeiroDia.getDay();
+    const primeiroDiaMes = new Date(ano, mes, 1);
+    let inicioSemana = primeiroDiaMes.getDay();
     inicioSemana = inicioSemana === 0 ? 6 : inicioSemana - 1;
 
-    for (let i = inicioSemana - 1; i >= 0; i--) {
-      this.celulas.push({ data: new Date(ano, mes, -i), mesAtual: false });
+    for (let i = inicioSemana; i > 0; i--) {
+      this.celulas.push({ data: new Date(ano, mes, 1 - i), mesAtual: false });
     }
-    for (let i = 1; i <= ultimoDia.getDate(); i++) {
+    const ultimoDiaMes = new Date(ano, mes + 1, 0).getDate();
+    for (let i = 1; i <= ultimoDiaMes; i++) {
       this.celulas.push({ data: new Date(ano, mes, i), mesAtual: true });
     }
-    const resto = 42 - this.celulas.length;
-    for (let i = 1; i <= resto; i++) {
-      this.celulas.push({ data: new Date(ano, mes + 1, i), mesAtual: false });
+    while (this.celulas.length < 42) {
+      const d = new Date(this.celulas[this.celulas.length - 1].data);
+      d.setDate(d.getDate() + 1);
+      this.celulas.push({ data: d, mesAtual: false });
     }
   }
 
-  // ── Conversão EventoLista → Evento local ────────────────────
-  private eventoListaParaEvento(e: EventoLista): Evento {
-    const dataInicio = new Date(e.dataInicio);
-    const hh = String(dataInicio.getHours()).padStart(2, '0');
-    const mm = String(dataInicio.getMinutes()).padStart(2, '0');
-    return {
-      id:     e.id as unknown as number,
-      titulo: e.nome,
-      data:   dataInicio,
-      hora:   `${hh}h${mm}`,
-      cor:    e.cor,
-      local:  e.local,
-    };
+  ngOnDestroy() { 
+    this.sub?.unsubscribe(); 
+    this.langSub?.unsubscribe(); 
   }
 }

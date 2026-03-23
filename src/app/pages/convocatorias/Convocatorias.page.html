@@ -1,10 +1,7 @@
-<!-- src/app/pages/convocatorias/convocatorias.page.html -->
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Convocatórias</ion-title>
+    <ion-buttons slot="end"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>{{ 'CONVOCATORIAS.TITULO' | translate }}</ion-title>
     <ion-buttons slot="start">
       <button class="btn-icon" [class.active]="mostrarFiltros" (click)="mostrarFiltros = !mostrarFiltros">
         <ion-icon name="filter-outline"></ion-icon>
@@ -15,104 +12,61 @@
 
 <ion-content [fullscreen]="true" class="conv-content">
 
-  <!-- Painel de Filtros -->
   <div class="filtros-painel" [hidden]="!mostrarFiltros">
     <div class="filtros-row">
-      <span class="filtros-label">Tipologia:</span>
-      <button class="filtro-chip"
-        [class.active]="filtroTipologia === ''"
-        (click)="setFiltroTipologia('')">Todas</button>
-      <button class="filtro-chip"
-        *ngFor="let t of tipologias"
-        [ngClass]="[corTipologia(t), filtroTipologia === t ? 'active' : '']"
-        (click)="setFiltroTipologia(t)">{{ t }}</button>
-    </div>
-    <div class="filtros-row">
-      <span class="filtros-label">Mostrar:</span>
-      <button class="filtro-chip"
-        *ngFor="let n of limitesDisponiveis"
-        [class.active]="limite === n"
-        (click)="setLimite(n)">{{ n === 0 ? 'Todas' : 'Últimas ' + n }}</button>
+      <span class="filtros-label">{{ 'CONVOCATORIAS.MOSTRAR' | translate }}</span>
+      <button class="filtro-chip" *ngFor="let n of limitesDisponiveis" [class.active]="limite === n"
+        (click)="setLimite(n)">
+        {{ n === 0 ? ('CONVOCATORIAS.TODAS' | translate) : ('CONVOCATORIAS.ULTIMAS' | translate) + ' ' + n }}
+      </button>
     </div>
   </div>
 
-  <!-- Cabeçalho -->
-  <div class="lista-header">
-    <div class="header-data" (click)="toggleOrdem()">
-      Data
-      <ion-icon [name]="ordemDesc ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon>
-    </div>
-    <div class="header-info">Detalhe</div>
-    <div class="header-resposta">Resposta</div>
-  </div>
-
-  <!-- Lista -->
   <div class="conv-lista">
-
     <div class="estado-vazio" *ngIf="convocatoriasFiltradas.length === 0">
       <ion-icon name="calendar-outline"></ion-icon>
-      <p>Nenhuma convocatória encontrada</p>
+      <p>{{ 'CONVOCATORIAS.NENHUMA' | translate }}</p>
     </div>
 
-    <div class="conv-card"
-      *ngFor="let conv of convocatoriasFiltradas"
+    <div class="conv-card" *ngFor="let conv of convocatoriasFiltradas"
       [class.aceite]="conv.resposta === 'aceite' && !conv.emEdicao"
       [class.recusado]="conv.resposta === 'recusado' && !conv.emEdicao">
 
-      <div class="conv-indicador" [ngClass]="corTipologia(conv.tipologia)"></div>
-
-      <div class="conv-info">
-        <div class="conv-tipologia-badge" [ngClass]="corTipologia(conv.tipologia)">
-          {{ conv.tipologia }}
+      <div class="conv-body">
+        <div class="conv-titulo">
+          <ng-container *ngIf="conv.resposta !== 'pendente' && !conv.emEdicao">
+            {{ conv.resposta === 'aceite' ? ('CONVOCATORIAS.RESPOSTA_ACEITE' | translate) :
+            ('CONVOCATORIAS.RESPOSTA_RECUSADO' | translate) }}
+          </ng-container>
+          <ng-container *ngIf="conv.resposta === 'pendente' || conv.emEdicao">
+            {{ conv.titulo }}
+          </ng-container>
         </div>
-        <div class="conv-meta">
-          <span class="conv-meta-item">
-            <ion-icon name="calendar-outline"></ion-icon>
-            {{ formatarDia(conv.dia) }}
-          </span>
-          <span class="conv-meta-item">
-            <ion-icon name="time-outline"></ion-icon>
-            {{ conv.hora }}
-          </span>
-          <span class="conv-meta-item">
-            <ion-icon name="location-outline"></ion-icon>
-            {{ conv.local }}
-          </span>
+
+        <div class="conv-descricao">{{ conv.descricao }}</div>
+
+        <div class="conv-acoes">
+          <ng-container *ngIf="conv.resposta === 'pendente' || conv.emEdicao">
+            <button class="btn-aceitar" (click)="responder(conv, 'aceite', $event)">
+              <ion-icon name="checkmark-circle-outline"></ion-icon>
+              {{ 'CONVOCATORIAS.ACEITAR' | translate }}
+            </button>
+            <button class="btn-recusar" (click)="responder(conv, 'recusado', $event)">
+              <ion-icon name="close-circle-outline"></ion-icon>
+              {{ 'CONVOCATORIAS.RECUSAR' | translate }}
+            </button>
+          </ng-container>
+          <ng-container *ngIf="conv.resposta !== 'pendente' && !conv.emEdicao">
+            <button class="btn-editar" (click)="editarResposta(conv, $event)">
+              <ion-icon name="create-outline"></ion-icon>
+              {{ 'CONVOCATORIAS.ALTERAR_RESPOSTA' | translate }}
+            </button>
+          </ng-container>
         </div>
       </div>
-
-      <!-- Resposta -->
-      <div class="conv-resposta-col">
-
-        <!-- Pendente ou em edição -->
-        <ng-container *ngIf="conv.resposta === 'pendente' || conv.emEdicao">
-          <button class="btn-aceitar" (click)="responder(conv, 'aceite', $event)">
-            <ion-icon name="checkmark-circle-outline"></ion-icon>
-          </button>
-          <button class="btn-recusar" (click)="responder(conv, 'recusado', $event)">
-            <ion-icon name="close-circle-outline"></ion-icon>
-          </button>
-        </ng-container>
-
-        <!-- Já respondeu -->
-        <ng-container *ngIf="conv.resposta !== 'pendente' && !conv.emEdicao">
-          <div class="conv-estado"
-            [class.aceite]="conv.resposta === 'aceite'"
-            [class.recusado]="conv.resposta === 'recusado'">
-            <ion-icon [name]="conv.resposta === 'aceite' ? 'checkmark-circle-outline' : 'close-circle-outline'"></ion-icon>
-            <span>{{ conv.resposta === 'aceite' ? 'Aceite' : 'Recusado' }}</span>
-          </div>
-          <button class="btn-editar" (click)="editarResposta(conv, $event)" title="Alterar resposta">
-            <ion-icon name="create-outline"></ion-icon>
-          </button>
-        </ng-container>
-
-      </div>
-
     </div>
   </div>
 
-  <div class="total-label">{{ convocatoriasFiltradas.length }} convocatórias</div>
+  <div class="total-label">{{ convocatoriasFiltradas.length }} {{ 'CONVOCATORIAS.TOTAL' | translate }}</div>
   <div class="bottom-space"></div>
-
 </ion-content>

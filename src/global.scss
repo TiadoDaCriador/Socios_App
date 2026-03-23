@@ -30,6 +30,44 @@
     --color-hoje-bg: #e8f0fc;
     --radius: 10px;
     --radius-sm: 6px;
+    --app-font-size: 16px;
+}
+
+// ─────────────────────────────────────────────
+// MODO ESCURO
+// ─────────────────────────────────────────────
+:root.dark,
+body.dark {
+    --color-bg: #0f172a;
+    --color-card: #1e293b;
+    --color-border: #334155;
+    --color-text: #f1f5f9;
+    --color-muted: #94a3b8;
+    --color-hoje-bg: #1e3a5f;
+
+    --ion-background-color: #0f172a;
+    --ion-background-color-rgb: 15, 23, 42;
+    --ion-text-color: #f1f5f9;
+    --ion-text-color-rgb: 241, 245, 249;
+    --ion-item-background: #1e293b;
+    --ion-toolbar-background: #1e293b;
+    --ion-tab-bar-background: #1e293b;
+    --ion-card-background: #1e293b;
+    --ion-border-color: #334155;
+}
+
+// ─────────────────────────────────────────────
+// TAMANHO DA FONTE
+// ─────────────────────────────────────────────
+ion-content,
+ion-item,
+ion-label,
+p,
+span,
+div,
+button,
+input {
+    font-size: var(--app-font-size, 16px);
 }
 
 // ─────────────────────────────────────────────
@@ -42,7 +80,7 @@ ion-header ion-toolbar {
 }
 
 // ─────────────────────────────────────────────
-// PESQUISA (eventos, documentos, conta-corrente)
+// PESQUISA
 // ─────────────────────────────────────────────
 .toolbar-pesquisa {
     display: flex;
@@ -111,7 +149,7 @@ ion-header ion-toolbar {
 }
 
 // ─────────────────────────────────────────────
-// FILTROS (eventos, documentos, conta-corrente, quotas, notificações, convocatórias)
+// FILTROS
 // ─────────────────────────────────────────────
 .filtros-painel {
     padding: 8px 16px 12px;
@@ -181,7 +219,7 @@ ion-header ion-toolbar {
 }
 
 // ─────────────────────────────────────────────
-// ESTADO VAZIO (todas as listas)
+// ESTADO VAZIO
 // ─────────────────────────────────────────────
 .estado-vazio {
     display: flex;
@@ -203,7 +241,7 @@ ion-header ion-toolbar {
 }
 
 // ─────────────────────────────────────────────
-// TOTAL / CONTADOR (todas as listas)
+// TOTAL / CONTADOR
 // ─────────────────────────────────────────────
 .total-label {
     padding: 10px 16px;
@@ -235,7 +273,7 @@ ion-header ion-toolbar {
 }
 
 // ─────────────────────────────────────────────
-// INDICADOR LATERAL (eventos, convocatórias, quotas)
+// INDICADOR LATERAL
 // ─────────────────────────────────────────────
 .indicador {
     width: 4px;
@@ -260,7 +298,7 @@ ion-header ion-toolbar {
 }
 
 // ─────────────────────────────────────────────
-// DETALHE ITEM (evento-detalhe, quota-detalhe)
+// DETALHE ITEM
 // ─────────────────────────────────────────────
 .detalhe-item {
     display: flex;
@@ -311,7 +349,7 @@ ion-header ion-toolbar {
 }
 
 // ─────────────────────────────────────────────
-// BTN ICON HEADER (notificações, quotas, convocatórias)
+// BTN ICON HEADER
 // ─────────────────────────────────────────────
 .btn-icon {
     width: 36px;

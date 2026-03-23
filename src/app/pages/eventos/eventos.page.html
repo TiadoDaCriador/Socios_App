@@ -1,96 +1,82 @@
-<!-- src/app/pages/eventos/eventos.page.html -->
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-menu-button></ion-menu-button>
+    <ion-buttons slot="end"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>{{ 'EVENTOS.TITULO' | translate }}</ion-title>
+    <ion-buttons slot="start">
+      <button class="btn-icon" [class.active]="mostrarFiltros" (click)="mostrarFiltros = !mostrarFiltros">
+        <ion-icon name="filter-outline"></ion-icon>
+      </button>
     </ion-buttons>
-    <ion-title>Eventos</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="eventos-content">
 
-  <!-- Barra de pesquisa e filtros -->
   <div class="toolbar-pesquisa">
     <div class="pesquisa-wrap">
       <ion-icon name="search-outline" class="pesquisa-icon"></ion-icon>
-      <input
-        class="pesquisa-input"
-        type="text"
-        placeholder="Pesquisar eventos..."
+      <input class="pesquisa-input" type="text" [placeholder]="'EVENTOS.PESQUISAR' | translate"
         [(ngModel)]="pesquisa" />
     </div>
-    <button class="btn-filtro" [class.active]="mostrarFiltros" (click)="mostrarFiltros = !mostrarFiltros">
-      <ion-icon name="filter-outline"></ion-icon>
-    </button>
   </div>
 
-  <!-- Painel de filtros -->
-  <div class="filtros-painel" *ngIf="mostrarFiltros">
+  <div class="filtros-painel" [hidden]="!mostrarFiltros">
     <div class="filtros-row">
-      <span class="filtros-label">Tipo:</span>
-      <button
-        class="filtro-chip"
-        *ngFor="let tipo of tiposDisponiveis"
-        [class.active]="filtroTipo === tipo"
-        (click)="setFiltroTipo(tipo)">
-        {{ tipo }}
-      </button>
-    </div>
-    <div class="filtros-row">
-      <span class="filtros-label">Ordenar:</span>
-      <button class="filtro-chip" [class.active]="ordem === 'data-desc'" (click)="setOrdem('data-desc')">Data ↓</button>
-      <button class="filtro-chip" [class.active]="ordem === 'data-asc'"  (click)="setOrdem('data-asc')">Data ↑</button>
-      <button class="filtro-chip" [class.active]="ordem === 'nome-asc'"  (click)="setOrdem('nome-asc')">Nome A-Z</button>
+      <span class="filtros-label">{{ 'EVENTOS.ORDENAR' | translate }}</span>
+      <button class="filtro-chip" [class.active]="ordem === 'data-desc'" (click)="setOrdem('data-desc')">{{
+        'EVENTOS.DATA_DESC' | translate }}</button>
+      <button class="filtro-chip" [class.active]="ordem === 'data-asc'" (click)="setOrdem('data-asc')">{{
+        'EVENTOS.DATA_ASC' | translate }}</button>
+      <button class="filtro-chip" [class.active]="ordem === 'nome-asc'" (click)="setOrdem('nome-asc')">{{
+        'EVENTOS.NOME_AZ' | translate }}</button>
     </div>
   </div>
 
-  <!-- Cabeçalho da lista -->
   <div class="lista-header">
-    <div class="lista-header-data" (click)="setOrdem(ordem === 'data-desc' ? 'data-asc' : 'data-desc')">
-      Data
+    <div class="header-data" (click)="setOrdem(ordem === 'data-desc' ? 'data-asc' : 'data-desc')">
+      {{ 'EVENTOS.DATA' | translate }}
       <ion-icon [name]="ordem === 'data-desc' ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon>
     </div>
-    <div class="lista-header-nome">Nome</div>
-    <div class="lista-header-count">{{ eventosFiltrados.length }}</div>
+    <div class="header-info">{{ 'CONVOCATORIAS.DETALHE' | translate }}</div>
+    <div class="header-count">{{ eventosFiltrados.length }}</div>
   </div>
 
-  <!-- Lista de eventos -->
   <div class="eventos-lista">
-
-    <!-- Vazio -->
     <div class="estado-vazio" *ngIf="eventosFiltrados.length === 0">
       <ion-icon name="calendar-outline"></ion-icon>
-      <p>Nenhum evento encontrado</p>
+      <p>{{ 'EVENTOS.NENHUM' | translate }}</p>
     </div>
 
-    <!-- Evento -->
-    <div
-      class="evento-row"
-      *ngFor="let ev of eventosFiltrados"
-      (click)="abrirDetalhe(ev)">
-
-      <div class="evento-indicador" [class]="'cor-' + ev.cor"></div>
-
-      <div class="evento-data-col">
-        <span class="evento-data">{{ formatarData(ev.dataInicio) }}</span>
-        <span class="evento-horas">{{ formatarHora(ev.dataInicio) }}-{{ formatarHora(ev.dataFim) }}</span>
+    <div class="evento-card" *ngFor="let ev of eventosFiltrados">
+      <div class="evento-indicador" [ngClass]="'cor-' + ev.cor"></div>
+      <div class="evento-info">
+        <div class="evento-tipo-badge" [ngClass]="'cor-' + ev.cor">{{ labelTipo(ev.tipo) }}</div>
+        <div class="evento-meta">
+          <span class="evento-meta-item">
+            <ion-icon name="calendar-outline"></ion-icon>
+            {{ formatarData(ev.dataInicio) }}
+          </span>
+          <span class="evento-meta-item">
+            <ion-icon name="time-outline"></ion-icon>
+            {{ formatarHora(ev.dataInicio) }} — {{ formatarHora(ev.dataFim) }}
+          </span>
+          <span class="evento-meta-item">
+            <ion-icon name="location-outline"></ion-icon>
+            {{ ev.local || ('EVENTOS.LOCAL_NAO_DEFINIDO' | translate) }}
+          </span>
+          <span class="evento-meta-item" *ngIf="ev.nome">
+            <ion-icon name="pricetag-outline"></ion-icon>
+            {{ ev.nome }}
+          </span>
+        </div>
       </div>
-
-      <div class="evento-nome-col">
-        <span class="evento-nome">{{ ev.nome }}</span>
-        <span class="evento-tipo">{{ ev.tipo }}</span>
-      </div>
-
-      <button class="evento-menu-btn" (click)="abrirDetalhe(ev); $event.stopPropagation()">
-        <ion-icon name="ellipsis-vertical"></ion-icon>
+      <button class="btn-eliminar-card" (click)="eliminar(ev)">
+        <ion-icon name="trash-outline"></ion-icon>
       </button>
     </div>
   </div>
 
-  <!-- Contador total -->
-  <div class="total-label">{{ eventosFiltrados.length }} de {{ eventos.length }} eventos</div>
-
+  <div class="total-label">{{ eventosFiltrados.length }} {{ 'EVENTOS.TOTAL' | translate }} {{ eventos.length }} {{
+    'EVENTOS.EVENTOS' | translate }}</div>
   <div class="bottom-space"></div>
-
 </ion-content>

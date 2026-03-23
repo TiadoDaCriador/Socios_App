@@ -6,9 +6,8 @@ import {
   IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonBadge,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import {
-  homeOutline, calendarOutline, personOutline, notificationsOutline,
-} from 'ionicons/icons';
+import { homeOutline, calendarOutline, personOutline, notificationsOutline } from 'ionicons/icons';
+import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { NotificacoesService } from '../pages/notificacoes/notificacoes.service';
 
@@ -17,8 +16,7 @@ import { NotificacoesService } from '../pages/notificacoes/notificacoes.service'
   templateUrl: './tabs.page.html',
   standalone: true,
   imports: [
-    CommonModule,
-    RouterModule,
+    CommonModule, RouterModule, TranslateModule,
     IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonBadge,
   ],
 })

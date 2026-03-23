@@ -1,13 +1,19 @@
-<!-- Barra de vistas -->
 <div class="vista-bar">
-  <button class="vista-btn" [class.active]="vista === 'mes'" (click)="setVista('mes')">MÊS</button>
-  <button class="vista-btn" [class.active]="vista === 'semana'" (click)="setVista('semana')">SEMANA</button>
-  <button class="vista-btn" [class.active]="vista === 'dia'" (click)="setVista('dia')">DIA</button>
+  <button class="vista-btn" [class.active]="vista === 'mes'" (click)="setVista('mes')">
+    {{ 'CALENDARIO.MES' | translate }}
+  </button>
+  <button class="vista-btn" [class.active]="vista === 'semana'" (click)="setVista('semana')">
+    {{ 'CALENDARIO.SEMANA' | translate }}
+  </button>
+  <button class="vista-btn" [class.active]="vista === 'dia'" (click)="setVista('dia')">
+    {{ 'CALENDARIO.DIA' | translate }}
+  </button>
 </div>
 
-<!-- Navegação -->
 <div class="nav-bar">
-  <button class="nav-btn today-btn" (click)="irParaHoje()">HOJE</button>
+  <button class="nav-btn today-btn" (click)="irParaHoje()">
+    {{ 'CALENDARIO.HOJE' | translate }}
+  </button>
   <button class="nav-btn arrow-btn" (click)="anterior()">
     <ion-icon name="chevron-back-outline"></ion-icon>
   </button>
@@ -17,21 +23,19 @@
   <span class="nav-titulo">{{ tituloNavegacao }}</span>
 </div>
 
-<!-- ══ VISTA MÊS ══ -->
 <div class="cal-mes" *ngIf="vista === 'mes'">
   <div class="mes-header">
     <div class="mes-header-dia" *ngFor="let d of diasSemana">{{ d }}</div>
   </div>
   <div class="mes-grid">
-    <div class="mes-celula" *ngFor="let celula of celulas"
-      [class.outro-mes]="!celula.mesAtual"
-      [class.hoje]="isHoje(celula.data)"
-      (click)="abrirModalNovoEvento(celula.data)">
+    <div class="mes-celula" *ngFor="let celula of celulas" 
+         [class.outro-mes]="!celula.mesAtual"
+         [class.hoje]="isHoje(celula.data)" 
+         [class.passado]="isPassado(celula.data)">
       <span class="celula-num">{{ celula.data.getDate() }}</span>
       <div class="celula-eventos">
-        <div class="evento-pill" *ngFor="let ev of eventosNoDia(celula.data)"
-          [class]="'evento-pill cor-' + ev.cor"
-          (click)="abrirModalEditar(ev, $event)">
+        <div class="evento-pill" *ngFor="let ev of eventosNoDia(celula.data)" 
+             [class]="'evento-pill cor-' + ev.cor">
           {{ ev.hora }}
         </div>
       </div>
@@ -39,11 +43,12 @@
   </div>
 </div>
 
-<!-- ══ VISTA SEMANA ══ -->
 <div class="cal-semana" *ngIf="vista === 'semana'">
   <div class="semana-header">
     <div class="semana-hora-col"></div>
-    <div class="semana-dia-col" *ngFor="let dia of diasDaSemana; let i = index" [class.hoje]="isHoje(dia)">
+    <div class="semana-dia-col" *ngFor="let dia of diasDaSemana; let i = index" 
+         [class.hoje]="isHoje(dia)"
+         [class.passado]="isPassado(dia)">
       <span class="semana-dia-nome">{{ diasSemana[i] }}</span>
       <span class="semana-dia-num" [class.hoje-num]="isHoje(dia)">{{ dia.getDate() }}</span>
     </div>
@@ -51,12 +56,12 @@
   <div class="semana-body">
     <div class="semana-linha" *ngFor="let hora of horas">
       <div class="semana-hora-label">{{ hora }}</div>
-      <div class="semana-celula" *ngFor="let dia of diasDaSemana"
-        [class.hoje-col]="isHoje(dia)"
-        (click)="abrirModalNovoEvento(dia)">
+
+      <div class="semana-celula" *ngFor="let dia of diasDaSemana" 
+           [class.hoje-col]="isHoje(dia)"
+           [class.passado]="isHoraPassada(dia, hora)">
         <ng-container *ngIf="eventoNaHora(dia, hora) as ev">
-          <div class="semana-evento" [class]="'cor-' + ev.cor"
-            (click)="abrirModalEditar(ev, $event)">
+          <div class="semana-evento" [class]="'cor-' + ev.cor">
             {{ ev.titulo }}
           </div>
         </ng-container>
@@ -65,14 +70,13 @@
   </div>
 </div>
 
-<!-- ══ VISTA DIA ══ -->
 <div class="cal-dia" *ngIf="vista === 'dia'">
-  <div class="dia-linha" *ngFor="let hora of horas" (click)="abrirModalNovoEvento(dataAtual)">
+  <div class="dia-linha" *ngFor="let hora of horas" 
+       [class.passado]="isHoraPassada(dataAtual, hora)">
     <div class="dia-hora-label">{{ hora }}</div>
     <div class="dia-celula">
       <ng-container *ngIf="eventoNaHora(dataAtual, hora) as ev">
-        <div class="dia-evento" [class]="'cor-' + ev.cor"
-          (click)="abrirModalEditar(ev, $event)">
+        <div class="dia-evento" [class]="'cor-' + ev.cor">
           <span class="dia-evento-hora">{{ ev.hora }}</span>
           <span class="dia-evento-titulo">{{ ev.titulo }}</span>
         </div>

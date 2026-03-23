@@ -1,5 +1,5 @@
 // src/app/pages/definicoes/notificacoes-modal.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -7,7 +7,11 @@ import {
   IonButtons, IonButton, IonIcon, IonToggle, ModalController, ToastController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { closeOutline, notificationsOutline } from 'ionicons/icons';
+import {
+  closeOutline, notificationsOutline, calendarOutline,
+  walletOutline, megaphoneOutline, newspaperOutline,
+} from 'ionicons/icons';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NotificacoesService } from '../notificacoes/notificacoes.service';
 
 @Component({
@@ -15,49 +19,43 @@ import { NotificacoesService } from '../notificacoes/notificacoes.service';
   templateUrl: './notificacoes-modal.html',
   styleUrls: ['./modal-shared.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle,
+  encapsulation: ViewEncapsulation.None,
+  imports: [CommonModule, FormsModule, TranslateModule, IonHeader, IonToolbar, IonTitle,
     IonContent, IonButtons, IonButton, IonIcon, IonToggle],
 })
 export class NotificacoesModalComponent implements OnInit {
 
-  notifEventos       = true;
-  notifQuotas        = true;
+  notifEventos = true;
+  notifQuotas = true;
   notifConvocatorias = true;
-  notifNoticias      = false;
+  notifNoticias = true;
 
   constructor(
-    private modalCtrl:  ModalController,
-    private toastCtrl:  ToastController,
+    private modalCtrl: ModalController,
+    private toastCtrl: ToastController,
     private notifService: NotificacoesService,
+    private translate: TranslateService,
   ) {
-    addIcons({ closeOutline, notificationsOutline });
+    addIcons({ closeOutline, notificationsOutline, calendarOutline, walletOutline, megaphoneOutline, newspaperOutline });
   }
 
   ngOnInit() {
-    // Carrega as preferências atuais do serviço
     const prefs = this.notifService.prefs;
-    this.notifEventos       = prefs.eventos;
-    this.notifQuotas        = prefs.quotas;
+    this.notifEventos = prefs.eventos;
+    this.notifQuotas = prefs.quotas;
     this.notifConvocatorias = prefs.convocatorias;
-    this.notifNoticias      = prefs.noticias;
+    this.notifNoticias = prefs.noticias;
   }
 
   fechar() { this.modalCtrl.dismiss(); }
 
   async guardar() {
-    // Guarda as preferências no serviço
     this.notifService.guardarPrefs({
-      eventos:       this.notifEventos,
-      quotas:        this.notifQuotas,
-      convocatorias: this.notifConvocatorias,
-      noticias:      this.notifNoticias,
+      eventos: this.notifEventos, quotas: this.notifQuotas,
+      convocatorias: this.notifConvocatorias, noticias: this.notifNoticias,
     });
-
     const t = await this.toastCtrl.create({
-      message:  'Notificações guardadas!',
-      duration: 2000,
-      position: 'bottom',
-      color:    'success',
+      message: this.translate.instant('NOTIF_MODAL.GUARDAR'), duration: 2000, position: 'bottom', color: 'success',
     });
     await t.present();
     this.modalCtrl.dismiss();

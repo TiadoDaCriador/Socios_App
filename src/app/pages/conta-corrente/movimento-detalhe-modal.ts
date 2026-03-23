@@ -10,6 +10,7 @@ import {
     closeOutline, documentTextOutline, calendarOutline,
     timeOutline, cashOutline, cardOutline, downloadOutline,
 } from 'ionicons/icons';
+import { TranslateModule } from '@ngx-translate/core';
 import { Movimento } from './conta-corrente.page';
 
 @Component({
@@ -18,7 +19,7 @@ import { Movimento } from './conta-corrente.page';
     styleUrls: ['./movimento-detalhe-modal.scss'],
     standalone: true,
     imports: [
-        CommonModule,
+        CommonModule, TranslateModule,
         IonHeader, IonToolbar, IonTitle, IonContent,
         IonButtons, IonButton, IonIcon,
     ],
@@ -29,47 +30,17 @@ export class MovimentoDetalheModalComponent {
     exportando = false;
 
     constructor(private modalCtrl: ModalController) {
-        addIcons({
-            closeOutline, documentTextOutline, calendarOutline,
-            timeOutline, cashOutline, cardOutline, downloadOutline,
-        });
+        addIcons({ closeOutline, documentTextOutline, calendarOutline, timeOutline, cashOutline, cardOutline, downloadOutline });
     }
 
-    fechar() {
-        this.modalCtrl.dismiss();
-    }
+    fechar() { this.modalCtrl.dismiss(); }
 
     async exportarPDF() {
         this.exportando = true;
-
-        // TODO: Implementar exportação PDF quando tiveres o API
-        // Opção 1 — PDF gerado no servidor:
-        // const pdf = await this.movimentosService.exportarPDF(this.movimento.id);
-        // this.fileService.download(pdf, `movimento-${this.movimento.id}.pdf`);
-
-        // Opção 2 — PDF gerado no cliente com jsPDF:
-        // import('jspdf').then(({ jsPDF }) => {
-        //   const doc = new jsPDF();
-        //   doc.text(`Tipo: ${this.movimento.tipo}`, 10, 10);
-        //   doc.text(`Descrição: ${this.movimento.descricao}`, 10, 20);
-        //   doc.text(`Data: ${this.formatarData(this.movimento.data)}`, 10, 30);
-        //   doc.text(`Valor: ${this.formatarValor(this.movimento.valor)}`, 10, 40);
-        //   doc.save(`movimento-${this.movimento.id}.pdf`);
-        // });
-
-        // Simulação por agora
         setTimeout(() => { this.exportando = false; }, 1500);
     }
 
-    formatarData(d: Date): string {
-        return d.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    }
-
-    formatarHora(d: Date): string {
-        return d.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
-    }
-
-    formatarValor(v: number): string {
-        return v.toFixed(2).replace('.', ',') + ' €';
-    }
+    formatarData(d: Date): string { return d.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
+    formatarHora(d: Date): string { return d.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }); }
+    formatarValor(v: number): string { return v.toFixed(2).replace('.', ',') + ' €'; }
 }

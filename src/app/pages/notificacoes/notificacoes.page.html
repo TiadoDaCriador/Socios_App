@@ -1,15 +1,12 @@
-<!-- src/app/pages/notificacoes/notificacoes.page.html -->
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
+    <ion-buttons slot="end"><ion-menu-button></ion-menu-button></ion-buttons>
     <ion-title>
-      Notificações
+      {{ 'NOTIFICACOES.TITULO' | translate }}
       <ion-badge *ngIf="totalNaoLidas > 0" class="header-badge">{{ totalNaoLidas }}</ion-badge>
     </ion-title>
     <ion-buttons slot="start">
-      <button class="btn-icon" *ngIf="totalNaoLidas > 0" (click)="marcarTodasLidas()" title="Marcar todas como lidas">
+      <button class="btn-icon" *ngIf="totalNaoLidas > 0" (click)="marcarTodasLidas()">
         <ion-icon name="checkmark-done-outline"></ion-icon>
       </button>
       <button class="btn-icon" [class.active]="mostrarFiltros" (click)="mostrarFiltros = !mostrarFiltros">
@@ -21,41 +18,33 @@
 
 <ion-content [fullscreen]="true" class="notif-content">
 
-  <!-- Filtros -->
   <div class="filtros-painel" [hidden]="!mostrarFiltros">
     <div class="filtros-row">
-      <button class="filtro-chip"
-        [class.active]="filtroCategoria === ''"
-        (click)="setFiltro('')">Todas</button>
-      <button class="filtro-chip"
-        *ngFor="let c of categorias"
-        [ngClass]="[corCategoria(c.valor), filtroCategoria === c.valor ? 'active' : '']"
+      <button class="filtro-chip" [class.active]="filtroCategoria === ''" (click)="setFiltro('')">{{
+        'NOTIFICACOES.TODAS' | translate }}</button>
+      <button class="filtro-chip" *ngFor="let c of categorias" [class.active]="filtroCategoria === c.valor"
+        [class.active-blue]="filtroCategoria === c.valor && corCategoria(c.valor) === 'cor-blue'"
+        [class.active-orange]="filtroCategoria === c.valor && corCategoria(c.valor) === 'cor-orange'"
+        [class.active-green]="filtroCategoria === c.valor && corCategoria(c.valor) === 'cor-green'"
+        [class.active-red]="filtroCategoria === c.valor && corCategoria(c.valor) === 'cor-red'"
         (click)="setFiltro(c.valor)">
         <ion-icon [name]="c.icone"></ion-icon>
-        {{ c.label }}
+        {{ c.chave | translate }}
       </button>
     </div>
   </div>
 
-  <!-- Lista -->
   <div class="notif-lista">
-
     <div class="estado-vazio" *ngIf="notificacoesFiltradas.length === 0">
       <ion-icon name="notifications-outline"></ion-icon>
-      <p>Nenhuma notificação</p>
+      <p>{{ 'NOTIFICACOES.NENHUMA' | translate }}</p>
     </div>
 
-    <div class="notif-card"
-      *ngFor="let n of notificacoesFiltradas"
-      [class.nao-lida]="!n.lida"
-      (click)="marcarLida(n)">
-
-      <!-- Ícone categoria -->
+    <div class="notif-card" *ngFor="let n of notificacoesFiltradas" [class.nao-lida]="!n.lida"
+      (click)="abrirNotificacao(n)">
       <div class="notif-icone" [ngClass]="corCategoria(n.categoria)">
         <ion-icon [name]="iconeCategoria(n.categoria)"></ion-icon>
       </div>
-
-      <!-- Conteúdo -->
       <div class="notif-body">
         <div class="notif-top">
           <span class="notif-titulo">{{ n.titulo }}</span>
@@ -66,19 +55,15 @@
           {{ labelCategoria(n.categoria) }}
         </span>
       </div>
-
-      <!-- Ponto não lida + eliminar -->
       <div class="notif-actions">
         <div class="ponto-nao-lida" *ngIf="!n.lida"></div>
         <button class="btn-eliminar" (click)="eliminar(n); $event.stopPropagation()">
           <ion-icon name="trash-outline"></ion-icon>
         </button>
       </div>
-
     </div>
   </div>
 
-  <div class="total-label">{{ notificacoesFiltradas.length }} notificações</div>
+  <div class="total-label">{{ notificacoesFiltradas.length }} {{ 'NOTIFICACOES.TOTAL' | translate }}</div>
   <div class="bottom-space"></div>
-
 </ion-content>

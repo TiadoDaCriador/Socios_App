@@ -30,7 +30,7 @@ export class NotificacoesService {
     eventos:       true,
     quotas:        true,
     convocatorias: true,
-    noticias:      false,
+    noticias:      true, // ✅ CORRIGIDO: era false, documentos usam esta categoria
   });
   prefs$ = this._prefs.asObservable();
 
@@ -52,7 +52,6 @@ export class NotificacoesService {
   }
 
   adicionar(dados: { titulo: string; mensagem: string; categoria: CategoriaNotif }) {
-    // Verifica se a categoria está ativa nas preferências
     if (!this.prefs[dados.categoria]) return;
 
     const nova: Notificacao = {

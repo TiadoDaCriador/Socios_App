@@ -1,4 +1,3 @@
-// src/app/pages/definicoes/definicoes.page.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -12,20 +11,17 @@ import {
   cardOutline, notificationsOutline, documentTextOutline,
   logOutOutline, chevronForwardOutline,
 } from 'ionicons/icons';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../services/auth.service';
 import { AcessibilidadeModalComponent } from './acessibilidade-modal';
 import { NotificacoesModalComponent } from './notificacoes-modal';
 import { CartoesModalComponent } from './cartoes-modal';
 import { TermosModalComponent } from './termos-modal';
 import { ModalController } from '@ionic/angular/standalone';
+import { firstValueFrom } from 'rxjs';
 
 export interface OpcaoDefinicao {
-  id: string;
-  label: string;
-  descricao?: string;
-  icone: string;
-  cor?: string;
-  danger?: boolean;
+  id: string; labelKey: string; descKey?: string; icone: string; danger?: boolean;
 }
 
 @Component({
@@ -34,7 +30,7 @@ export interface OpcaoDefinicao {
   styleUrls: ['./definicoes.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
+    CommonModule, TranslateModule,
     IonHeader, IonToolbar, IonButtons, IonMenuButton,
     IonTitle, IonContent, IonIcon,
   ],
@@ -42,13 +38,13 @@ export interface OpcaoDefinicao {
 export class DefinicoesPage {
 
   opcoes: OpcaoDefinicao[] = [
-    { id: 'acessibilidade', label: 'Acessibilidade', descricao: 'Fonte, tema, idioma', icone: 'accessibility-outline' },
-    { id: 'suporte', label: 'Suporte', descricao: 'Enviar email de suporte', icone: 'help-circle-outline' },
-    { id: 'password', label: 'Palavra-passe', descricao: 'Alterar palavra-passe', icone: 'lock-closed-outline' },
-    { id: 'cartoes', label: 'Cartões Associados', descricao: 'Gerir cartões de pagamento', icone: 'card-outline' },
-    { id: 'notificacoes', label: 'Gerir Notificações', descricao: 'Eventos, quotas, convocatórias', icone: 'notifications-outline' },
-    { id: 'termos', label: 'Termos e Permissões', descricao: 'Ver termos de utilização', icone: 'document-text-outline' },
-    { id: 'logout', label: 'Terminar Sessão', icone: 'log-out-outline', danger: true },
+    { id: 'acessibilidade', labelKey: 'DEFINICOES.ACESSIBILIDADE', descKey: 'DEFINICOES.ACESSIBILIDADE_DESC', icone: 'accessibility-outline' },
+    { id: 'suporte', labelKey: 'DEFINICOES.SUPORTE', descKey: 'DEFINICOES.SUPORTE_DESC', icone: 'help-circle-outline' },
+    { id: 'password', labelKey: 'DEFINICOES.PASSWORD', descKey: 'DEFINICOES.PASSWORD_DESC', icone: 'lock-closed-outline' },
+    { id: 'cartoes', labelKey: 'DEFINICOES.CARTOES', descKey: 'DEFINICOES.CARTOES_DESC', icone: 'card-outline' },
+    { id: 'notificacoes', labelKey: 'DEFINICOES.NOTIFICACOES', descKey: 'DEFINICOES.NOTIFICACOES_DESC', icone: 'notifications-outline' },
+    { id: 'termos', labelKey: 'DEFINICOES.TERMOS', descKey: 'DEFINICOES.TERMOS_DESC', icone: 'document-text-outline' },
+    { id: 'logout', labelKey: 'MENU.LOGOUT', icone: 'log-out-outline', danger: true },
   ];
 
   constructor(
@@ -56,78 +52,61 @@ export class DefinicoesPage {
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
     private auth: AuthService,
+    private translate: TranslateService,
   ) {
-    addIcons({
-      accessibilityOutline, helpCircleOutline, lockClosedOutline,
-      cardOutline, notificationsOutline, documentTextOutline,
-      logOutOutline, chevronForwardOutline,
-    });
+    addIcons({ accessibilityOutline, helpCircleOutline, lockClosedOutline, cardOutline, notificationsOutline, documentTextOutline, logOutOutline, chevronForwardOutline });
   }
 
   async clicar(opcao: OpcaoDefinicao) {
     switch (opcao.id) {
-
-      case 'acessibilidade':
-        await this.abrirModal(AcessibilidadeModalComponent);
-        break;
-
-      case 'suporte':
-        window.open('mailto:suporte@associacao.pt?subject=Suporte App Sócios', '_blank');
-        break;
-
-      case 'password':
-        await this.alterarPassword();
-        break;
-
-      case 'cartoes':
-        await this.abrirModal(CartoesModalComponent);
-        break;
-
-      case 'notificacoes':
-        await this.abrirModal(NotificacoesModalComponent);
-        break;
-
-      case 'termos':
-        await this.abrirModal(TermosModalComponent);
-        break;
-
-      case 'logout':
-        await this.confirmarLogout();
-        break;
+      case 'acessibilidade': await this.abrirModal(AcessibilidadeModalComponent); break;
+      case 'suporte': window.open('mailto:suporte@associacao.pt?subject=Suporte App Sócios', '_blank'); break;
+      case 'password': await this.alterarPassword(); break;
+      case 'cartoes': await this.abrirModal(CartoesModalComponent); break;
+      case 'notificacoes': await this.abrirModal(NotificacoesModalComponent); break;
+      case 'termos': await this.abrirModal(TermosModalComponent); break;
+      case 'logout': await this.confirmarLogout(); break;
     }
   }
 
   private async abrirModal(component: any) {
-    const modal = await this.modalCtrl.create({
-      component,
-      initialBreakpoint: 0.9,
-      breakpoints: [0, 0.9, 1],
-      handleBehavior: 'cycle',
-    });
+    const modal = await this.modalCtrl.create({ component, initialBreakpoint: 0.9, breakpoints: [0, 0.9, 1], handleBehavior: 'cycle' });
     await modal.present();
   }
 
   private async alterarPassword() {
+    // Busca as traduções específicas para cada campo
+    const header = await firstValueFrom(this.translate.get('DEFINICOES.PASSWORD'));
+    const pldAtual = await firstValueFrom(this.translate.get('PASSWORD.CURRENT')); 
+    const pldNova = await firstValueFrom(this.translate.get('PASSWORD.NEW'));
+    const pldConf = await firstValueFrom(this.translate.get('PASSWORD.CONFIRM'));
+    
     const alert = await this.alertCtrl.create({
-      header: 'Alterar Palavra-passe',
+      header: header,
       inputs: [
-        { name: 'atual', type: 'password', placeholder: 'Palavra-passe atual' },
-        { name: 'nova', type: 'password', placeholder: 'Nova palavra-passe' },
-        { name: 'confirmar', type: 'password', placeholder: 'Confirmar nova' },
+        { name: 'atual', type: 'password', placeholder: pldAtual },
+        { name: 'nova', type: 'password', placeholder: pldNova },
+        { name: 'confirmar', type: 'password', placeholder: pldConf },
       ],
       buttons: [
-        { text: 'Cancelar', role: 'cancel' },
+        { text: this.translate.instant('COMUM.CANCELAR'), role: 'cancel' },
         {
-          text: 'Alterar',
+          text: this.translate.instant('COMUM.GUARDAR'), 
           handler: (data) => {
-            if (!data.nova || data.nova !== data.confirmar) {
-              this.showToast('As palavras-passe não coincidem', 'danger');
+            // Verifica se preencheu a pass atual
+            if (!data.atual) {
+              this.showToast(this.translate.instant('PASSWORD.ERROR_CURRENT'), 'warning');
               return false;
             }
-            // TODO: this.authService.alterarPassword(data.atual, data.nova).subscribe()
-            this.showToast('Palavra-passe alterada!', 'success');
+            // Verifica se a nova e a confirmação coincidem
+            if (!data.nova || data.nova !== data.confirmar) { 
+              this.showToast(this.translate.instant('REGISTER.ERRO_PASSWORDS'), 'danger'); 
+              return false; 
+            }
+            
+            this.showToast(this.translate.instant('PERFIL.SUCESSO'), 'success');
             return true;
-          },
+          }
         },
       ],
     });
@@ -135,12 +114,15 @@ export class DefinicoesPage {
   }
 
   private async confirmarLogout() {
+    const header = await firstValueFrom(this.translate.get('MENU.LOGOUT'));
+    const msg = await firstValueFrom(this.translate.get('NOTIFICACOES.ELIMINAR_MSG'));
+
     const alert = await this.alertCtrl.create({
-      header: 'Terminar Sessão',
-      message: 'Tens a certeza que queres sair?',
+      header: header,
+      message: msg,
       buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        { text: 'Sair', role: 'destructive', handler: () => this.auth.logout() },
+        { text: this.translate.instant('COMUM.CANCELAR'), role: 'cancel' },
+        { text: this.translate.instant('MENU.LOGOUT'), role: 'destructive', handler: () => this.auth.logout() },
       ],
     });
     await alert.present();

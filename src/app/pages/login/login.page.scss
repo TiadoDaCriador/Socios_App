@@ -1,0 +1,170 @@
+// src/app/pages/login/login.page.scss
+
+.login-content {
+  --background: var(--color-bg);
+}
+
+.login-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px 24px;
+  gap: 40px;
+}
+
+// ── Cabeçalho ─────────────────────────────────────────────
+.login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-logo {
+  width: 72px;
+  height: 72px;
+  background: var(--color-primary);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(26, 111, 219, 0.35);
+  margin-bottom: 8px;
+
+  ion-icon {
+    font-size: 36px;
+    color: #ffffff;
+  }
+}
+
+.login-titulo {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.5px;
+}
+
+.login-subtitulo {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+// ── Formulário ────────────────────────────────────────────
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: 0.3px;
+}
+
+.field-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(26, 111, 219, 0.12);
+  }
+}
+
+.field-icon {
+  font-size: 18px;
+  color: var(--color-muted);
+  flex-shrink: 0;
+}
+
+.field-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 15px;
+  color: var(--color-text);
+
+  &::placeholder { color: var(--color-muted); }
+}
+
+.field-eye {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-muted);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+}
+
+// ── Botão entrar ──────────────────────────────────────────
+.btn-entrar {
+  width: 100%;
+  padding: 15px;
+  margin-top: 8px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+
+  &:active { transform: scale(0.98); opacity: 0.9; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+// ── Spinner ───────────────────────────────────────────────
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// ── Footer ────────────────────────────────────────────────
+.login-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+.btn-link {
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
