@@ -25,7 +25,6 @@
       <button class="filtro-chip" *ngFor="let c of categorias" [class.active]="filtroCategoria === c.valor"
         [class.active-blue]="filtroCategoria === c.valor && corCategoria(c.valor) === 'cor-blue'"
         [class.active-orange]="filtroCategoria === c.valor && corCategoria(c.valor) === 'cor-orange'"
-        [class.active-green]="filtroCategoria === c.valor && corCategoria(c.valor) === 'cor-green'"
         [class.active-red]="filtroCategoria === c.valor && corCategoria(c.valor) === 'cor-red'"
         (click)="setFiltro(c.valor)">
         <ion-icon [name]="c.icone"></ion-icon>

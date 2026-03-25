@@ -16,14 +16,14 @@ import { EventosService } from '../../services/eventos.service';
   styleUrls: ['./calendario.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, 
-    TranslateModule, 
-    IonHeader, 
-    IonToolbar, 
-    IonButtons, 
-    IonMenuButton, 
-    IonTitle, 
-    IonContent, 
+    CommonModule,
+    TranslateModule,
+    IonHeader,
+    IonToolbar,
+    IonButtons,
+    IonMenuButton,
+    IonTitle,
+    IonContent,
     IonIcon
   ],
 })
@@ -41,7 +41,7 @@ export class CalendarioPage implements OnInit, OnDestroy {
   private langSub?: Subscription;
 
   constructor(
-    private eventosService: EventosService, 
+    private eventosService: EventosService,
     private translate: TranslateService
   ) {
     addIcons({ chevronBackOutline, chevronForwardOutline });
@@ -55,11 +55,11 @@ export class CalendarioPage implements OnInit, OnDestroy {
     this.sub = this.eventosService.eventos$.subscribe(lista => {
       this.eventos = lista.map(e => {
         const d = new Date(e.dataInicio);
-        return { 
-          ...e, 
-          titulo: e.nome, 
-          data: d, 
-          hora: `${String(d.getHours()).padStart(2, '0')}:00` 
+        return {
+          ...e,
+          titulo: e.nome,
+          data: d,
+          hora: `${String(d.getHours()).padStart(2, '0')}:00`
         };
       });
     });
@@ -72,14 +72,14 @@ export class CalendarioPage implements OnInit, OnDestroy {
     });
   }
 
-  setVista(v: 'mes' | 'semana' | 'dia') { 
-    this.vista = v; 
-    this.gerarCelulas(); 
+  setVista(v: 'mes' | 'semana' | 'dia') {
+    this.vista = v;
+    this.gerarCelulas();
   }
 
-  irParaHoje() { 
-    this.dataAtual = new Date(); 
-    this.gerarCelulas(); 
+  irParaHoje() {
+    this.dataAtual = new Date();
+    this.gerarCelulas();
   }
 
   anterior() { this.navegar(-1); }
@@ -90,7 +90,7 @@ export class CalendarioPage implements OnInit, OnDestroy {
     if (this.vista === 'mes') d.setMonth(d.getMonth() + dir);
     else if (this.vista === 'semana') d.setDate(d.getDate() + (dir * 7));
     else d.setDate(d.getDate() + dir);
-    this.dataAtual = d; 
+    this.dataAtual = d;
     this.gerarCelulas();
   }
 
@@ -107,13 +107,12 @@ export class CalendarioPage implements OnInit, OnDestroy {
     const dow = d.getDay() === 0 ? 6 : d.getDay() - 1;
     d.setDate(d.getDate() - dow);
     return Array.from({ length: 7 }, (_, i) => {
-      const dia = new Date(d); 
-      dia.setDate(d.getDate() + i); 
+      const dia = new Date(d);
+      dia.setDate(d.getDate() + i);
       return dia;
     });
   }
 
-  // ✅ Função restaurada para corrigir o erro do Template
   isHoraPassada = (dia: Date, hora: string) => {
     const agora = new Date();
     const d = new Date(dia);
@@ -123,21 +122,22 @@ export class CalendarioPage implements OnInit, OnDestroy {
   };
 
   isHoje = (d: Date) => this.mesmoDia(d, this.hoje);
-  
+
   isPassado = (d: Date) => {
-    const h = new Date(); h.setHours(0,0,0,0);
-    const temp = new Date(d); temp.setHours(0,0,0,0);
+    const h = new Date(); h.setHours(0, 0, 0, 0);
+    const temp = new Date(d); temp.setHours(0, 0, 0, 0);
     return temp < h;
   };
 
   eventosNoDia = (d: Date) => this.eventos.filter(e => this.mesmoDia(e.data, d));
-  
-  eventoNaHora = (dia: Date, hora: string) => 
+
+  eventoNaHora = (dia: Date, hora: string) =>
     this.eventosNoDia(dia).find(e => e.hora.startsWith(hora.split(':')[0]));
 
-  private mesmoDia = (a: Date, b: Date) => 
-    a.getDate() === b.getDate() && 
-    a.getMonth() === b.getMonth() && 
+  // Removido o 'private' para o HTML conseguir aceder
+  mesmoDia = (a: Date, b: Date) =>
+    a.getDate() === b.getDate() &&
+    a.getMonth() === b.getMonth() &&
     a.getFullYear() === b.getFullYear();
 
   gerarCelulas() {
@@ -162,8 +162,8 @@ export class CalendarioPage implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() { 
-    this.sub?.unsubscribe(); 
-    this.langSub?.unsubscribe(); 
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
+    this.langSub?.unsubscribe();
   }
 }

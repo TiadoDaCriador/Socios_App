@@ -1,366 +1,119 @@
 .cal-content {
-  --background: var(--color-bg);
+  --background: #000000;
+  position: relative;
+  --padding-bottom: 100px;
+}
+
+.data-header {
+  padding: 30px 25px 15px;
+  display: flex;
+  justify-content: space-between;
+  color: #ffffff;
+
+  .dia-num { font-size: 85px; font-weight: 800; margin: 0; line-height: 0.8; }
+  .mes-nome { font-size: 34px; font-weight: 700; margin: 8px 0 2px; }
+  .ano-num { font-size: 28px; font-weight: 600; color: #FFB400; margin: 0; }
+  .dia-semana-txt { font-size: 45px; color: #B0B0B0; font-weight: 500; margin-top: 10px; }
 }
 
 .vista-bar {
   display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 12px 16px 0;
-}
+  gap: 12px;
+  padding: 10px 25px 35px;
 
-.vista-btn {
-  padding: 7px 16px;
-  border: 1.5px solid var(--color-border);
-  border-radius: 20px;
-  background: var(--color-card);
-  color: var(--color-muted);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &.active {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
+  .vista-btn {
+    background: transparent;
+    border: 2px solid #ffffff;
+    border-radius: 20px;
     color: #ffffff;
-    box-shadow: 0 2px 8px rgba(26, 111, 219, 0.3);
+    padding: 6px 20px;
+    font-size: 11px;
+    font-weight: 800;
+
+    &.active {
+      background: #0098DB;
+      border-color: #0098DB;
+    }
   }
-}
-
-.nav-bar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 16px;
-}
-
-.nav-btn {
-  border: none;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.today-btn {
-  padding: 6px 12px;
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-card);
-  color: var(--color-text);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-.arrow-btn {
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-card);
-  color: var(--color-text);
-  font-size: 16px;
-
-  &:active {
-    background: var(--color-bg);
-  }
-}
-
-.nav-titulo {
-  margin-left: 4px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--color-text);
-  letter-spacing: 0.3px;
-}
-
-// ── Vista Mês ──
-.cal-mes {
-  padding: 0 8px;
 }
 
 .mes-header {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  margin-bottom: 4px;
-}
-
-.mes-header-dia {
-  text-align: center;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-muted);
-  padding: 6px 0;
+  margin-bottom: 12px;
+  .mes-header-dia { text-align: center; color: #ffffff; font-size: 11px; font-weight: 700; }
 }
 
 .mes-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
-}
+  gap: 8px;
+  padding: 0 15px;
 
-.mes-celula {
-  min-height: 64px;
-  background: var(--color-card);
-  border-radius: var(--radius-sm);
-  padding: 4px 3px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  border: 1px solid transparent;
+  .mes-celula {
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
 
-  &.outro-mes {
-    background: transparent;
+    &:active { transform: scale(0.9); }
 
-    .celula-num {
-      color: #c4c9d4;
-    }
-  }
-
-  &.hoje {
-    border-color: var(--color-primary);
-    background: var(--color-hoje-bg);
-
-    .celula-num {
-      background: var(--color-primary);
+    &.outro-mes {
+      border: 2px solid #ffffff;
+      background: #000000;
       color: #ffffff;
-      border-radius: 50%;
-      width: 22px;
-      height: 22px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
-  }
 
-  // ✅ Dias passados
-  &.passado {
-    opacity: 0.4;
-    cursor: not-allowed;
-    pointer-events: none;
-
-    .celula-num {
-      color: var(--color-muted);
+    &.passado {
+      background: #444444;
+      color: #ffffff;
     }
-  }
-}
 
-.celula-num {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-text);
-  line-height: 1;
-  padding: 1px 3px;
-}
+    &.hoje {
+      background: #0098DB;
+      color: #ffffff;
+    }
 
-.celula-eventos {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
+    &.futuro {
+      background: #ffffff;
+      color: #000000;
+    }
 
-.evento-pill {
-  font-size: 10px;
-  font-weight: 700;
-  color: #ffffff;
-  border-radius: 4px;
-  padding: 2px 4px;
-  text-align: center;
-  line-height: 1.3;
-}
-
-// ── Vista Semana ──
-.cal-semana {
-  padding: 0 8px;
-  background: var(--color-card);
-  border-radius: var(--radius);
-  margin: 0 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-}
-
-.semana-header {
-  display: flex;
-  border-bottom: 2px solid var(--color-border);
-  position: sticky;
-  top: 0;
-  background: var(--color-card);
-  z-index: 10;
-}
-
-.semana-hora-col {
-  width: 48px;
-  flex-shrink: 0;
-}
-
-.semana-dia-col {
-  flex: 1;
-  text-align: center;
-  padding: 8px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-
-  &.hoje {
-    background: var(--color-hoje-bg);
-  }
-
-  // ✅ Cabeçalho dias passados
-  &.passado {
-    opacity: 0.4;
-
-    .semana-dia-nome,
-    .semana-dia-num {
-      color: var(--color-muted);
+    &.selecionado {
+      box-shadow: inset 0 0 0 3px #0098DB;
     }
   }
 }
 
-.semana-dia-nome {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--color-muted);
-  letter-spacing: 0.5px;
+.nav-footer {
+  position: absolute;
+  bottom: 100px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 25px;
+  pointer-events: none;
 }
 
-.semana-dia-num {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--color-text);
-  width: 28px;
-  height: 28px;
+.nav-btn {
+  pointer-events: auto;
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 
-  &.hoje-num {
-    background: var(--color-primary);
-    color: #ffffff;
-  }
-}
-
-.semana-body {
-  overflow-y: auto;
-  max-height: calc(100vh - 220px);
-}
-
-.semana-linha {
-  display: flex;
-  border-bottom: 1px solid var(--color-border);
-  min-height: 48px;
-}
-
-.semana-hora-label {
-  width: 48px;
-  flex-shrink: 0;
-  font-size: 10px;
-  color: var(--color-muted);
-  padding: 4px 4px 0;
-  text-align: right;
-}
-
-.semana-celula {
-  flex: 1;
-  border-left: 1px solid var(--color-border);
-  padding: 2px;
-  position: relative;
-
-  &.hoje-col {
-    background: rgba(26, 111, 219, 0.03);
-  }
-
-  // ✅ Células de horas em dias passados
-  &.passado {
-    cursor: not-allowed;
-    pointer-events: none;
-    background: repeating-linear-gradient(135deg,
-        transparent,
-        transparent 4px,
-        rgba(0, 0, 0, 0.03) 4px,
-        rgba(0, 0, 0, 0.03) 8px);
-
-    .semana-evento {
-      pointer-events: auto;
-      opacity: 0.5;
-    }
-  }
-}
-
-.semana-evento {
-  font-size: 10px;
-  font-weight: 600;
-  color: #ffffff;
-  border-radius: 4px;
-  padding: 3px 5px;
-  margin: 1px;
-}
-
-// ── Vista Dia ──
-.cal-dia {
-  padding: 0 8px;
-  background: var(--color-card);
-  border-radius: var(--radius);
-  margin: 0 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-}
-
-.dia-linha {
-  display: flex;
-  align-items: stretch;
-  border-bottom: 1px solid var(--color-border);
-  min-height: 52px;
-
-  // ✅ Vista Dia passado
-  &.passado {
-    cursor: not-allowed;
-    pointer-events: none;
-    opacity: 0.4;
-
-    .dia-evento {
-      opacity: 0.5;
-    }
-  }
-}
-
-.dia-hora-label {
-  width: 52px;
-  flex-shrink: 0;
-  font-size: 11px;
-  color: var(--color-muted);
-  padding: 6px 8px 0;
-  text-align: right;
-  font-weight: 500;
-}
-
-.dia-celula {
-  flex: 1;
-  border-left: 1px solid var(--color-border);
-  padding: 4px 8px;
-}
-
-.dia-evento {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-radius: 6px;
-  padding: 6px 10px;
-  color: #ffffff;
-}
-
-.dia-evento-hora {
-  font-size: 11px;
-  font-weight: 700;
-  opacity: 0.85;
-}
-
-.dia-evento-titulo {
-  font-size: 13px;
-  font-weight: 600;
+  ion-icon { font-size: 32px; }
+  &:active { opacity: 0.8; }
 }

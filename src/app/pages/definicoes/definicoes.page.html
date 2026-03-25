@@ -1,22 +1,39 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="end"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-title>{{ 'DEFINICOES.TITULO' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="def-content">
-  <div class="opcoes-lista">
-    <div class="opcao-row" *ngFor="let op of opcoes" [class.danger]="op.danger" (click)="clicar(op)">
-      <div class="opcao-icon" [class.danger-icon]="op.danger">
-        <ion-icon [name]="op.icone"></ion-icon>
-      </div>
-      <div class="opcao-info">
-        <span class="opcao-label" [class.danger-label]="op.danger">{{ op.labelKey | translate }}</span>
-        <span class="opcao-desc" *ngIf="op.descKey">{{ op.descKey | translate }}</span>
-      </div>
-      <ion-icon name="chevron-forward-outline" class="chevron" *ngIf="!op.danger"></ion-icon>
+  <div class="def-layout">
+
+    <div class="logo-sidebar">
+      <span class="sidebar-texto">maestro</span>
+      <img src="assets/images/image-2.png" alt="Logo" class="logo-img" />
     </div>
+
+    <div class="opcoes-lista">
+      <div
+        class="opcao-row"
+        *ngFor="let op of opcoes; let i = index"
+        [class.danger]="op.danger"
+        [style.background]="op.danger ? '#111111' : getCinzento(i)"
+        (click)="clicar(op)">
+        
+        <span class="opcao-label" [class.danger-label]="op.danger">
+          {{ op.labelKey | translate }}
+        </span>
+        
+        <ion-icon
+          [name]="op.danger ? 'exit-outline' : 'chevron-forward-outline'"
+          [class.chevron]="!op.danger"
+          [class.danger-chevron]="op.danger">
+        </ion-icon>
+      </div>
+    </div>
+
   </div>
-  <div class="bottom-space"></div>
 </ion-content>

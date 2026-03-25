@@ -1,4 +1,63 @@
 // ─────────────────────────────────────────────
+// FONTS – Lato
+// ─────────────────────────────────────────────
+@font-face {
+    font-family: 'Lato';
+    src: url('assets/Fonts/Lato/Lato-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('assets/Fonts/Lato/Lato-Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('assets/Fonts/Lato/Lato-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('assets/Fonts/Lato/Lato-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('assets/Fonts/Lato/Lato-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('assets/Fonts/Lato/Lato-BoldItalic.ttf') format('truetype');
+    font-weight: 700;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('assets/Fonts/Lato/Lato-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('assets/Fonts/Lato/Lato-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+// ─────────────────────────────────────────────
 // IONIC IMPORTS
 // ─────────────────────────────────────────────
 @import "@ionic/angular/css/core.css";
@@ -17,6 +76,7 @@
 // VARIÁVEIS GLOBAIS
 // ─────────────────────────────────────────────
 :root {
+    --ion-font-family: 'Lato', sans-serif;
     --color-primary: #1a6fdb;
     --color-success: #2e7d32;
     --color-danger: #e53935;
@@ -31,6 +91,10 @@
     --radius: 10px;
     --radius-sm: 6px;
     --app-font-size: 16px;
+}
+
+body {
+    font-family: var(--ion-font-family);
 }
 
 // ─────────────────────────────────────────────
@@ -128,23 +192,22 @@ ion-header ion-toolbar {
 }
 
 .btn-filtro {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-card);
-    border: 1.5px solid var(--color-border);
-    border-radius: var(--radius-sm);
+    background: transparent;
+    border: none;
+    border-radius: 50%;
     color: var(--color-muted);
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
     flex-shrink: 0;
 
     &.active {
-        background: var(--color-primary);
-        border-color: var(--color-primary);
-        color: #ffffff;
+        color: var(--color-primary);
+        background: rgba(26, 111, 219, 0.08);
     }
 }
 

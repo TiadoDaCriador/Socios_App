@@ -12,7 +12,7 @@
 
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
             <ion-item [routerLink]="[p.url]" routerDirection="root">
-              <!-- ✅ translate pipe no menu -->
+           
               <ion-label>{{ p.title | translate }}</ion-label>
               <ion-icon slot="end" [name]="p.icon"></ion-icon>
             </ion-item>

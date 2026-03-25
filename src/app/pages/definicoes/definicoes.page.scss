@@ -1,32 +1,86 @@
-.def-content { --background: var(--color-bg); }
+.def-content {
+  --background: #000000;
+}
 
-.opcoes-lista {
-  background: var(--color-card);
-  border-radius: var(--radius);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-  margin: 16px;
+.def-layout {
+  display: flex;
+  height: 100%;
+}
+
+// ── Sidebar Lateral ──
+.logo-sidebar {
+  width: 100px; // Ajustado para ser mais proporcional
+  flex-shrink: 0;
+  background: #000000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end; // Empurra tudo para o fundo da barra
+  padding-bottom: 40px;      // Margem no fundo para não colar no rodapé
+  gap: 20px;                 // Espaço entre o texto e o logo
   overflow: hidden;
 }
 
+.sidebar-texto {
+  font-family: 'Lato', sans-serif;
+  font-size: 80px;           
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 2px;
+  text-transform: lowercase;
+  white-space: nowrap;
+  line-height: 1;
+
+  // Texto de baixo para cima
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.logo-img {
+  width: 55px;               // Tamanho do ícone redondo
+  height: auto;
+  // Roda o logo de lado para alinhar com o texto vertical
+  transform: rotate(-90deg); 
+}
+
+// ── Lista de Opções (Direita) ──
+.opcoes-lista {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .opcao-row {
-  display: flex; align-items: center; gap: 14px;
-  padding: 16px; border-bottom: 1px solid var(--color-border);
-  cursor: pointer; transition: background 0.15s;
-  &:last-child { border-bottom: none; }
-  &:active     { background: var(--color-bg); }
-  &.danger:active { background: rgba(229,57,53,0.05); }
+  flex: 1; 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 25px;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:active {
+    filter: brightness(1.3);
+  }
 }
 
-.opcao-icon {
-  width: 40px; height: 40px;
-  border-radius: var(--radius-sm);
-  background: #e8f0fc;
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  ion-icon { font-size: 20px; color: var(--color-primary); }
-  &.danger-icon { background: rgba(229,57,53,0.1); ion-icon { color: var(--color-danger); } }
+.opcao-label {
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff !important;
+
+  &.danger-label {
+    color: #ef5350 !important;
+  }
 }
 
-.opcao-info { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.opcao-label { font-size: 15px; font-weight: 600; color: var(--color-text) !important; &.danger-label { color: var(--color-danger) !important; } }
-.opcao-desc  { font-size: 12px; color: var(--color-muted) !important; }
-.chevron     { font-size: 18px; color: var(--color-muted); flex-shrink: 0; }
+.chevron {
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.danger-chevron {
+  font-size: 22px;
+  color: #ef5350;
+}

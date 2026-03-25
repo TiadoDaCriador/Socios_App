@@ -1,15 +1,30 @@
-// src/app/pages/quotas/quotas.service.ts
-// NOTA: Este ficheiro vai em src/app/pages/quotas/ (não em services/)
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs'; // 👈 Adicionado para a ligação
 import { Quota } from './quotas.page';
 import { NotificacoesService } from '../notificacoes/notificacoes.service';
 
 @Injectable({ providedIn: 'root' })
 export class QuotasService {
 
+  // ✅ Criamos este Subject para a Home "ouvir" o valor da dívida
+  private _totalDivida = new BehaviorSubject<number>(0);
+  totalDivida$ = this._totalDivida.asObservable();
+
   constructor(private notifService: NotificacoesService) {}
 
+  // ✅ Método para calcular e atualizar o valor que aparece na Home
+  atualizarValorHome(quotas: Quota[]) {
+    const total = quotas
+      .filter(q => q.estado === 'vencido' || q.estado === 'pendente')
+      .reduce((acc, q) => acc + q.valor, 0);
+    
+    this._totalDivida.next(total);
+  }
+
   verificarQuotas(quotas: Quota[]) {
+    // Primeiro, atualizamos o valor global da dívida para a Home
+    this.atualizarValorHome(quotas);
+
     const hoje = new Date();
     quotas.forEach(q => {
       if (q.estado === 'vencido') {

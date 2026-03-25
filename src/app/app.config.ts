@@ -7,7 +7,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { Observable, from } from 'rxjs';
 
-// ✅ Loader simples que usa fetch nativo — sem TranslateHttpLoader
+
 export class CustomTranslateLoader implements TranslateLoader {
   getTranslation(lang: string): Observable<any> {
     return from(

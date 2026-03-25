@@ -1,8 +1,5 @@
-// src/app/services/eventos.service.ts
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { NotificacoesService } from '../pages/notificacoes/notificacoes.service';
-import { labelDoTipo } from '../shared/tipos-eventos'; // ✅ ADICIONADO
+import { BehaviorSubject, map } from 'rxjs';
 
 export interface EventoLista {
   id: number;
@@ -13,66 +10,67 @@ export interface EventoLista {
   dataFim: Date;
   local: string;
   descricao?: string;
+  pdfUrl?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class EventosService {
+  // Inicializamos com um evento de teste para a tua Home não estar vazia
+  private _eventos = new BehaviorSubject<EventoLista[]>([
+    {
+      id: 1,
+      nome: 'Ensaio Geral - Maestro',
+      tipo: 'Ensaio',
+      cor: '#f1b44c',
+      dataInicio: new Date(), // Hoje
+      dataFim: new Date(),
+      local: 'Auditório Principal',
+      descricao: 'Ensaio de preparação para o evento de Gala.'
+    }
+  ]);
+  
+  // Observable que a Home usa para o "Card Amarelo" (sempre ordenado por data)
+  eventos$ = this._eventos.asObservable().pipe(
+    map(eventos => eventos.sort((a, b) => a.dataInicio.getTime() - b.dataInicio.getTime()))
+  );
 
-  private _eventos = new BehaviorSubject<EventoLista[]>([]);
-  eventos$: Observable<EventoLista[]> = this._eventos.asObservable();
+  private _dataSelecionada = new BehaviorSubject<Date>(new Date());
+  dataSelecionada$ = this._dataSelecionada.asObservable();
 
-  constructor(private notifService: NotificacoesService) {}
+  constructor() { }
 
+  // --- MÉTODOS DE DATA ---
+  setDataSelecionada(data: Date) {
+    this._dataSelecionada.next(data);
+  }
+
+  // --- MÉTODOS DE EVENTOS ---
   get eventos(): EventoLista[] {
     return this._eventos.getValue();
+  }
+
+  // Novo método: Filtra eventos para um dia específico (usado na lista da Home)
+  getEventosDoDia(data: Date) {
+    return this.eventos$.pipe(
+      map(eventos => eventos.filter(e => 
+        e.dataInicio.getDate() === data.getDate() &&
+        e.dataInicio.getMonth() === data.getMonth() &&
+        e.dataInicio.getFullYear() === data.getFullYear()
+      ))
+    );
   }
 
   adicionar(evento: Omit<EventoLista, 'id'>): EventoLista {
     const novo: EventoLista = { ...evento, id: Date.now() };
     this._eventos.next([...this.eventos, novo]);
-
-  
-    this.notifService.adicionar({
-      titulo:    `Novo Evento: ${novo.nome}`,
-      mensagem:  `${labelDoTipo(novo.tipo)} marcado para ${novo.dataInicio.toLocaleDateString('pt-PT')} em ${novo.local || 'local a definir'}.`,
-      categoria: 'eventos',
-    });
-
     return novo;
   }
 
   atualizar(id: number, dados: Partial<EventoLista>): void {
-    const lista = this.eventos.map(e => e.id === id ? { ...e, ...dados } : e);
-    this._eventos.next(lista);
+    this._eventos.next(this.eventos.map(e => e.id === id ? { ...e, ...dados } : e));
   }
 
   eliminar(id: number): void {
     this._eventos.next(this.eventos.filter(e => e.id !== id));
   }
-
-  adicionarDoCalendario(dados: {
-    titulo: string;
-    tipo:   string; 
-    data:   Date;
-    hora:   string;
-    cor:    string;
-    local?: string;
-  }): EventoLista {
-    const [horas, minutos] = dados.hora.split(':').map(Number);
-    const dataInicio = new Date(dados.data);
-    dataInicio.setHours(horas, minutos || 0, 0, 0);
-    const dataFim = new Date(dataInicio);
-    dataFim.setHours(horas + 1, minutos || 0, 0, 0);
-
-    return this.adicionar({
-      nome:      dados.titulo,
-      tipo:      dados.tipo, 
-      cor:       dados.cor,
-      dataInicio,
-      dataFim,
-      local:     dados.local ?? '',
-    });
-  }
-
-
 }

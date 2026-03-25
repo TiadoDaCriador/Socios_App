@@ -246,5 +246,17 @@
     "GUARDANDO": "A guardar...",
     "SUCESSO": "Perfil guardado com sucesso!",
     "ERRO_SAVE": "Erro ao guardar. Tente novamente."
+  },
+  "LOGIN": {
+  "RECUPERAR": "Recuperar Palavra-passe"
+},
+  "RECUPERAR": {
+    "TITULO": "Recuperar Palavra-passe",
+    "SUBTITULO": "Insira o seu e-mail para receber instruções de recuperação",
+    "EMAIL": "E-mail",
+    "ENVIAR": "Enviar Instruções",
+    "ERRO_CAMPOS": "Por favor, insira o seu e-mail",
+    "ERRO_EMAIL": "E-mail não encontrado",
+    "SUCESSO": "Instruções enviadas para o seu e-mail!"
   }
 }

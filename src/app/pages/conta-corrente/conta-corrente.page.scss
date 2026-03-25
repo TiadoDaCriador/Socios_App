@@ -2,36 +2,7 @@
   --background: var(--color-bg);
 }
 
-.saldo-card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin: 12px 16px 6px;
-  padding: 14px;
-  border-radius: var(--radius-sm);
-  font-size: 15px;
-  font-weight: 700;
-
-  ion-icon {
-    font-size: 20px;
-  }
-
-  &.saldo-total {
-    background: #4a5568;
-    color: #ffffff;
-  }
-
-  &.saldo-periodo {
-    background: var(--color-success);
-    color: #ffffff;
-
-    &.negativo {
-      background: var(--color-vencido);
-    }
-  }
-}
-
+// ── Cabeçalho da lista ─────────────────────────────────────
 .lista-header {
   display: flex;
   align-items: center;
@@ -47,11 +18,10 @@
   font-size: 12px;
   font-weight: 700;
   color: var(--color-muted);
+  text-transform: uppercase;
   cursor: pointer;
 
-  ion-icon {
-    font-size: 13px;
-  }
+  ion-icon { font-size: 13px; }
 }
 
 .lista-header-desc {
@@ -59,6 +29,7 @@
   font-size: 12px;
   font-weight: 700;
   color: var(--color-muted);
+  text-transform: uppercase;
 }
 
 .lista-header-valor {
@@ -66,9 +37,11 @@
   font-size: 12px;
   font-weight: 700;
   color: var(--color-muted);
+  text-transform: uppercase;
   text-align: right;
 }
 
+// ── Lista ──────────────────────────────────────────────────
 .movimentos-lista {
   padding: 0 16px;
   display: flex;
@@ -119,8 +92,11 @@
   font-size: 12px;
   color: var(--color-muted) !important;
   display: -webkit-box;
+  /* stylelint-disable-next-line property-no-vendor-prefix */
   -webkit-line-clamp: 2;
+  /* stylelint-disable-next-line property-no-vendor-prefix */
   -webkit-box-orient: vertical;
+  line-clamp: 2;
   overflow: hidden;
 }
 
@@ -131,7 +107,16 @@
   text-align: right;
   flex-shrink: 0;
 
-  &.valor-despesa {
-    color: var(--color-vencido) !important;
-  }
+  &.valor-despesa { color: var(--color-vencido) !important; }
+}
+
+// ── Rodapé ─────────────────────────────────────────────────
+.total-label {
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.bottom-space {
+  height: 20px;
 }

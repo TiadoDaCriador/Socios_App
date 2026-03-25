@@ -9,7 +9,7 @@ import { addIcons } from 'ionicons';
 import {
   accessibilityOutline, helpCircleOutline, lockClosedOutline,
   cardOutline, notificationsOutline, documentTextOutline,
-  logOutOutline, chevronForwardOutline,
+  logOutOutline, chevronForwardOutline, exitOutline,
 } from 'ionicons/icons';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../services/auth.service';
@@ -39,13 +39,16 @@ export class DefinicoesPage {
 
   opcoes: OpcaoDefinicao[] = [
     { id: 'acessibilidade', labelKey: 'DEFINICOES.ACESSIBILIDADE', descKey: 'DEFINICOES.ACESSIBILIDADE_DESC', icone: 'accessibility-outline' },
-    { id: 'suporte', labelKey: 'DEFINICOES.SUPORTE', descKey: 'DEFINICOES.SUPORTE_DESC', icone: 'help-circle-outline' },
-    { id: 'password', labelKey: 'DEFINICOES.PASSWORD', descKey: 'DEFINICOES.PASSWORD_DESC', icone: 'lock-closed-outline' },
-    { id: 'cartoes', labelKey: 'DEFINICOES.CARTOES', descKey: 'DEFINICOES.CARTOES_DESC', icone: 'card-outline' },
-    { id: 'notificacoes', labelKey: 'DEFINICOES.NOTIFICACOES', descKey: 'DEFINICOES.NOTIFICACOES_DESC', icone: 'notifications-outline' },
-    { id: 'termos', labelKey: 'DEFINICOES.TERMOS', descKey: 'DEFINICOES.TERMOS_DESC', icone: 'document-text-outline' },
-    { id: 'logout', labelKey: 'MENU.LOGOUT', icone: 'log-out-outline', danger: true },
+    { id: 'suporte',        labelKey: 'DEFINICOES.SUPORTE',        descKey: 'DEFINICOES.SUPORTE_DESC',        icone: 'help-circle-outline' },
+    { id: 'password',       labelKey: 'DEFINICOES.PASSWORD',       descKey: 'DEFINICOES.PASSWORD_DESC',       icone: 'lock-closed-outline' },
+    { id: 'cartoes',        labelKey: 'DEFINICOES.CARTOES',        descKey: 'DEFINICOES.CARTOES_DESC',        icone: 'card-outline' },
+    { id: 'notificacoes',   labelKey: 'DEFINICOES.NOTIFICACOES',   descKey: 'DEFINICOES.NOTIFICACOES_DESC',   icone: 'notifications-outline' },
+    { id: 'termos',         labelKey: 'DEFINICOES.TERMOS',         descKey: 'DEFINICOES.TERMOS_DESC',         icone: 'document-text-outline' },
+    { id: 'logout',         labelKey: 'MENU.LOGOUT',                                                          icone: 'exit-outline', danger: true },
   ];
+
+  // Tons de cinzento do mais claro (topo) para o mais escuro (baixo)
+  cinzentos: string[] = ['#616161', '#565656', '#4a4a4a', '#3e3e3e', '#323232', '#262626'];
 
   constructor(
     private alertCtrl: AlertController,
@@ -54,59 +57,62 @@ export class DefinicoesPage {
     private auth: AuthService,
     private translate: TranslateService,
   ) {
-    addIcons({ accessibilityOutline, helpCircleOutline, lockClosedOutline, cardOutline, notificationsOutline, documentTextOutline, logOutOutline, chevronForwardOutline });
+    addIcons({
+      accessibilityOutline, helpCircleOutline, lockClosedOutline,
+      cardOutline, notificationsOutline, documentTextOutline,
+      logOutOutline, chevronForwardOutline, exitOutline,
+    });
+  }
+
+  getCinzento(index: number): string {
+    return this.cinzentos[Math.min(index, this.cinzentos.length - 1)];
   }
 
   async clicar(opcao: OpcaoDefinicao) {
     switch (opcao.id) {
       case 'acessibilidade': await this.abrirModal(AcessibilidadeModalComponent); break;
-      case 'suporte': window.open('mailto:suporte@associacao.pt?subject=Suporte App Sócios', '_blank'); break;
-      case 'password': await this.alterarPassword(); break;
-      case 'cartoes': await this.abrirModal(CartoesModalComponent); break;
-      case 'notificacoes': await this.abrirModal(NotificacoesModalComponent); break;
-      case 'termos': await this.abrirModal(TermosModalComponent); break;
-      case 'logout': await this.confirmarLogout(); break;
+      case 'suporte':        window.open('mailto:suporte@associacao.pt?subject=Suporte App Sócios', '_blank'); break;
+      case 'password':       await this.alterarPassword(); break;
+      case 'cartoes':        await this.abrirModal(CartoesModalComponent); break;
+      case 'notificacoes':   await this.abrirModal(NotificacoesModalComponent); break;
+      case 'termos':         await this.abrirModal(TermosModalComponent); break;
+      case 'logout':         await this.confirmarLogout(); break;
     }
   }
 
   private async abrirModal(component: any) {
-    const modal = await this.modalCtrl.create({ component, initialBreakpoint: 0.9, breakpoints: [0, 0.9, 1], handleBehavior: 'cycle' });
+    const modal = await this.modalCtrl.create({
+      component,
+      initialBreakpoint: 0.9,
+      breakpoints: [0, 0.9, 1],
+      handleBehavior: 'cycle',
+    });
     await modal.present();
   }
 
   private async alterarPassword() {
-    // Busca as traduções específicas para cada campo
-    const header = await firstValueFrom(this.translate.get('DEFINICOES.PASSWORD'));
-    const pldAtual = await firstValueFrom(this.translate.get('PASSWORD.CURRENT')); 
-    const pldNova = await firstValueFrom(this.translate.get('PASSWORD.NEW'));
-    const pldConf = await firstValueFrom(this.translate.get('PASSWORD.CONFIRM'));
-    
+    const header  = await firstValueFrom(this.translate.get('DEFINICOES.PASSWORD'));
+    const pldAtual = await firstValueFrom(this.translate.get('PASSWORD.CURRENT'));
+    const pldNova  = await firstValueFrom(this.translate.get('PASSWORD.NEW'));
+    const pldConf  = await firstValueFrom(this.translate.get('PASSWORD.CONFIRM'));
+
     const alert = await this.alertCtrl.create({
-      header: header,
+      header,
       inputs: [
-        { name: 'atual', type: 'password', placeholder: pldAtual },
-        { name: 'nova', type: 'password', placeholder: pldNova },
+        { name: 'atual',     type: 'password', placeholder: pldAtual },
+        { name: 'nova',      type: 'password', placeholder: pldNova },
         { name: 'confirmar', type: 'password', placeholder: pldConf },
       ],
       buttons: [
         { text: this.translate.instant('COMUM.CANCELAR'), role: 'cancel' },
         {
-          text: this.translate.instant('COMUM.GUARDAR'), 
+          text: this.translate.instant('COMUM.GUARDAR'),
           handler: (data) => {
-            // Verifica se preencheu a pass atual
-            if (!data.atual) {
-              this.showToast(this.translate.instant('PASSWORD.ERROR_CURRENT'), 'warning');
-              return false;
-            }
-            // Verifica se a nova e a confirmação coincidem
-            if (!data.nova || data.nova !== data.confirmar) { 
-              this.showToast(this.translate.instant('REGISTER.ERRO_PASSWORDS'), 'danger'); 
-              return false; 
-            }
-            
+            if (!data.atual) { this.showToast(this.translate.instant('PASSWORD.ERROR_CURRENT'), 'warning'); return false; }
+            if (!data.nova || data.nova !== data.confirmar) { this.showToast(this.translate.instant('REGISTER.ERRO_PASSWORDS'), 'danger'); return false; }
             this.showToast(this.translate.instant('PERFIL.SUCESSO'), 'success');
             return true;
-          }
+          },
         },
       ],
     });
@@ -115,10 +121,10 @@ export class DefinicoesPage {
 
   private async confirmarLogout() {
     const header = await firstValueFrom(this.translate.get('MENU.LOGOUT'));
-    const msg = await firstValueFrom(this.translate.get('NOTIFICACOES.ELIMINAR_MSG'));
+    const msg    = await firstValueFrom(this.translate.get('NOTIFICACOES.ELIMINAR_MSG'));
 
     const alert = await this.alertCtrl.create({
-      header: header,
+      header,
       message: msg,
       buttons: [
         { text: this.translate.instant('COMUM.CANCELAR'), role: 'cancel' },

@@ -1,8 +1,7 @@
-// src/app/pages/notificacoes/notificacoes.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-export type CategoriaNotif = 'eventos' | 'quotas' | 'convocatorias' | 'noticias';
+export type CategoriaNotif = 'eventos' | 'quotas' | 'noticias';
 
 export interface Notificacao {
   id: number;
@@ -16,7 +15,6 @@ export interface Notificacao {
 export interface PrefsNotificacoes {
   eventos: boolean;
   quotas: boolean;
-  convocatorias: boolean;
   noticias: boolean;
 }
 
@@ -27,53 +25,39 @@ export class NotificacoesService {
   notificacoes$ = this._notificacoes.asObservable();
 
   private _prefs = new BehaviorSubject<PrefsNotificacoes>({
-    eventos:       true,
-    quotas:        true,
-    convocatorias: true,
-    noticias:      true, // ✅ CORRIGIDO: era false, documentos usam esta categoria
+    eventos: true,
+    quotas: true,
+    noticias: true,
   });
   prefs$ = this._prefs.asObservable();
 
-  get notificacoes(): Notificacao[] {
-    return this._notificacoes.getValue();
-  }
-
-  get prefs(): PrefsNotificacoes {
-    return this._prefs.getValue();
-  }
-
-  get totalNaoLidas(): number {
-    return this.notificacoes.filter(n => !n.lida).length;
-  }
+  get notificacoes(): Notificacao[] { return this._notificacoes.getValue(); }
+  get prefs(): PrefsNotificacoes { return this._prefs.getValue(); }
+  get totalNaoLidas(): number { return this.notificacoes.filter(n => !n.lida).length; }
 
   guardarPrefs(prefs: PrefsNotificacoes) {
     this._prefs.next(prefs);
-    // TODO: this.http.post(`${API_URL}/prefs/notificacoes`, prefs).subscribe()
   }
 
   adicionar(dados: { titulo: string; mensagem: string; categoria: CategoriaNotif }) {
     if (!this.prefs[dados.categoria]) return;
-
     const nova: Notificacao = {
-      id:        Date.now(),
-      titulo:    dados.titulo,
-      mensagem:  dados.mensagem,
+      id: Date.now(),
+      titulo: dados.titulo,
+      mensagem: dados.mensagem,
       categoria: dados.categoria,
-      data:      new Date(),
-      lida:      false,
+      data: new Date(),
+      lida: false,
     };
     this._notificacoes.next([nova, ...this.notificacoes]);
-    // TODO: this.http.post(`${API_URL}/notificacoes`, nova).subscribe()
   }
 
   marcarLida(id: number) {
-    const lista = this.notificacoes.map(n => n.id === id ? { ...n, lida: true } : n);
-    this._notificacoes.next(lista);
+    this._notificacoes.next(this.notificacoes.map(n => n.id === id ? { ...n, lida: true } : n));
   }
 
   marcarTodasLidas() {
-    const lista = this.notificacoes.map(n => ({ ...n, lida: true }));
-    this._notificacoes.next(lista);
+    this._notificacoes.next(this.notificacoes.map(n => ({ ...n, lida: true })));
   }
 
   eliminar(id: number) {

@@ -15,20 +15,18 @@
   <div class="toolbar-pesquisa">
     <div class="pesquisa-wrap">
       <ion-icon name="search-outline" class="pesquisa-icon"></ion-icon>
-      <input class="pesquisa-input" type="text" [placeholder]="'EVENTOS.PESQUISAR' | translate"
+      <input class="pesquisa-input" type="text"
+        [placeholder]="'EVENTOS.PESQUISAR' | translate"
         [(ngModel)]="pesquisa" />
     </div>
   </div>
 
-  <div class="filtros-painel" [hidden]="!mostrarFiltros">
+  <div class="filtros-painel" *ngIf="mostrarFiltros">
     <div class="filtros-row">
       <span class="filtros-label">{{ 'EVENTOS.ORDENAR' | translate }}</span>
-      <button class="filtro-chip" [class.active]="ordem === 'data-desc'" (click)="setOrdem('data-desc')">{{
-        'EVENTOS.DATA_DESC' | translate }}</button>
-      <button class="filtro-chip" [class.active]="ordem === 'data-asc'" (click)="setOrdem('data-asc')">{{
-        'EVENTOS.DATA_ASC' | translate }}</button>
-      <button class="filtro-chip" [class.active]="ordem === 'nome-asc'" (click)="setOrdem('nome-asc')">{{
-        'EVENTOS.NOME_AZ' | translate }}</button>
+      <button class="filtro-chip" [class.active]="ordem === 'data-desc'" (click)="setOrdem('data-desc')">{{ 'EVENTOS.DATA_DESC' | translate }}</button>
+      <button class="filtro-chip" [class.active]="ordem === 'data-asc'"  (click)="setOrdem('data-asc')">{{ 'EVENTOS.DATA_ASC' | translate }}</button>
+      <button class="filtro-chip" [class.active]="ordem === 'nome-asc'"  (click)="setOrdem('nome-asc')">{{ 'EVENTOS.NOME_AZ' | translate }}</button>
     </div>
   </div>
 
@@ -42,15 +40,20 @@
   </div>
 
   <div class="eventos-lista">
+
     <div class="estado-vazio" *ngIf="eventosFiltrados.length === 0">
       <ion-icon name="calendar-outline"></ion-icon>
       <p>{{ 'EVENTOS.NENHUM' | translate }}</p>
     </div>
 
     <div class="evento-card" *ngFor="let ev of eventosFiltrados">
+
       <div class="evento-indicador" [ngClass]="'cor-' + ev.cor"></div>
+
       <div class="evento-info">
-        <div class="evento-tipo-badge" [ngClass]="'cor-' + ev.cor">{{ labelTipo(ev.tipo) }}</div>
+        <div class="evento-tipo-badge" [ngClass]="'cor-' + ev.cor">
+          {{ labelTipo(ev.tipo) }}
+        </div>
         <div class="evento-meta">
           <span class="evento-meta-item">
             <ion-icon name="calendar-outline"></ion-icon>
@@ -69,14 +72,22 @@
             {{ ev.nome }}
           </span>
         </div>
+
+        <!-- ✅ Botão PDF — só aparece se o evento tiver PDF associado -->
+        <button class="btn-pdf" *ngIf="ev.pdfUrl" (click)="abrirPDF(ev, $event)">
+          <ion-icon name="document-outline"></ion-icon>
+          Ver documento
+        </button>
+
       </div>
+
       <button class="btn-eliminar-card" (click)="eliminar(ev)">
         <ion-icon name="trash-outline"></ion-icon>
       </button>
+
     </div>
   </div>
 
-  <div class="total-label">{{ eventosFiltrados.length }} {{ 'EVENTOS.TOTAL' | translate }} {{ eventos.length }} {{
-    'EVENTOS.EVENTOS' | translate }}</div>
+  <div class="total-label">{{ eventosFiltrados.length }} {{ 'EVENTOS.TOTAL' | translate }} {{ eventos.length }} {{ 'EVENTOS.EVENTOS' | translate }}</div>
   <div class="bottom-space"></div>
 </ion-content>

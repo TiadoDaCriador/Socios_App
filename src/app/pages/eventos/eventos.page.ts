@@ -4,16 +4,18 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   IonHeader, IonToolbar, IonButtons, IonMenuButton,
-  IonTitle, IonContent, IonIcon, AlertController,
+  IonTitle, IonContent, IonIcon, AlertController, ToastController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   searchOutline, calendarOutline, timeOutline,
   locationOutline, filterOutline, trashOutline,
   chevronDownOutline, chevronUpOutline, pricetagOutline,
+  documentOutline, downloadOutline,
 } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Browser } from '@capacitor/browser';
 import { EventosService, EventoLista } from '../../services/eventos.service';
 import { TIPOS_EVENTO } from '../../shared/tipos-eventos';
 
@@ -42,19 +44,19 @@ export class EventosPage implements OnInit, OnDestroy {
   constructor(
     private eventosService: EventosService,
     private alertCtrl: AlertController,
+    private toastCtrl: ToastController,
     private translate: TranslateService,
   ) {
     addIcons({
       searchOutline, calendarOutline, timeOutline,
       locationOutline, filterOutline, trashOutline,
       chevronDownOutline, chevronUpOutline, pricetagOutline,
+      documentOutline, downloadOutline,
     });
   }
 
   ngOnInit() {
-    this.sub = this.eventosService.eventos$.subscribe(eventos => {
-      this.eventos = eventos;
-    });
+    this.sub = this.eventosService.eventos$.subscribe(eventos => this.eventos = eventos);
   }
 
   ngOnDestroy() { this.sub?.unsubscribe(); }
@@ -80,11 +82,24 @@ export class EventosPage implements OnInit, OnDestroy {
     return lista;
   }
 
+  // ✅ Abre o PDF no browser nativo
+  async abrirPDF(ev: EventoLista, event: MouseEvent) {
+    event.stopPropagation();
+    if (!ev.pdfUrl) return;
+    try {
+      await Browser.open({ url: ev.pdfUrl });
+    } catch (e) {
+      const t = await this.toastCtrl.create({
+        message: 'Não foi possível abrir o documento', duration: 2500, position: 'bottom', color: 'danger',
+      });
+      await t.present();
+    }
+  }
+
   async eliminar(evento: EventoLista) {
-    const header = this.translate.instant('EVENTOS.ELIMINAR');
-    const message = `${this.translate.instant('EVENTOS.ELIMINAR_CONFIRM')} "${evento.nome}"?`;
     const alert = await this.alertCtrl.create({
-      header, message,
+      header: this.translate.instant('EVENTOS.ELIMINAR'),
+      message: `${this.translate.instant('EVENTOS.ELIMINAR_CONFIRM')} "${evento.nome}"?`,
       buttons: [
         { text: this.translate.instant('COMUM.CANCELAR'), role: 'cancel' },
         {

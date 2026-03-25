@@ -9,7 +9,7 @@ import {
 import { addIcons } from 'ionicons';
 import {
   closeOutline, notificationsOutline, calendarOutline,
-  walletOutline, megaphoneOutline, newspaperOutline,
+  walletOutline, newspaperOutline,
 } from 'ionicons/icons';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NotificacoesService } from '../notificacoes/notificacoes.service';
@@ -27,7 +27,6 @@ export class NotificacoesModalComponent implements OnInit {
 
   notifEventos = true;
   notifQuotas = true;
-  notifConvocatorias = true;
   notifNoticias = true;
 
   constructor(
@@ -36,14 +35,13 @@ export class NotificacoesModalComponent implements OnInit {
     private notifService: NotificacoesService,
     private translate: TranslateService,
   ) {
-    addIcons({ closeOutline, notificationsOutline, calendarOutline, walletOutline, megaphoneOutline, newspaperOutline });
+    addIcons({ closeOutline, notificationsOutline, calendarOutline, walletOutline, newspaperOutline });
   }
 
   ngOnInit() {
     const prefs = this.notifService.prefs;
     this.notifEventos = prefs.eventos;
     this.notifQuotas = prefs.quotas;
-    this.notifConvocatorias = prefs.convocatorias;
     this.notifNoticias = prefs.noticias;
   }
 
@@ -51,8 +49,9 @@ export class NotificacoesModalComponent implements OnInit {
 
   async guardar() {
     this.notifService.guardarPrefs({
-      eventos: this.notifEventos, quotas: this.notifQuotas,
-      convocatorias: this.notifConvocatorias, noticias: this.notifNoticias,
+      eventos: this.notifEventos,
+      quotas: this.notifQuotas,
+      noticias: this.notifNoticias,
     });
     const t = await this.toastCtrl.create({
       message: this.translate.instant('NOTIF_MODAL.GUARDAR'), duration: 2000, position: 'bottom', color: 'success',

@@ -1,41 +1,63 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  IonHeader, IonToolbar, IonButtons, IonMenuButton,
-  IonTitle, IonContent, IonSkeletonText, IonIcon,
-} from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { walletOutline } from 'ionicons/icons';
+import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent, IonIcon } from '@ionic/angular/standalone';
 import { Subscription } from 'rxjs';
-import { ContaCorrenteService, Account } from '../../services/conta-corrente.service';
-import { CalendarioGrelhaComponent } from './calendario-grelha/calendario-grelha.component';
+import { EventosService, EventoLista } from '../../services/eventos.service';
+import { QuotasService } from '../quotas/quotas.service';
+import { PerfilService } from '../../services/perfil.service';
+import { addIcons } from 'ionicons';
+import { alertCircleOutline, calculatorOutline, checkmarkCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [
-    CommonModule,
-    IonHeader, IonToolbar, IonButtons, IonMenuButton,
-    IonTitle, IonContent, IonSkeletonText, IonIcon,
-    CalendarioGrelhaComponent,
-  ],
+  imports: [CommonModule, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent, IonIcon],
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit, OnDestroy {
-  account: Account | null = null;
-  private sub?: Subscription;
+  diasScroll: Date[] = [];
+  dataAtiva: Date = new Date();
+  hoje: Date = new Date();
+  listaEventos: EventoLista[] = [];
+  valorDivida: number = 0;
+  usuario = { nome: '', numeroSocio: '' };
+  private subs = new Subscription();
 
-  constructor(private contaService: ContaCorrenteService) {
-    addIcons({ walletOutline });
+  constructor(
+    private eventosService: EventosService,
+    private quotasService: QuotasService,
+    private perfilService: PerfilService
+  ) {
+    addIcons({ alertCircleOutline, calculatorOutline, checkmarkCircleOutline });
   }
 
   ngOnInit() {
-    this.sub = this.contaService.account$.subscribe(acc => (this.account = acc));
-    this.contaService.loadFromAssets().subscribe({ error: () => {} });
+    this.gerarDias();
+
+    this.subs.add(this.perfilService.getPerfil().subscribe(perfil => {
+      if (perfil) {
+        const nomes = perfil.nomeCompleto.trim().split(' ');
+        this.usuario.nome = `${nomes[0]} ${nomes[nomes.length - 1]}`;
+        this.usuario.numeroSocio = perfil.numeroSocio;
+      }
+    }));
+
+    this.subs.add(this.eventosService.eventos$.subscribe(lista => this.listaEventos = lista));
+    this.subs.add(this.quotasService.totalDivida$.subscribe(v => this.valorDivida = v));
+    this.subs.add(this.eventosService.dataSelecionada$.subscribe(d => this.dataAtiva = d));
   }
 
-  ngOnDestroy() {
-    this.sub?.unsubscribe();
+  gerarDias() {
+    const start = new Date();
+    for (let i = 0; i <= 30; i++) {
+      const d = new Date();
+      d.setDate(start.getDate() + i);
+      this.diasScroll.push(d);
+    }
   }
+
+  selecionarDia(dia: Date) { this.eventosService.setDataSelecionada(dia); }
+  isMesmoDia = (d1: Date, d2: Date) => d1.toDateString() === d2.toDateString();
+  ngOnDestroy() { this.subs.unsubscribe(); }
 }

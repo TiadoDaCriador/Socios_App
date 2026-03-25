@@ -12,7 +12,7 @@ import {
 
 import { addIcons } from 'ionicons';
 import {
-  person, calendar, calendarClear, card, mail, wallet,
+  person, calendar, calendarClear, card, wallet,
   settings, homeOutline, calendarOutline, personOutline,
   menuOutline, logOutOutline, documentOutline,
 } from 'ionicons/icons';
@@ -42,7 +42,6 @@ export class AppComponent {
     { title: 'MENU.EVENTOS',        url: '/tabs/eventos',        icon: 'calendar'         },
     { title: 'MENU.CALENDARIO',     url: '/tabs/calendario',     icon: 'calendar-clear'   },
     { title: 'MENU.CONTA_CORRENTE', url: '/tabs/conta-corrente', icon: 'card'             },
-    { title: 'MENU.CONVOCATORIAS',  url: '/tabs/convocatorias',  icon: 'mail'             },
     { title: 'MENU.QUOTAS',         url: '/tabs/quotas',         icon: 'wallet'           },
     { title: 'MENU.DEFINICOES',     url: '/tabs/definicoes',     icon: 'settings'         },
     { title: 'MENU.DOCUMENTOS',     url: '/tabs/documentos',     icon: 'document-outline' },
@@ -57,7 +56,7 @@ export class AppComponent {
     private cdr:              ChangeDetectorRef,
   ) {
     addIcons({
-      person, calendar, calendarClear, card, mail, wallet,
+      person, calendar, calendarClear, card, wallet,
       settings, homeOutline, calendarOutline, personOutline,
       menuOutline, logOutOutline, documentOutline,
     });
@@ -67,7 +66,6 @@ export class AppComponent {
     const idiomaGuardado = localStorage.getItem('idioma') ?? 'pt';
     this.translate.use(idiomaGuardado);
 
-    // ✅ Força atualização do componente quando o idioma muda
     this.translate.onLangChange.subscribe(() => {
       this.cdr.detectChanges();
     });
@@ -83,12 +81,10 @@ export class AppComponent {
 
   private restaurarAcessibilidade() {
     const root = document.documentElement;
-
     if (localStorage.getItem('modoEscuro') === 'true') {
       root.classList.add('dark');
       document.body.classList.add('dark');
     }
-
     const fontePx: Record<string, string> = {
       pequeno: '13px', normal: '16px', grande: '20px', extra: '24px',
     };

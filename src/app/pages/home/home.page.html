@@ -1,28 +1,79 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
+    <ion-buttons slot="end"><ion-menu-button></ion-menu-button></ion-buttons>
     <ion-title>Maestro</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="home-content">
-
-  <!-- Conta Corrente -->
-  <div class="home-conta-wrapper">
-    <div class="home-conta-btn" *ngIf="account; else loadingConta">
-      <ion-icon name="wallet-outline"></ion-icon>
-      <span>Saldo {{ account.balance | number:'1.2-2' }} {{ account.currency }}</span>
+<ion-content class="home-content">
+  <div class="home-cal-card">
+    <div class="cal-info">
+      <h2>{{ dataAtiva | date:'MMMM, yyyy' | titlecase }}</h2>
     </div>
-    <ng-template #loadingConta>
-      <div class="home-conta-btn">
-        <ion-skeleton-text [animated]="true" style="width:140px;height:1rem;border-radius:4px;"></ion-skeleton-text>
+    <div class="scroll-area">
+      <div class="dia-item" *ngFor="let dia of diasScroll" 
+           [class.is-hoje]="isMesmoDia(dia, hoje)"
+           [class.is-selecionado]="isMesmoDia(dia, dataAtiva)"
+           (click)="selecionarDia(dia)">
+        <span class="n">{{ dia | date:'dd' }}</span>
+        <span class="s">{{ dia | date:'EEE' | lowercase }}</span>
       </div>
-    </ng-template>
+    </div>
   </div>
 
-  <!-- Calendário sem header -->
-  <app-calendario-grelha></app-calendario-grelha>
+  <div class="dashboard-container">
+    <h3 class="section-title">Próximos Eventos</h3>
+    
+    <div class="eventos-wrapper" *ngIf="listaEventos.length > 0; else noEvento">
+      <div class="evento-card" *ngFor="let ev of listaEventos">
+        <div class="evento-header">
+          <h4>{{ ev.nome }}</h4>
+          <ion-icon name="calculator-outline"></ion-icon>
+        </div>
+        <p><strong>Local:</strong> {{ ev.local }}</p>
+        <p><strong>Tipo:</strong> {{ ev.tipo }}</p>
+        <p><strong>Data:</strong> {{ ev.dataInicio | date:'dd' }} de {{ ev.dataInicio | date:'MMMM' }}, {{ ev.dataInicio | date:'HH:mm' }}h</p>
+      </div>
+    </div>
+    <ng-template #noEvento>
+      <div class="evento-card empty">Sem eventos agendados</div>
+    </ng-template>
 
+    <div class="dots-pagination">
+      <span class="dot active"></span><span class="dot"></span><span class="dot"></span>
+    </div>
+
+    <div class="grid-bottom">
+      <div class="left-col">
+        <div class="divida-card" [class.pago]="valorDivida <= 0">
+          <div class="divida-header">
+            <span>{{ valorDivida > 0 ? 'Em dívida' : 'Regularizado' }}</span>
+            <ion-icon [name]="valorDivida > 0 ? 'alert-circle-outline' : 'checkmark-circle-outline'"></ion-icon>
+          </div>
+          <div class="valor">{{ valorDivida | number:'1.2-2' }}€</div>
+        </div>
+        
+        <div class="qr-card">
+          <img src="assets/img/qr-code.png" alt="QR" class="qr-img">
+        </div>
+      </div>
+
+      <div class="socio-card">
+        <div class="socio-content">
+          <img src="assets/images/image-2.png" alt="M" class="logo-m-img">
+          
+          <div class="socio-info">
+            <div class="nome">{{ usuario.nome }}</div>
+            <div class="numero">nº {{ usuario.numeroSocio }}</div>
+          </div>
+          
+          <div class="vertical-text">Sócio</div>
+        </div>
+        
+        <div class="socio-footer">
+          <img src="assets/images/Register_musa_amadeus.png" alt="Logos" class="footer-logos-img">
+        </div>
+      </div>
+    </div>
+  </div>
 </ion-content>

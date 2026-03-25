@@ -1,4 +1,3 @@
-// src/app/pages/notificacoes/notificacoes.page.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -9,45 +8,35 @@ import {
 import { addIcons } from 'ionicons';
 import {
   notificationsOutline, calendarOutline, walletOutline,
-  megaphoneOutline, newspaperOutline, filterOutline,
-  trashOutline, checkmarkDoneOutline,
+  newspaperOutline, trashOutline, checkmarkDoneOutline, filterOutline,
 } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NotificacoesService, Notificacao, CategoriaNotif } from './notificacoes.service';
 
-export { Notificacao, CategoriaNotif };
-
 @Component({
   selector: 'app-notificacoes',
   templateUrl: './notificacoes.page.html',
   styleUrls: ['./notificacoes.page.scss'],
   standalone: true,
-  imports: [
-    CommonModule, TranslateModule,
-    IonHeader, IonToolbar, IonButtons, IonMenuButton,
-    IonTitle, IonContent, IonIcon, IonBadge,
-  ],
+  imports: [CommonModule, TranslateModule, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent, IonIcon, IonBadge],
 })
 export class NotificacoesPage implements OnInit, OnDestroy {
-
   filtroCategoria: CategoriaNotif | '' = '';
   mostrarFiltros = false;
   notificacoes: Notificacao[] = [];
   private sub!: Subscription;
 
   categorias: { valor: CategoriaNotif; label: string; icone: string; chave: string }[] = [
-    { valor: 'eventos', label: 'Eventos', icone: 'calendar-outline', chave: 'NOTIFICACOES.EVENTOS' },
-    { valor: 'quotas', label: 'Quotas', icone: 'wallet-outline', chave: 'NOTIFICACOES.QUOTAS' },
-    { valor: 'convocatorias', label: 'Convocatórias', icone: 'megaphone-outline', chave: 'NOTIFICACOES.CONVOCATORIAS' },
-    { valor: 'noticias', label: 'Notícias', icone: 'newspaper-outline', chave: 'NOTIFICACOES.NOTICIAS' },
+    { valor: 'eventos',    label: 'Eventos',  icone: 'calendar-outline',  chave: 'NOTIFICACOES.EVENTOS' },
+    { valor: 'quotas',     label: 'Quotas',   icone: 'wallet-outline',    chave: 'NOTIFICACOES.QUOTAS' },
+    { valor: 'noticias',   label: 'Notícias', icone: 'newspaper-outline', chave: 'NOTIFICACOES.NOTICIAS' },
   ];
 
   private rotasPorCategoria: Record<CategoriaNotif, string> = {
-    eventos: '/tabs/eventos',
-    quotas: '/tabs/quotas',
-    convocatorias: '/tabs/convocatorias',
+    eventos:  '/tabs/eventos',
+    quotas:   '/tabs/quotas',
     noticias: '/tabs/documentos',
   };
 
@@ -58,19 +47,19 @@ export class NotificacoesPage implements OnInit, OnDestroy {
     private router: Router,
     private translate: TranslateService,
   ) {
-    addIcons({ notificationsOutline, calendarOutline, walletOutline, megaphoneOutline, newspaperOutline, filterOutline, trashOutline, checkmarkDoneOutline });
+    addIcons({ notificationsOutline, calendarOutline, walletOutline, newspaperOutline, trashOutline, checkmarkDoneOutline, filterOutline });
   }
 
   ngOnInit() {
     this.sub = this.notifService.notificacoes$.subscribe(n => this.notificacoes = n);
   }
 
-  ngOnDestroy() { this.sub?.unsubscribe(); }
+  ngOnDestroy() { if (this.sub) this.sub.unsubscribe(); }
 
   get notificacoesFiltradas(): Notificacao[] {
     let lista = [...this.notificacoes];
     if (this.filtroCategoria) lista = lista.filter(n => n.categoria === this.filtroCategoria);
-    return lista.sort((a, b) => b.data.getTime() - a.data.getTime());
+    return lista.sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
   }
 
   get totalNaoLidas(): number { return this.notifService.totalNaoLidas; }
@@ -79,10 +68,6 @@ export class NotificacoesPage implements OnInit, OnDestroy {
     this.notifService.marcarLida(notif.id);
     const rota = this.rotasPorCategoria[notif.categoria];
     if (rota) this.router.navigateByUrl(rota);
-  }
-
-  marcarLida(notif: Notificacao) {
-    if (!notif.lida) this.notifService.marcarLida(notif.id);
   }
 
   async eliminar(notif: Notificacao) {
@@ -105,22 +90,30 @@ export class NotificacoesPage implements OnInit, OnDestroy {
 
   setFiltro(c: CategoriaNotif | '') { this.filtroCategoria = this.filtroCategoria === c ? '' : c; }
 
-  labelCategoria(c: CategoriaNotif): string {
-    const cat = this.categorias.find(x => x.valor === c);
-    return cat ? this.translate.instant(cat.chave) : c;
-  }
-
-  iconeCategoria(c: CategoriaNotif): string {
-    return this.categorias.find(x => x.valor === c)?.icone ?? 'notifications-outline';
-  }
+  iconeCategoria(c: CategoriaNotif): string { return this.categorias.find(x => x.valor === c)?.icone ?? 'notifications-outline'; }
 
   corCategoria(c: CategoriaNotif): string {
-    const mapa: Record<CategoriaNotif, string> = { eventos: 'cor-blue', quotas: 'cor-orange', convocatorias: 'cor-green', noticias: 'cor-red' };
-    return mapa[c];
+    const mapa: Record<CategoriaNotif, string> = {
+      eventos:  'primary',
+      quotas:   'warning',
+      noticias: 'tertiary',
+    };
+    return mapa[c] || 'medium';
   }
 
-  formatarTempo(d: Date): string {
+  labelCategoria(c: CategoriaNotif): string {
+    const mapa: Record<CategoriaNotif, string> = {
+      eventos:  'Eventos',
+      quotas:   'Quotas',
+      noticias: 'Notícias',
+    };
+    return mapa[c] ?? c;
+  }
+
+  formatarTempo(dataInput: any): string {
+    const d = new Date(dataInput);
     const diff = Math.floor((new Date().getTime() - d.getTime()) / 60000);
+    if (diff < 1) return 'Agora mesmo';
     if (diff < 60) return `${diff}m atrás`;
     if (diff < 1440) return `${Math.floor(diff / 60)}h atrás`;
     return d.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit' });

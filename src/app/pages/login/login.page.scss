@@ -1,97 +1,67 @@
-// src/app/pages/login/login.page.scss
-
 .login-content {
-  --background: var(--color-bg);
+  --background: transparent;
+  --overflow: hidden;
 }
 
-.login-wrap {
+.login-bg {
+  min-height: 100vh;
+  background: url('/assets/images/pexels-paulseling-333048 1.png') center center / cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 320px;
+  background: #ffffff;
+  border: 3px solid #1a1a1a;
+  border-radius: 8px;
+  padding: 28px 24px 28px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 40px 24px;
-  gap: 40px;
+  gap: 16px;
 }
 
-// ── Cabeçalho ─────────────────────────────────────────────
+// ── Logo ───────────────────────────────────────────────────
 .login-header {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  justify-content: center;
 }
 
 .login-logo {
-  width: 72px;
-  height: 72px;
-  background: var(--color-primary);
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 24px rgba(26, 111, 219, 0.35);
-  margin-bottom: 8px;
-
-  ion-icon {
-    font-size: 36px;
-    color: #ffffff;
-  }
-}
-
-.login-titulo {
-  margin: 0;
-  font-size: 26px;
-  font-weight: 800;
-  color: var(--color-text);
-  letter-spacing: -0.5px;
-}
-
-.login-subtitulo {
-  margin: 0;
-  font-size: 14px;
-  color: var(--color-muted);
+  height: 120px;
+  object-fit: contain;
 }
 
 // ── Formulário ────────────────────────────────────────────
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
 .field-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-
-.field-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-text);
-  letter-spacing: 0.3px;
 }
 
 .field-wrap {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--color-card);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  align-items: stretch;
+  border: 1px solid #9ca3af;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #ffffff;
 
   &:focus-within {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(26, 111, 219, 0.12);
+    border-color: #1a6fdb;
   }
-}
 
-.field-icon {
-  font-size: 18px;
-  color: var(--color-muted);
-  flex-shrink: 0;
+  &.field-filled {
+    background: #e8e8f0;
+  }
 }
 
 .field-input {
@@ -100,38 +70,66 @@
   outline: none;
   background: transparent;
   font-size: 15px;
-  color: var(--color-text);
+  color: #1a1a2e;
+  padding: 10px 12px;
 
-  &::placeholder { color: var(--color-muted); }
+  &::placeholder {
+    color: #9ca3af;
+  }
 }
 
 .field-eye {
-  background: transparent;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  color: var(--color-muted);
-  font-size: 18px;
+  width: 42px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  background: #FFB400;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  cursor: pointer;
+  font-size: 20px;
+  color: #1a1a1a;
+  flex-shrink: 0;
 }
 
 // ── Botão entrar ──────────────────────────────────────────
 .btn-entrar {
   width: 100%;
-  padding: 15px;
-  margin-top: 8px;
+  padding: 13px;
+  margin-top: 4px;
   border: none;
-  border-radius: var(--radius-sm);
-  background: var(--color-primary);
+  border-radius: 6px;
+  background: #0098DB;
   color: #ffffff;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.15s;
+  transition: opacity 0.2s;
 
-  &:active { transform: scale(0.98); opacity: 0.9; }
-  &:disabled { opacity: 0.6; cursor: not-allowed; }
+  &:active {
+    opacity: 0.85;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// ── Recuperar ─────────────────────────────────────────────
+.btn-recuperar {
+  background: transparent;
+  border: none;
+  color: #1a6fdb;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  width: fit-content;
+  margin-bottom: 8px;
 }
 
 // ── Spinner ───────────────────────────────────────────────
@@ -146,25 +144,70 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-// ── Footer ────────────────────────────────────────────────
+// ── Rodapé ────────────────────────────────────────────────
 .login-footer {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-size: 14px;
-  color: var(--color-muted);
+  gap: 30px;
+}
+
+.footer-dev {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.footer-logos {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.footer-logo {
+  height: 20px;
+  object-fit: contain;
+}
+
+.footer-install {
+  margin: 0;
+  font-size: 12px;
+  color: #6b7280;
+  text-align: center;
+
+  a {
+    color: #1a6fdb;
+    text-decoration: none;
+  }
+}
+
+.footer-registo {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+  text-align: center;
 }
 
 .btn-link {
   background: transparent;
   border: none;
-  color: var(--color-primary);
-  font-size: 14px;
+  color: #1a6fdb;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   padding: 0;
+}
+// remove ícone nativo do browser no campo password
+input::-ms-reveal,
+input::-ms-clear,
+input::-webkit-credentials-auto-fill-button,
+input::-webkit-contacts-auto-fill-button {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }

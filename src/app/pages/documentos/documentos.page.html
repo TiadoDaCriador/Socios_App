@@ -3,27 +3,24 @@
     <ion-buttons slot="end"><ion-menu-button></ion-menu-button></ion-buttons>
     <ion-title>{{ 'DOCUMENTOS.TITULO' | translate }}</ion-title>
     <ion-buttons slot="start">
-      <button class="btn-novo" (click)="triggerUpload()">
-        <ion-icon name="add-outline"></ion-icon>
-        NOVO
+      <button class="btn-filtro" [class.active]="mostrarFiltros" (click)="mostrarFiltros = !mostrarFiltros">
+        <ion-icon name="filter-outline"></ion-icon>
       </button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="docs-content">
+
   <div class="toolbar-pesquisa">
     <div class="pesquisa-wrap">
       <ion-icon name="search-outline" class="pesquisa-icon"></ion-icon>
       <input class="pesquisa-input" type="text" [placeholder]="'DOCUMENTOS.PESQUISAR' | translate"
         [(ngModel)]="pesquisa" />
     </div>
-    <button class="btn-filtro" [class.active]="mostrarFiltros" (click)="mostrarFiltros = !mostrarFiltros">
-      <ion-icon name="filter-outline"></ion-icon>
-    </button>
   </div>
 
-  <div class="filtros-painel" [hidden]="!mostrarFiltros">
+  <div class="filtros-painel" *ngIf="mostrarFiltros">
     <div class="filtros-row">
       <span class="filtros-label">De:</span>
       <input class="filtro-data" type="date" [(ngModel)]="dataInicio" />
@@ -69,7 +66,9 @@
     </div>
   </div>
 
-  <div class="total-label">{{ documentosFiltrados.length }} {{ 'COMUM.GUARDAR' | translate }} {{ documentos.length }} {{
-    'DOCUMENTOS.TOTAL' | translate }}</div>
+  <div class="total-label">
+    {{ documentosFiltrados.length }} {{ 'DOCUMENTOS.TOTAL' | translate }}
+  </div>
   <div class="bottom-space"></div>
+
 </ion-content>
