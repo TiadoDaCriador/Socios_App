@@ -1,143 +1,155 @@
-// src/app/pages/definicoes/acessibilidade-modal.scss
-
-$primary:   #1a6fdb;
-$radius-sm: 8px;
-
-.modal-toolbar {
-  --background:   var(--color-card);
-  --color:        var(--color-text);
-  --border-color: var(--color-border);
-}
-
-.modal-content {
-  --background: var(--color-bg);
-}
+$cor-ativa: #f2c044;
+$primary: #1a6fdb;
+$radius-sm: 12px;
 
 .modal-body {
-  padding: 16px;
+  padding: 20px 16px;
   display: flex;
   flex-direction: column;
   gap: 0;
-  background: var(--color-card);
-  border-radius: 12px;
-  margin: 16px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  background: #616161;
 }
 
+// ── Linhas ───────────────────────────────────────────────────
 .setting-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 14px 0;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 
-  &:last-of-type { border-bottom: none; }
+  &:last-of-type {
+    border-bottom: none;
+  }
 }
 
 .setting-block {
   padding: 14px 0;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 
-  &:last-of-type { border-bottom: none; }
+  &:last-of-type {
+    border-bottom: none;
+  }
 }
 
 .setting-left {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex: 1;
+  gap: 10px;
 }
 
 .setting-icon {
-  width: 34px;
-  height: 34px;
-  background: rgba(26, 111, 219, 0.12);
-  border-radius: $radius-sm;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-
-  ion-icon {
-    font-size: 18px;
-    color: var(--color-primary);
-  }
+  display: none; // esconde os ícones — a imagem não os tem
 }
 
-.setting-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
+// ── Labels ───────────────────────────────────────────────────
 .setting-label {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
-  color: var(--color-text) !important;
+  color: #ffffff;
 }
 
 .setting-desc {
   font-size: 12px;
-  color: var(--color-muted) !important;
+  color: rgba(255, 255, 255, 0.7);
 }
 
+// ── Toggle ───────────────────────────────────────────────────
 ion-toggle {
-  --track-background:         var(--color-border);
-  --track-background-checked: var(--color-primary);
+  --track-background: #1a6fdb;
+  --track-background-checked: #f2c044;
+  --handle-background: #ffffff;
+  --handle-background-checked: #ffffff;
 }
 
+// ── Botões de Fonte ──────────────────────────────────────────
 .fonte-grid {
   display: flex;
-  gap: 8px;
-  padding-left: 46px;
+  align-items: flex-end;
+  gap: 20px;
+  padding-left: 0;
 }
 
 .fonte-btn {
-  width: 44px;
-  height: 44px;
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  border-radius: $radius-sm;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid var(--color-border);
-  border-radius: $radius-sm;
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-weight: 700;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
   cursor: pointer;
   transition: all 0.15s;
 
+  // Tamanhos crescentes como na imagem
+  &:nth-child(1) {
+    width: 36px;
+    height: 36px;
+    font-size: 12px;
+  }
+
+  &:nth-child(2) {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+  }
+
+  &:nth-child(3) {
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+  }
+
+  &:nth-child(4) {
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+  }
+
   &.active {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
-    color: #ffffff !important;
+    background: $cor-ativa;
+    color: #000000;
+  }
+
+  &:active {
+    transform: scale(0.93);
   }
 }
 
+// ── Botões de Idioma ─────────────────────────────────────────
 .idioma-row {
   display: flex;
-  gap: 8px;
-  padding-left: 46px;
-  flex-wrap: wrap;
+  gap: 30px;
+  padding-left: 0;
 }
 
 .idioma-btn {
-  padding: 7px 14px;
-  border: 1.5px solid var(--color-border);
-  border-radius: 20px;
-  background: var(--color-bg);
-  color: var(--color-muted);
-  font-size: 13px;
-  font-weight: 600;
+  width: 62px;
+  height: 44px;
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  border-radius: $radius-sm;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
   cursor: pointer;
   transition: all 0.15s;
 
   &.active {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
-    color: #ffffff !important;
+    background: $cor-ativa;
+    color: #000000;
+  }
+
+  &:active {
+    transform: scale(0.93);
   }
 }

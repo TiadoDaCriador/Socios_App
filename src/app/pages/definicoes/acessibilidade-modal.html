@@ -1,56 +1,60 @@
-<ion-header>
-  <ion-toolbar class="modal-toolbar">
-    <ion-title>{{ 'DEFINICOES.ACESSIBILIDADE' | translate }}</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="fechar()" fill="clear">
-        <ion-icon name="close-outline" style="font-size:22px;color:#6b7280"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<div class="modal-body">
 
-<ion-content class="modal-content">
-  <div class="modal-body">
-
-    <div class="setting-row">
-      <div class="setting-left">
-        <div class="setting-icon">
-          <ion-icon [name]="modoEscuro ? 'moon-outline' : 'sunny-outline'"></ion-icon>
-        </div>
-        <div class="setting-info">
-          <span class="setting-label">{{ 'ACESSIBILIDADE.MODO_ESCURO' | translate }}</span>
-          <span class="setting-desc">{{ modoEscuro ? ('ACESSIBILIDADE.ATIVADO' | translate) :
-            ('ACESSIBILIDADE.DESATIVADO' | translate) }}</span>
-        </div>
+  <div class="setting-row">
+    <div class="setting-left">
+      <div class="setting-icon">
+        <ion-icon [name]="modoEscuro ? 'moon-outline' : 'sunny-outline'"></ion-icon>
       </div>
-      <ion-toggle [checked]="modoEscuro" (ionChange)="toggleModoEscuro($event.detail.checked)"></ion-toggle>
-    </div>
-
-    <div class="setting-block">
-      <div class="setting-left">
-        <div class="setting-icon">
-          <ion-icon name="text-outline"></ion-icon>
-        </div>
-        <span class="setting-label">{{ 'ACESSIBILIDADE.TAMANHO_FONTE' | translate }}</span>
-      </div>
-      <div class="fonte-grid">
-        <button class="fonte-btn" *ngFor="let f of tamanhosFonte" [class.active]="tamanhoFonte === f.valor"
-          [style.font-size]="f.size" (click)="setTamanhoFonte(f.valor)">{{ f.label }}</button>
+      <div class="setting-info">
+        <span class="setting-label">{{ 'ACESSIBILIDADE.MODO_ESCURO' | translate }}</span>
+        <span class="setting-desc">
+          {{ modoEscuro ? ('ACESSIBILIDADE.ATIVADO' | translate) : ('ACESSIBILIDADE.DESATIVADO' | translate) }}
+        </span>
       </div>
     </div>
-
-    <div class="setting-block">
-      <div class="setting-left">
-        <div class="setting-icon">
-          <ion-icon name="language-outline"></ion-icon>
-        </div>
-        <span class="setting-label">{{ 'ACESSIBILIDADE.IDIOMA' | translate }}</span>
-      </div>
-      <div class="idioma-row">
-        <button class="idioma-btn" *ngFor="let i of idiomas" [class.active]="idioma === i.valor"
-          (click)="setIdioma(i.valor)">{{ i.label }}</button>
-      </div>
-    </div>
-
+    <ion-toggle
+      [checked]="modoEscuro"
+      (ionChange)="toggleModoEscuro($event.detail.checked)">
+    </ion-toggle>
   </div>
-</ion-content>
+
+  <div class="setting-block">
+    <div class="setting-left">
+      <div class="setting-icon">
+        <ion-icon name="text-outline"></ion-icon>
+      </div>
+      <span class="setting-label">{{ 'ACESSIBILIDADE.TAMANHO_FONTE' | translate }}</span>
+    </div>
+    <div class="fonte-grid">
+      <button
+        type="button"
+        class="fonte-btn"
+        *ngFor="let f of tamanhosFonte"
+        [class.active]="tamanhoFonte === f.valor"
+        [style.font-size]="f.size"
+        (click)="setTamanhoFonte(f.valor)">
+        {{ f.label }}
+      </button>
+    </div>
+  </div>
+
+  <div class="setting-block">
+    <div class="setting-left">
+      <div class="setting-icon">
+        <ion-icon name="language-outline"></ion-icon>
+      </div>
+      <span class="setting-label">{{ 'ACESSIBILIDADE.IDIOMA' | translate }}</span>
+    </div>
+    <div class="idioma-row">
+      <button
+        type="button"
+        class="idioma-btn"
+        *ngFor="let i of idiomas"
+        [class.active]="idioma === i.valor"
+        (click)="setIdioma(i.valor)">
+        {{ i.label }}
+      </button>
+    </div>
+  </div>
+
+</div>

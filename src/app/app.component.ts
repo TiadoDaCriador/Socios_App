@@ -36,6 +36,7 @@ import { LembretesService } from './services/lembretes.service';
 export class AppComponent {
 
   isLoggedIn = false;
+  private lembretesAtivos = false;
 
   public appPages = [
     { title: 'MENU.PERFIL',         url: '/tabs/perfil',         icon: 'person'           },
@@ -70,10 +71,22 @@ export class AppComponent {
       this.cdr.detectChanges();
     });
 
+    // ── Inicia/para lembretes conforme o estado de login ──
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd)
     ).subscribe(() => {
-      this.isLoggedIn = this.auth.isLoggedIn();
+      const logado = this.auth.isLoggedIn();
+      this.isLoggedIn = logado;
+
+      if (logado && !this.lembretesAtivos) {
+        this.lembretesService.iniciar();
+        this.lembretesAtivos = true;
+      }
+
+      if (!logado && this.lembretesAtivos) {
+        this.lembretesService.parar();
+        this.lembretesAtivos = false;
+      }
     });
 
     this.restaurarAcessibilidade();
@@ -100,6 +113,7 @@ export class AppComponent {
   async logout() {
     await this.menu.close();
     this.lembretesService.parar();
+    this.lembretesAtivos = false;
     this.auth.logout();
   }
 }

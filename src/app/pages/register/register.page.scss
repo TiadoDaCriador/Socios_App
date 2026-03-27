@@ -1,152 +1,211 @@
-// src/app/pages/register/register.page.scss
+// register.page.scss
 
-.register-content {
-  --background: var(--color-bg);
+.login-content {
+  --background: transparent;
+  --overflow: hidden;
 }
 
-.register-wrap {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.login-bg {
   min-height: 100vh;
-  padding: 40px 24px;
-  gap: 32px;
-}
-
-// ── Cabeçalho ─────────────────────────────────────────────
-.register-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  position: relative;
-}
-
-.btn-voltar {
-  position: absolute;
-  left: 0;
-  top: 0;
-  background: transparent;
-  border: none;
-  color: var(--color-muted);
-  font-size: 22px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 0;
-}
-
-.register-logo {
-  width: 72px;
-  height: 72px;
-  background: var(--color-primary);
-  border-radius: 20px;
+  background: url('/assets/images/pexels-paulseling-333048 1.png') center center / cover no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(26, 111, 219, 0.35);
-  margin-bottom: 8px;
-
-  ion-icon { font-size: 36px; color: #ffffff; }
+  padding: 24px 16px;
 }
 
-.register-titulo {
-  margin: 0;
-  font-size: 26px;
-  font-weight: 800;
-  color: var(--color-text);
-  letter-spacing: -0.5px;
+.login-card {
+  width: 100%;
+  max-width: 320px;
+  background: #ffffff !important;
+  border: 3px solid #1a1a1a;
+  border-radius: 8px;
+  padding: 28px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.register-subtitulo {
-  margin: 0;
-  font-size: 14px;
-  color: var(--color-muted);
-  text-align: center;
+// ── Logo ───────────────────────────────────────────────────
+.login-header {
+  display: flex;
+  justify-content: center;
+}
+
+.login-logo {
+  height: 120px;
+  object-fit: contain;
 }
 
 // ── Formulário ────────────────────────────────────────────
-.register-form {
+.login-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
 .field-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-
-.field-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-text);
-  letter-spacing: 0.3px;
 }
 
 .field-wrap {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--color-card);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  align-items: stretch;
+  border: 1px solid #9ca3af;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #ffffff !important;
 
   &:focus-within {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(26, 111, 219, 0.12);
+    border-color: #0098DB;
   }
-}
-
-.field-icon {
-  font-size: 18px;
-  color: var(--color-muted);
-  flex-shrink: 0;
 }
 
 .field-input {
   flex: 1;
   border: none;
   outline: none;
-  background: transparent;
+  background: transparent !important;
   font-size: 15px;
-  color: var(--color-text);
+  padding: 10px 12px;
+  
+  // ── TEXTO SEMPRE PRETO (VALOR DIGITADO) ──
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
 
-  &::placeholder { color: var(--color-muted); }
+  &::placeholder {
+    color: #9ca3af;
+  }
 }
 
 .field-eye {
-  background: transparent;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  color: var(--color-muted);
-  font-size: 18px;
+  width: 42px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  background: #FFB400 !important; // Amarelo Maestro
+  border: none;
+  cursor: pointer;
+  color: #1a1a1a !important;
+  font-size: 20px;
 }
 
-// ── Botão registar ────────────────────────────────────────
-.btn-registar {
+// ── Termos & Condições (Checkbox Nativa) ──────────────────
+.terms-wrapper {
+  margin: px 0;
+
+  ion-item {
+    --background: transparent !important;
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    --min-height: auto;
+    
+    ion-checkbox {
+      --size: 20px;
+      --border-radius: 50%; // Circular como na tua ref
+      --checkbox-background-checked: #0098DB;
+      --border-color-checked: #0098DB;
+      --border-color: #9ca3af;
+      --checkmark-color: #ffffff;
+      
+      font-size: 13px;
+      color: #6b7280;
+
+      &::part(label) {
+        margin-inline-start: 10px;
+      }
+
+      a {
+        text-decoration: none;
+        color: #0098DB;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+// ── Botão Registar (AZUL VIVO FORÇADO) ──────────────────────
+.btn-entrar {
   width: 100%;
-  padding: 15px;
+  padding: 14px;
   margin-top: 4px;
   border: none;
-  border-radius: var(--radius-sm);
-  background: var(--color-primary);
-  color: #ffffff;
-  font-size: 16px;
+  border-radius: 6px;
+  
+  background: #0098DB !important; 
+  color: #ffffff !important;
+  opacity: 1 !important; 
+  filter: none !important;
+  
+  font-size: 15px;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.15s;
 
-  &:active { transform: scale(0.98); opacity: 0.9; }
-  &:disabled { opacity: 0.6; cursor: not-allowed; }
+  &:active {
+    opacity: 0.8 !important;
+  }
+
+  // Mantém o azul vivo mesmo quando desativado (falta aceitar termos)
+  &:disabled {
+    background: #0098DB !important; 
+    color: #ffffff !important;
+    opacity: 0.7 !important; 
+    cursor: not-allowed;
+  }
 }
 
+// ── Rodapé ────────────────────────────────────────────────
+.login-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.footer-dev {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.footer-logos {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  img { height: 20px; object-fit: contain; }
+}
+
+.footer-install {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+  text-align: center;
+  a { color: #0098DB; text-decoration: none; }
+}
+
+.footer-registo {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+  text-align: center;
+  
+  .btn-link {
+    background: transparent;
+    border: none;
+    color: #0098DB;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 0;
+  }
+}
+
+// ── Spinner & Autofill ────────────────────────────────────
 .spinner {
   display: inline-block;
   width: 18px;
@@ -161,22 +220,13 @@
   to { transform: rotate(360deg); }
 }
 
-// ── Footer ────────────────────────────────────────────────
-.register-footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-size: 14px;
-  color: var(--color-muted);
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: #000000 !important;
 }
 
-.btn-link {
-  background: transparent;
-  border: none;
-  color: var(--color-primary);
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  padding: 0;
+input::-ms-reveal,
+input::-ms-clear,
+input::-webkit-credentials-auto-fill-button {
+  display: none !important;
 }

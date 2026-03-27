@@ -1,51 +1,46 @@
-<ion-header>
-  <ion-toolbar class="modal-toolbar">
-    <ion-title>{{ 'NOTIF_MODAL.TITULO' | translate }}</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="fechar()" fill="clear">
-        <ion-icon name="close-outline" style="font-size:22px;color:#6b7280"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<div class="modal-body">
 
-<ion-content class="modal-content">
-  <div class="modal-body">
-
-    <div class="setting-row">
-      <div class="setting-left">
-        <div class="setting-icon"><ion-icon name="calendar-outline"></ion-icon></div>
-        <div class="setting-info">
-          <span class="setting-label">{{ 'NOTIFICACOES.EVENTOS' | translate }}</span>
-          <span class="setting-desc">{{ 'NOTIF_MODAL.EVENTOS_DESC' | translate }}</span>
-        </div>
+  <div class="setting-row">
+    <div class="setting-left">
+      <div class="setting-icon">
+        <ion-icon name="calendar-outline"></ion-icon>
       </div>
-      <ion-toggle [checked]="notifEventos" (ionChange)="notifEventos = $event.detail.checked"></ion-toggle>
-    </div>
-
-    <div class="setting-row">
-      <div class="setting-left">
-        <div class="setting-icon"><ion-icon name="wallet-outline"></ion-icon></div>
-        <div class="setting-info">
-          <span class="setting-label">{{ 'NOTIFICACOES.QUOTAS' | translate }}</span>
-          <span class="setting-desc">{{ 'NOTIF_MODAL.QUOTAS_DESC' | translate }}</span>
-        </div>
+      <div class="setting-info">
+        <span class="setting-label">{{ 'NOTIFICACOES.EVENTOS' | translate }}</span>
+        <span class="setting-desc">{{ 'NOTIF_MODAL.EVENTOS_DESC' | translate }}</span>
       </div>
-      <ion-toggle [checked]="notifQuotas" (ionChange)="notifQuotas = $event.detail.checked"></ion-toggle>
     </div>
-
-    <div class="setting-row">
-      <div class="setting-left">
-        <div class="setting-icon"><ion-icon name="newspaper-outline"></ion-icon></div>
-        <div class="setting-info">
-          <span class="setting-label">{{ 'NOTIFICACOES.NOTICIAS' | translate }}</span>
-          <span class="setting-desc">{{ 'NOTIF_MODAL.NOTICIAS_DESC' | translate }}</span>
-        </div>
-      </div>
-      <ion-toggle [checked]="notifNoticias" (ionChange)="notifNoticias = $event.detail.checked"></ion-toggle>
-    </div>
-
-    <button class="btn-guardar" (click)="guardar()">{{ 'COMUM.GUARDAR' | translate }}</button>
-
+    <ion-toggle [checked]="notifEventos" (ionChange)="notifEventos = $event.detail.checked"></ion-toggle>
   </div>
-</ion-content>
+
+  <div class="setting-row">
+    <div class="setting-left">
+      <div class="setting-icon">
+        <ion-icon name="wallet-outline"></ion-icon>
+      </div>
+      <div class="setting-info">
+        <span class="setting-label">{{ 'NOTIFICACOES.QUOTAS' | translate }}</span>
+        <span class="setting-desc">{{ 'NOTIF_MODAL.QUOTAS_DESC' | translate }}</span>
+      </div>
+    </div>
+    <ion-toggle [checked]="notifQuotas" (ionChange)="notifQuotas = $event.detail.checked"></ion-toggle>
+  </div>
+
+  <div class="setting-row">
+    <div class="setting-left">
+      <div class="setting-icon">
+        <ion-icon name="newspaper-outline"></ion-icon>
+      </div>
+      <div class="setting-info">
+        <span class="setting-label">{{ 'NOTIFICACOES.NOTICIAS' | translate }}</span>
+        <span class="setting-desc">{{ 'NOTIF_MODAL.NOTICIAS_DESC' | translate }}</span>
+      </div>
+    </div>
+    <ion-toggle [checked]="notifNoticias" (ionChange)="notifNoticias = $event.detail.checked"></ion-toggle>
+  </div>
+
+  <button class="btn-guardar" (click)="guardar()">
+    {{ 'COMUM.GUARDAR' | translate }}
+  </button>
+
+</div>

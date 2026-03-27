@@ -1,59 +1,59 @@
-// src/app/pages/definicoes/cartoes-modal.ts
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  IonHeader, IonToolbar, IonTitle, IonContent,
-  IonButtons, IonButton, IonIcon, ModalController,
-  AlertController, ToastController,
-} from '@ionic/angular/standalone';
+import { IonIcon, AlertController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { closeOutline, cardOutline, addCircleOutline, trashOutline } from 'ionicons/icons';
+import { cardOutline, addCircleOutline, trashOutline } from 'ionicons/icons';
 
 export interface CartaoAssociado {
-  id: number; ultimos4: string; tipo: string; titular: string;
+  id: number;
+  ultimos4: string;
+  tipo: string;
+  titular: string;
 }
 
 @Component({
   selector: 'app-cartoes-modal',
   templateUrl: './cartoes-modal.html',
-  styleUrls: ['./modal-shared.scss'],
+  styleUrls: ['./cartoes-modal.scss'],
   standalone: true,
-  encapsulation: ViewEncapsulation.None,
-  imports: [CommonModule, TranslateModule, IonHeader, IonToolbar, IonTitle,
-    IonContent, IonButtons, IonButton, IonIcon],
+  encapsulation: ViewEncapsulation.Emulated,
+  imports: [CommonModule, TranslateModule, IonIcon],
 })
 export class CartoesModalComponent {
+
   cartoes: CartaoAssociado[] = [
-    { id: 1, ultimos4: '4532', tipo: 'Visa', titular: 'João Silva' },
+    { id: 1, ultimos4: '4532', tipo: 'Visa',       titular: 'João Silva' },
     { id: 2, ultimos4: '1234', tipo: 'Mastercard', titular: 'João Silva' },
   ];
 
-  constructor(
-    private modalCtrl: ModalController,
-    private alertCtrl: AlertController,
-    private toastCtrl: ToastController,
-  ) {
-    addIcons({ closeOutline, cardOutline, addCircleOutline, trashOutline });
+  constructor(private alertCtrl: AlertController) {
+    addIcons({ cardOutline, addCircleOutline, trashOutline });
   }
-
-  fechar() { this.modalCtrl.dismiss(); }
 
   async adicionar() {
     const alert = await this.alertCtrl.create({
       header: 'Adicionar Cartão',
       inputs: [
-        { name: 'numero', type: 'text', placeholder: 'Número do cartão' },
-        { name: 'titular', type: 'text', placeholder: 'Nome do titular' },
-        { name: 'validade', type: 'text', placeholder: 'MM/AA' },
-        { name: 'cvv', type: 'password', placeholder: 'CVV' },
+        { name: 'numero',   type: 'text',     placeholder: 'Número do cartão' },
+        { name: 'titular',  type: 'text',     placeholder: 'Nome do titular'  },
+        { name: 'validade', type: 'text',     placeholder: 'MM/AA'            },
+        { name: 'cvv',      type: 'password', placeholder: 'CVV'              },
       ],
       buttons: [
         { text: 'Cancelar', role: 'cancel' },
         {
-          text: 'Guardar', handler: (d) => {
-            this.cartoes = [...this.cartoes, { id: Date.now(), ultimos4: d.numero.slice(-4), tipo: 'Visa', titular: d.titular }];
-          }
+          text: 'Guardar',
+          handler: (d) => {
+            if (!d.numero || d.numero.length < 4) return false;
+            this.cartoes = [...this.cartoes, {
+              id: Date.now(),
+              ultimos4: d.numero.slice(-4),
+              tipo: 'Visa',
+              titular: d.titular,
+            }];
+            return true;
+          },
         },
       ],
     });
@@ -67,9 +67,11 @@ export class CartoesModalComponent {
       buttons: [
         { text: 'Cancelar', role: 'cancel' },
         {
-          text: 'Remover', role: 'destructive', handler: () => {
+          text: 'Remover',
+          role: 'destructive',
+          handler: () => {
             this.cartoes = this.cartoes.filter(x => x.id !== c.id);
-          }
+          },
         },
       ],
     });

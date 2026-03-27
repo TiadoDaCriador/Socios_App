@@ -1,12 +1,12 @@
 // src/app/pages/notificacoes/notificacoes.page.scss
 
 .notif-content {
-  --background: var(--color-bg);
+  --background: #000;
 }
 
 .header-badge {
   --background: var(--color-danger);
-  --color: #ffffff;
+  --color: #000;
   font-size: 10px;
   margin-left: 4px;
   vertical-align: middle;

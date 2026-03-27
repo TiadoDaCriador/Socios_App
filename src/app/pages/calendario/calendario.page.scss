@@ -1,3 +1,4 @@
+
 .cal-content {
   --background: #000000;
   position: relative;
@@ -10,10 +11,32 @@
   justify-content: space-between;
   color: #ffffff;
 
-  .dia-num { font-size: 85px; font-weight: 800; margin: 0; line-height: 0.8; }
-  .mes-nome { font-size: 34px; font-weight: 700; margin: 8px 0 2px; }
-  .ano-num { font-size: 28px; font-weight: 600; color: #FFB400; margin: 0; }
-  .dia-semana-txt { font-size: 45px; color: #B0B0B0; font-weight: 500; margin-top: 10px; }
+  .dia-num {
+    font-size: 85px;
+    font-weight: 800;
+    margin: 0;
+    line-height: 0.8;
+  }
+
+  .mes-nome {
+    font-size: 34px;
+    font-weight: 700;
+    margin: 8px 0 2px;
+  }
+
+  .ano-num {
+    font-size: 28px;
+    font-weight: 600;
+    color: #FFB400;
+    margin: 0;
+  }
+
+  .dia-semana-txt {
+    font-size: 45px;
+    color: #B0B0B0;
+    font-weight: 500;
+    margin-top: 10px;
+  }
 }
 
 .vista-bar {
@@ -41,7 +64,13 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   margin-bottom: 12px;
-  .mes-header-dia { text-align: center; color: #ffffff; font-size: 11px; font-weight: 700; }
+
+  .mes-header-dia {
+    text-align: center;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+  }
 }
 
 .mes-grid {
@@ -61,7 +90,9 @@
     cursor: pointer;
     transition: all 0.2s;
 
-    &:active { transform: scale(0.9); }
+    &:active {
+      transform: scale(0.9);
+    }
 
     &.outro-mes {
       border: 2px solid #ffffff;
@@ -106,7 +137,7 @@
   background: #ffffff;
   color: #000000;
   border: none;
-  border-radius: 50%;
+  border-radius: 20%;
   width: 50px;
   height: 50px;
   display: flex;
@@ -114,6 +145,138 @@
   justify-content: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 
-  ion-icon { font-size: 32px; }
-  &:active { opacity: 0.8; }
+  ion-icon {
+    font-size: 32px;
+  }
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+// ── Vista Semana ─────────────────────────────────────────────
+
+.semana-dias-faixa {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 25px;
+}
+
+.semana-dia-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+
+  .semana-dia-letra {
+    font-size: 11px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .semana-dia-num {
+    width: 100%;
+    aspect-ratio: 1/1;
+    max-width: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    transition: all 0.2s ease;
+    border: 2px solid transparent; // Borda invisível por padrão
+
+    // DIAS QUE JÁ PASSARAM: Caixa Cinza, Números Brancos
+    &.passado {
+      background-color: #444444 !important;
+      color: #ffffff !important;
+    }
+
+    // DIAS QUE AINDA VÃO SER: Caixa Branca, Números Pretos
+    &.futuro {
+      background-color: #ffffff !important;
+      color: #000000 !important;
+    }
+
+    // HOJE: Azul (Mantém o padrão de destaque)
+    &.hoje {
+      background-color: #0098DB !important;
+      color: #ffffff !important;
+    }
+  }
+
+  // QUANDO CLICAR (Selecionado): Borda Azul
+  &.selecionado {
+    .semana-dia-num {
+      border: 2px solid #0098DB !important;
+      transform: translateY(-2px); // Pequeno relevo ao selecionar
+    }
+  }
+
+  &:active .semana-dia-num {
+    transform: scale(0.9);
+  }
+}
+
+// ── Lista de eventos (Ajustes de espaçamento) ────────────────
+
+.semana-eventos {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
+}
+
+.evento-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid #1a1a1a;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.evento-indicador {
+  width: 4px;
+  min-height: 50px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.evento-corpo {
+  flex: 1;
+
+  .evento-titulo {
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 2px;
+  }
+
+  .evento-local {
+    font-size: 12px;
+    color: #888888;
+    margin-bottom: 3px;
+  }
+
+  .evento-tipo-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: capitalize;
+  }
+}
+
+.evento-hora {
+  font-size: 12px;
+  color: #aaaaaa;
+  font-weight: 600;
+  white-space: nowrap;
+  padding-top: 2px;
+  margin-right: 15px;
 }

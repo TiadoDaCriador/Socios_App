@@ -1,26 +1,25 @@
-// src/app/pages/definicoes/termos-modal.ts
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  IonHeader, IonToolbar, IonTitle, IonContent,
-  IonButtons, IonButton, IonIcon, ModalController,
-} from '@ionic/angular/standalone';
+import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { closeOutline, documentTextOutline } from 'ionicons/icons';
+import { documentTextOutline, openOutline, informationCircleOutline } from 'ionicons/icons';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-termos-modal',
   templateUrl: './termos-modal.html',
-  styleUrls: ['./modal-shared.scss'],
+  styleUrls: ['./termos-modal.scss'],
   standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [CommonModule, TranslateModule, IonHeader, IonToolbar, IonTitle,
-    IonContent, IonButtons, IonButton, IonIcon],
+  imports: [CommonModule, IonIcon, TranslateModule],
 })
 export class TermosModalComponent {
-  constructor(private modalCtrl: ModalController) {
-    addIcons({ closeOutline, documentTextOutline });
+
+  constructor() {
+    addIcons({ documentTextOutline, openOutline, informationCircleOutline });
   }
-  fechar() { this.modalCtrl.dismiss(); }
+
+  abrirTermos() {
+    window.open('https://associacao.pt/termos-e-condicoes', '_blank');
+  }
 }

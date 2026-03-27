@@ -1,5 +1,5 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
+  <ion-toolbar>
     <ion-title>Calendário</ion-title>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
@@ -8,41 +8,83 @@
 </ion-header>
 
 <ion-content class="cal-content" [fullscreen]="true">
+
   <div class="data-header">
     <div class="data-principal">
       <h1 class="dia-num">{{ dataAtual | date:'dd' }}</h1>
-      <h2 class="mes-nome">{{ dataAtual | date:'MMMM' | titlecase }}</h2>
-      <h3 class="ano-num">2026</h3>
+      <div class="mes-ano-wrap">
+        <h2 class="mes-nome">{{ dataAtual | date:'MMMM' | titlecase }}</h2>
+        <h3 class="ano-num">{{ dataAtual | date:'yyyy' }}</h3>
+      </div>
     </div>
-    <div class="dia-semana-txt">
-      {{ dataAtual | date:'EEE' | uppercase }}
-    </div>
+    <div class="dia-semana-txt">{{ dataAtual | date:'EEE' | uppercase }}</div>
   </div>
 
   <div class="vista-bar">
-    <button class="vista-btn" [class.active]="vista === 'mes'" (click)="setVista('mes')">MÊS</button>
-    <button class="vista-btn" [class.active]="vista === 'semana'" (click)="setVista('semana')">SEMANA</button>
-    <button class="vista-btn" [class.active]="vista === 'dia'" (click)="setVista('dia')">DIA</button>
+    <button class="vista-btn" [class.active]="vista === 'mes'" (click)="setVista('mes')">
+      MÊS
+    </button>
+    <button class="vista-btn" [class.active]="vista === 'semana'" (click)="setVista('semana')">
+      SEMANA
+    </button>
   </div>
 
-  <div class="cal-mes" *ngIf="vista === 'mes'">
-    <div class="mes-header">
-      <div class="mes-header-dia" *ngFor="let d of diasSemana">{{ d | uppercase }}</div>
-    </div>
-    
-    <div class="mes-grid">
-      <div class="mes-celula" *ngFor="let celula of celulas"
-        [class.outro-mes]="!celula.mesAtual"
-        [class.hoje]="isHoje(celula.data)"
-        [class.passado]="isPassado(celula.data) && celula.mesAtual"
-        [class.futuro]="!isPassado(celula.data) && !isHoje(celula.data) && celula.mesAtual"
-        [class.selecionado]="mesmoDia(celula.data, dataAtual) && !isHoje(celula.data)"
-        (click)="dataAtual = celula.data">
-        
-        <span class="celula-num">{{ celula.data.getDate() }}</span>
+  <swiper-container initial-slide="1" (swiperslidechange)="onSlideChange($event)" [allowTouchMove]="true">
+    <swiper-slide></swiper-slide>
+
+    <swiper-slide>
+
+      <div class="cal-mes" *ngIf="vista === 'mes'">
+        <div class="mes-header">
+          <div class="mes-header-dia" *ngFor="let d of diasSemana">{{ d | uppercase }}</div>
+        </div>
+        <div class="mes-grid">
+          <div class="mes-celula" *ngFor="let celula of celulas" [class.outro-mes]="!celula.mesAtual"
+            [class.hoje]="isHoje(celula.data)" [class.passado]="isPassado(celula.data) && celula.mesAtual"
+            [class.futuro]="!isPassado(celula.data) && !isHoje(celula.data) && celula.mesAtual"
+            [class.selecionado]="mesmoDia(celula.data, dataAtual) && !isHoje(celula.data)" [style.background-color]="celula.mesAtual && !isHoje(celula.data) && corDaCelula(celula.data) 
+                                      ? corDaCelula(celula.data) : null" [style.color]="celula.mesAtual && !isHoje(celula.data) && corDaCelula(celula.data) 
+                            ? '#ffffff' : null" (click)="selecionarDiaMes(celula.data)">
+            <span class="celula-num">{{ celula.data.getDate() }}</span>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+
+      <div class="cal-semana" *ngIf="vista === 'semana'">
+        <div class="semana-dias-faixa">
+          <div class="semana-dia-item" *ngFor="let dia of diasDaSemana"
+            [class.selecionado]="mesmoDia(dia, diaSelecionadoSemana)" (click)="selecionarDiaSemana(dia)">
+
+            <span class="semana-dia-letra">{{ dia | date:'EEE' | uppercase }}</span>
+
+            <span class="semana-dia-num" [class.hoje]="isHoje(dia)" [class.passado]="isPassado(dia)"
+              [class.futuro]="!isPassado(dia) && !isHoje(dia)">
+              {{ dia | date:'d' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="semana-eventos">
+          <div class="sem-eventos" *ngIf="eventosDoDia.length === 0">
+            <p>Sem eventos para este dia</p>
+          </div>
+          <div class="evento-item" *ngFor="let evento of eventosDoDia">
+            <div class="evento-indicador" [style.background-color]="corDoEvento(evento.tipo)"></div>
+            <div class="evento-corpo">
+              <div class="evento-titulo">{{ evento.nome }}</div>
+              <div class="evento-local" *ngIf="evento.local">{{ evento.local }}</div>
+              <div class="evento-tipo-label" [style.color]="corDoEvento(evento.tipo)">{{ labelDoEvento(evento.tipo) }}
+              </div>
+            </div>
+            <div class="evento-hora">{{ formatarHora(evento.dataInicio) }} – {{ formatarHora(evento.dataFim) }}</div>
+          </div>
+        </div>
+      </div>
+
+    </swiper-slide>
+
+    <swiper-slide></swiper-slide>
+  </swiper-container>
 
   <div class="nav-footer">
     <button class="nav-btn" (click)="anterior()">
@@ -52,4 +94,5 @@
       <ion-icon name="chevron-forward-outline"></ion-icon>
     </button>
   </div>
+
 </ion-content>

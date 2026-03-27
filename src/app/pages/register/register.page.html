@@ -1,60 +1,73 @@
-<ion-content class="register-content">
-  <div class="register-wrap">
-    <div class="register-header">
-      <button class="btn-voltar" (click)="voltar()">
-        <ion-icon name="chevron-back-outline"></ion-icon>
-      </button>
-      <div class="register-logo"><ion-icon name="card-outline"></ion-icon></div>
-      <h1 class="register-titulo">{{ 'REGISTER.TITULO' | translate }}</h1>
-      <p class="register-subtitulo">{{ 'REGISTER.SUBTITULO' | translate }}</p>
-    </div>
-    <div class="register-form">
-      <div class="field-group">
-        <label class="field-label">{{ 'REGISTER.EMAIL' | translate }}</label>
-        <div class="field-wrap">
-          <ion-icon name="mail-outline" class="field-icon"></ion-icon>
-          <input class="field-input" type="email" placeholder="joao@exemplo.pt" [(ngModel)]="email" />
+<ion-content class="login-content">
+  <div class="login-bg">
+    <div class="login-card">
+
+      <div class="login-header">
+        <img src="assets/images/Group 1 (3).png" class="login-logo" alt="Maestro" />
+      </div>
+
+      <div class="login-form">
+        <div class="field-group">
+          <div class="field-wrap">
+            <input class="field-input" type="email" placeholder="Email" [(ngModel)]="email" />
+          </div>
         </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">{{ 'REGISTER.NIF' | translate }}</label>
-        <div class="field-wrap">
-          <ion-icon name="card-outline" class="field-icon"></ion-icon>
-          <input class="field-input" type="text" inputmode="numeric" maxlength="9" placeholder="123456789"
-            [(ngModel)]="nif" />
+
+        <div class="field-group">
+          <div class="field-wrap">
+            <input class="field-input" type="text" inputmode="numeric" maxlength="9" placeholder="NIF"
+              [(ngModel)]="nif" />
+          </div>
         </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">{{ 'REGISTER.PASSWORD' | translate }}</label>
-        <div class="field-wrap">
-          <ion-icon name="lock-closed-outline" class="field-icon"></ion-icon>
-          <input class="field-input" [type]="mostrarPassword ? 'text' : 'password'"
-            [placeholder]="'REGISTER.PLACEHOLDER_PASSWORD' | translate" [(ngModel)]="password" />
-          <button class="field-eye" (click)="mostrarPassword = !mostrarPassword" type="button">
-            <ion-icon [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
-          </button>
+
+        <div class="field-group">
+          <div class="field-wrap">
+            <input class="field-input" [type]="mostrarPassword ? 'text' : 'password'" placeholder="Password"
+              [(ngModel)]="password" />
+            <button class="field-eye" (click)="mostrarPassword = !mostrarPassword" type="button">
+              <ion-icon [name]="mostrarPassword ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">{{ 'REGISTER.CONFIRMAR_PASSWORD' | translate }}</label>
-        <div class="field-wrap">
-          <ion-icon name="lock-closed-outline" class="field-icon"></ion-icon>
-          <input class="field-input" [type]="mostrarConfirmar ? 'text' : 'password'"
-            [placeholder]="'REGISTER.PLACEHOLDER_CONFIRMAR' | translate" [(ngModel)]="confirmarPassword"
-            (keyup.enter)="registar()" />
-          <button class="field-eye" (click)="mostrarConfirmar = !mostrarConfirmar" type="button">
-            <ion-icon [name]="mostrarConfirmar ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
-          </button>
+
+        <div class="field-group">
+          <div class="field-wrap">
+            <input class="field-input" [type]="mostrarConfirmar ? 'text' : 'password'" placeholder="Confirmar Password"
+              [(ngModel)]="confirmarPassword" />
+            <button class="field-eye" (click)="mostrarConfirmar = !mostrarConfirmar" type="button">
+              <ion-icon [name]="mostrarConfirmar ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
+            </button>
+          </div>
         </div>
+
+        <div class="terms-wrapper">
+          <ion-item lines="none" class="terms-item">
+            <ion-checkbox labelPlacement="end" [(ngModel)]="aceitaTermos">
+              Agree with the <a href="#" (click)="$event.preventDefault()">Terms & Conditions</a>
+            </ion-checkbox>
+          </ion-item>
+        </div>
+
+        <button class="btn-entrar" (click)="registar()" [disabled]="carregando || !aceitaTermos">
+          <span *ngIf="!carregando">Registar</span>
+          <span *ngIf="carregando" class="spinner"></span>
+        </button>
       </div>
-      <button class="btn-registar" (click)="registar()" [disabled]="carregando">
-        <span *ngIf="!carregando">{{ 'REGISTER.CRIAR_CONTA' | translate }}</span>
-        <span *ngIf="carregando" class="spinner"></span>
-      </button>
-      <div class="register-footer">
-        <span>{{ 'REGISTER.JA_TENS_CONTA' | translate }}</span>
-        <button class="btn-link" (click)="voltar()">{{ 'REGISTER.INICIAR_SESSAO' | translate }}</button>
+
+      <div class="login-footer">
+        <span class="footer-dev">Desenvolvido por:</span>
+        <div class="footer-logos">
+          <img src="assets/images/a_musa.png" class="footer-logo" alt="a_musa" />
+          <img src="assets/images/Amadeus.png" class="footer-logo" alt="Amadeus" />
+        </div>
+        <p class="footer-install">
+          Para instalar em Android visualize <a href="#">aqui</a>, ou iOS visualize <a href="#">aqui</a>
+        </p>
+        <p class="footer-registo">
+          Já tem conta? <button class="btn-link" (click)="voltar()">Entre aqui</button>
+        </p>
       </div>
+
     </div>
   </div>
 </ion-content>

@@ -16,23 +16,45 @@
     </div>
 
     <div class="opcoes-lista">
-      <div
-        class="opcao-row"
-        *ngFor="let op of opcoes; let i = index"
-        [class.danger]="op.danger"
-        [style.background]="op.danger ? '#111111' : getCinzento(i)"
-        (click)="clicar(op)">
-        
-        <span class="opcao-label" [class.danger-label]="op.danger">
-          {{ op.labelKey | translate }}
-        </span>
-        
-        <ion-icon
-          [name]="op.danger ? 'exit-outline' : 'chevron-forward-outline'"
-          [class.chevron]="!op.danger"
-          [class.danger-chevron]="op.danger">
-        </ion-icon>
-      </div>
+      <ng-container *ngFor="let op of opcoes; let i = index">
+
+        <div class="opcao-row" [class.danger]="op.danger" [class.expanded]="opcaoAberta === op.id"
+          [style.background]="op.danger ? '#111111' : getCinzento(i)" (click)="clicar(op)">
+          <span class="opcao-label" [class.danger-label]="op.danger">
+            {{ op.labelKey | translate }}
+          </span>
+          <ion-icon *ngIf="!op.danger"
+            [name]="opcaoAberta === op.id ? 'chevron-down-outline' : 'chevron-forward-outline'" class="chevron">
+          </ion-icon>
+          <ion-icon *ngIf="op.danger" name="exit-outline" class="danger-chevron">
+          </ion-icon>
+        </div>
+
+        <div class="dropdown-panel" *ngIf="opcaoAberta === op.id && op.id === 'acessibilidade'">
+          <app-acessibilidade-modal></app-acessibilidade-modal>
+        </div>
+
+        <div class="dropdown-panel" *ngIf="opcaoAberta === op.id && op.id === 'notificacoes'">
+          <app-notificacoes-modal></app-notificacoes-modal>
+        </div>
+
+        <div class="dropdown-panel" *ngIf="opcaoAberta === op.id && op.id === 'password'">
+          <app-password-modal></app-password-modal>
+        </div>
+
+        <div class="dropdown-panel" *ngIf="opcaoAberta === op.id && op.id === 'cartoes'">
+          <app-cartoes-modal></app-cartoes-modal>
+        </div>
+
+        <div class="dropdown-panel" *ngIf="opcaoAberta === op.id && op.id === 'suporte'">
+          <app-suporte-modal></app-suporte-modal>
+        </div>
+
+        <div class="dropdown-panel" *ngIf="opcaoAberta === op.id && op.id === 'termos'">
+          <app-termos-modal></app-termos-modal>
+        </div>
+
+      </ng-container>
     </div>
 
   </div>

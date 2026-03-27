@@ -1,0 +1,25 @@
+<div class="modal-body">
+
+  <div class="setting-row">
+    <div class="setting-left">
+      <div class="setting-icon">
+        <ion-icon name="mail-outline"></ion-icon>
+      </div>
+      <div class="setting-info">
+        <span class="setting-label">{{ 'DEFINICOES.SUPORTE' | translate }}</span>
+        <span class="setting-desc">suporte&#64;associacao.pt</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="suporte-info">
+    <ion-icon name="information-circle-outline"></ion-icon>
+    <p>{{ 'SUPORTE.INFO' | translate }}</p>
+  </div>
+
+  <button class="btn-guardar btn-email" (click)="enviarEmail()">
+    <ion-icon name="send-outline"></ion-icon>
+    {{ 'SUPORTE.ENVIAR_EMAIL' | translate }}
+  </button>
+
+</div>

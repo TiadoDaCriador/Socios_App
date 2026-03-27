@@ -1,5 +1,4 @@
-$cor-ativa: #f2c044;
-$primary:   #149E2C;
+$primary:   #1a6fdb;
 $radius-sm: 12px;
 
 .modal-body {
@@ -7,7 +6,7 @@ $radius-sm: 12px;
   display: flex;
   flex-direction: column;
   gap: 0;
-  background: #565656;
+  background: #323232;
 }
 
 // ── Linhas ───────────────────────────────────────────────────
@@ -16,7 +15,7 @@ $radius-sm: 12px;
   align-items: center;
   justify-content: space-between;
   padding: 14px 0;
-  
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 
   &:last-of-type { border-bottom: none; }
 }
@@ -25,7 +24,6 @@ $radius-sm: 12px;
   display: flex;
   align-items: center;
   gap: 10px;
-  flex: 1;
 }
 
 .setting-icon {
@@ -50,12 +48,27 @@ $radius-sm: 12px;
   color: rgba(255, 255, 255, 0.7);
 }
 
-// ── Toggle ───────────────────────────────────────────────────
-ion-toggle {
-  --track-background:          #1a6fdb;
-  --track-background-checked:  #f2c044;
-  --handle-background:         #ffffff;
-  --handle-background-checked: #ffffff;
+// ── Bloco de suporte ─────────────────────────────────────────
+.suporte-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+  ion-icon {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.4);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+  }
 }
 
 // ── Botão Guardar ────────────────────────────────────────────
@@ -73,4 +86,15 @@ ion-toggle {
   transition: opacity 0.15s;
 
   &:active { opacity: 0.8; }
+}
+
+.btn-email {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  ion-icon {
+    font-size: 18px;
+  }
 }

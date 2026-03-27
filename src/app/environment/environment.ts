@@ -1,4 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://SEU-API-URL-AQUI.com', // ← a tua URL real
+
+  // ─── Substitui pelo URL da tua API quando tiveres acesso ───
+  apiUrl: 'https://api.exemplo.com',
 };

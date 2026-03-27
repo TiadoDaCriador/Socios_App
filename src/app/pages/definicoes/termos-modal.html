@@ -1,19 +1,25 @@
-<ion-header>
-  <ion-toolbar class="modal-toolbar">
-    <ion-title>{{ 'TERMOS.TITULO' | translate }}</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="fechar()" fill="clear">
-        <ion-icon name="close-outline" style="font-size:22px;color:#6b7280"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-<ion-content class="modal-content">
-  <div class="modal-body termos-body">
-    <ion-icon name="document-text-outline" class="termos-icon"></ion-icon>
-    <h2 class="termos-titulo">{{ 'TERMOS.SUBTITULO' | translate }}</h2>
-    <p class="termos-texto">{{ 'TERMOS.TEXTO1' | translate }}</p>
-    <p class="termos-texto">{{ 'TERMOS.TEXTO2' | translate }}</p>
-    <button class="btn-guardar" (click)="fechar()">{{ 'TERMOS.FECHAR' | translate }}</button>
+<div class="modal-body">
+
+  <div class="setting-row">
+    <div class="setting-left">
+      <div class="setting-icon">
+        <ion-icon name="document-text-outline"></ion-icon>
+      </div>
+      <div class="setting-info">
+        <span class="setting-label">{{ 'DEFINICOES.TERMOS' | translate }}</span>
+        <span class="setting-desc">{{ 'TERMOS.VERSAO' | translate }}</span>
+      </div>
+    </div>
   </div>
-</ion-content>
+
+  <div class="termos-info">
+    <ion-icon name="information-circle-outline"></ion-icon>
+    <p>{{ 'TERMOS.DESC' | translate }}</p>
+  </div>
+
+  <button class="btn-guardar btn-termos" (click)="abrirTermos()">
+    <ion-icon name="open-outline"></ion-icon>
+    {{ 'TERMOS.VER' | translate }}
+  </button>
+
+</div>

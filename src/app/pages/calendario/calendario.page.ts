@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
@@ -8,37 +8,36 @@ import {
 import { addIcons } from 'ionicons';
 import { chevronBackOutline, chevronForwardOutline } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
-import { EventosService } from '../../services/eventos.service';
+import { EventosService, EventoLista } from '../../services/eventos.service';
+
+// IMPORT CORRIGIDO: Certifica-te que o ficheiro se chama tipos-eventos.ts na pasta shared
+import { corDoTipo, labelDoTipo, TIPOS_EVENTO } from '../../shared/tipos-eventos';
 
 @Component({
   selector: 'app-calendario',
   templateUrl: './calendario.page.html',
   styleUrls: ['./calendario.page.scss'],
   standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
-    CommonModule,
-    TranslateModule,
-    IonHeader,
-    IonToolbar,
-    IonButtons,
-    IonMenuButton,
-    IonTitle,
-    IonContent,
-    IonIcon
+    CommonModule, TranslateModule,
+    IonHeader, IonToolbar, IonButtons, IonMenuButton,
+    IonTitle, IonContent, IonIcon
   ],
 })
 export class CalendarioPage implements OnInit, OnDestroy {
-  vista: 'mes' | 'semana' | 'dia' = 'mes';
+  vista: 'mes' | 'semana' = 'mes';
   dataAtual = new Date();
   hoje = new Date();
   diasSemana: string[] = [];
-  meses: string[] = [];
-  eventos: any[] = [];
   celulas: any[] = [];
-  horas = Array.from({ length: 14 }, (_, i) => `${String(i + 7).padStart(2, '0')}:00`);
+  diasDaSemana: Date[] = [];
+  diaSelecionadoSemana: Date = new Date();
+  eventosDoDia: EventoLista[] = [];
+  todosEventos: EventoLista[] = [];
 
+  readonly COR_MULTIPLOS = '#FF6B35';
   private sub?: Subscription;
-  private langSub?: Subscription;
 
   constructor(
     private eventosService: EventosService,
@@ -48,39 +47,120 @@ export class CalendarioPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.langSub = this.translate.onLangChange.subscribe(() => this.carregarTraducoes());
     this.carregarTraducoes();
     this.gerarCelulas();
 
-    this.sub = this.eventosService.eventos$.subscribe(lista => {
-      this.eventos = lista.map(e => {
-        const d = new Date(e.dataInicio);
-        return {
-          ...e,
-          titulo: e.nome,
-          data: d,
-          hora: `${String(d.getHours()).padStart(2, '0')}:00`
-        };
-      });
+    this.sub = this.eventosService.eventos$.subscribe((eventos: EventoLista[]) => {
+      this.todosEventos = eventos;
+      this.gerarCelulas();
+      this.atualizarEventosDoDia(this.dataAtual);
     });
   }
 
   private carregarTraducoes() {
-    this.translate.get(['CALENDARIO.MESES', 'CALENDARIO.DIAS_CURTO']).subscribe(res => {
-      this.meses = res['CALENDARIO.MESES'];
+    this.translate.get(['CALENDARIO.DIAS_CURTO']).subscribe(res => {
       this.diasSemana = res['CALENDARIO.DIAS_CURTO'];
     });
   }
 
-  setVista(v: 'mes' | 'semana' | 'dia') {
+  // --- Lógica de Seleção Unificada ---
+  
+  // Quando clicas num dia no MÊS
+  selecionarDiaMes(dia: Date) {
+    this.dataAtual = new Date(dia);
+    this.diaSelecionadoSemana = dia; // Sincroniza a bolinha da semana
+    this.atualizarEventosDoDia(dia);
+  }
+
+  // Quando clicas num dia na SEMANA
+  selecionarDiaSemana(dia: Date) {
+    this.dataAtual = new Date(dia); // Atualiza o cabeçalho (26 Março...)
+    this.diaSelecionadoSemana = dia;
+    this.atualizarEventosDoDia(dia);
+  }
+
+  atualizarEventosDoDia(dia: Date) {
+    this.eventosDoDia = this.eventosNaData(dia)
+      .sort((a, b) => {
+        const hA = new Date(a.dataInicio).getTime();
+        const hB = new Date(b.dataInicio).getTime();
+        return hA - hB;
+      });
+  }
+
+  // --- Helpers de Cores e Labels ---
+
+  corDaCelula(data: Date): string | null {
+    const eventos = this.eventosNaData(data);
+    if (eventos.length === 0) return null;
+    const tiposUnicos = [...new Set(eventos.map(e => e.tipo))];
+    if (tiposUnicos.length === 1) return corDoTipo(eventos[0].tipo);
+    return this.COR_MULTIPLOS;
+  }
+
+  eventosNaData(data: Date): EventoLista[] {
+    const d = new Date(data); d.setHours(0, 0, 0, 0);
+    return this.todosEventos.filter(e => {
+      const inicio = new Date(e.dataInicio); inicio.setHours(0, 0, 0, 0);
+      const fim = new Date(e.dataFim); fim.setHours(0, 0, 0, 0);
+      return d >= inicio && d <= fim;
+    });
+  }
+
+  corDoEvento(tipo: string): string { return corDoTipo(tipo); }
+  labelDoEvento(tipo: string): string { return labelDoTipo(tipo); }
+  formatarHora(data: any): string {
+    const d = new Date(data);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + 'h';
+  }
+
+  // --- Geração de Calendário ---
+
+  gerarCelulas() {
+    this.celulas = [];
+    const ano = this.dataAtual.getFullYear();
+    const mes = this.dataAtual.getMonth();
+    const primeiro = new Date(ano, mes, 1);
+    let inicio = primeiro.getDay();
+    inicio = (inicio === 0) ? 6 : inicio - 1;
+
+    for (let i = inicio; i > 0; i--)
+      this.celulas.push({ data: new Date(ano, mes, 1 - i), mesAtual: false });
+
+    const ultimo = new Date(ano, mes + 1, 0).getDate();
+    for (let i = 1; i <= ultimo; i++)
+      this.celulas.push({ data: new Date(ano, mes, i), mesAtual: true });
+
+    while (this.celulas.length < 42) {
+      const d = new Date(this.celulas[this.celulas.length - 1].data);
+      d.setDate(d.getDate() + 1);
+      this.celulas.push({ data: d, mesAtual: false });
+    }
+
+    if (this.vista === 'semana') this.gerarDiasSemana();
+  }
+
+  gerarDiasSemana() {
+    const d = new Date(this.dataAtual);
+    const diaSemana = d.getDay();
+    const diff = (diaSemana === 0) ? -6 : 1 - diaSemana;
+    d.setDate(d.getDate() + diff);
+
+    this.diasDaSemana = [];
+    for (let i = 0; i < 7; i++) {
+      this.diasDaSemana.push(new Date(d));
+      d.setDate(d.getDate() + 1);
+    }
+    this.diaSelecionadoSemana = new Date(this.dataAtual);
+    this.atualizarEventosDoDia(this.diaSelecionadoSemana);
+  }
+
+  setVista(v: 'mes' | 'semana') {
     this.vista = v;
     this.gerarCelulas();
   }
 
-  irParaHoje() {
-    this.dataAtual = new Date();
-    this.gerarCelulas();
-  }
+  // --- Navegação ---
 
   anterior() { this.navegar(-1); }
   proximo() { this.navegar(1); }
@@ -88,82 +168,26 @@ export class CalendarioPage implements OnInit, OnDestroy {
   private navegar(dir: number) {
     const d = new Date(this.dataAtual);
     if (this.vista === 'mes') d.setMonth(d.getMonth() + dir);
-    else if (this.vista === 'semana') d.setDate(d.getDate() + (dir * 7));
-    else d.setDate(d.getDate() + dir);
+    else d.setDate(d.getDate() + dir * 7);
     this.dataAtual = d;
     this.gerarCelulas();
+    this.atualizarEventosDoDia(this.dataAtual);
   }
 
-  get tituloNavegacao(): string {
-    if (!this.meses || this.meses.length === 0) return '';
-    const ano = this.dataAtual.getFullYear();
-    if (this.vista === 'mes') return `${this.meses[this.dataAtual.getMonth()]} ${ano}`;
-    const dias = this.diasDaSemana;
-    return `${dias[0].getDate()} – ${dias[6].getDate()} ${this.meses[dias[6].getMonth()]} ${ano}`;
+  onSlideChange(event: any) {
+    const swiper = event.target.swiper;
+    if (swiper.activeIndex > 1) this.proximo();
+    else if (swiper.activeIndex < 1) this.anterior();
+    setTimeout(() => swiper.slideTo(1, 0), 100);
   }
 
-  get diasDaSemana(): Date[] {
-    const d = new Date(this.dataAtual);
-    const dow = d.getDay() === 0 ? 6 : d.getDay() - 1;
-    d.setDate(d.getDate() - dow);
-    return Array.from({ length: 7 }, (_, i) => {
-      const dia = new Date(d);
-      dia.setDate(d.getDate() + i);
-      return dia;
-    });
-  }
-
-  isHoraPassada = (dia: Date, hora: string) => {
-    const agora = new Date();
-    const d = new Date(dia);
-    const h = parseInt(hora.split(':')[0]);
-    d.setHours(h, 0, 0, 0);
-    return d < agora;
-  };
-
+  // --- Utilitários ---
+  mesmoDia = (a: Date, b: Date) => a.toDateString() === b.toDateString();
   isHoje = (d: Date) => this.mesmoDia(d, this.hoje);
-
   isPassado = (d: Date) => {
     const h = new Date(); h.setHours(0, 0, 0, 0);
-    const temp = new Date(d); temp.setHours(0, 0, 0, 0);
-    return temp < h;
+    return d < h && !this.isHoje(d);
   };
 
-  eventosNoDia = (d: Date) => this.eventos.filter(e => this.mesmoDia(e.data, d));
-
-  eventoNaHora = (dia: Date, hora: string) =>
-    this.eventosNoDia(dia).find(e => e.hora.startsWith(hora.split(':')[0]));
-
-  // Removido o 'private' para o HTML conseguir aceder
-  mesmoDia = (a: Date, b: Date) =>
-    a.getDate() === b.getDate() &&
-    a.getMonth() === b.getMonth() &&
-    a.getFullYear() === b.getFullYear();
-
-  gerarCelulas() {
-    this.celulas = [];
-    const ano = this.dataAtual.getFullYear();
-    const mes = this.dataAtual.getMonth();
-    const primeiroDiaMes = new Date(ano, mes, 1);
-    let inicioSemana = primeiroDiaMes.getDay();
-    inicioSemana = inicioSemana === 0 ? 6 : inicioSemana - 1;
-
-    for (let i = inicioSemana; i > 0; i--) {
-      this.celulas.push({ data: new Date(ano, mes, 1 - i), mesAtual: false });
-    }
-    const ultimoDiaMes = new Date(ano, mes + 1, 0).getDate();
-    for (let i = 1; i <= ultimoDiaMes; i++) {
-      this.celulas.push({ data: new Date(ano, mes, i), mesAtual: true });
-    }
-    while (this.celulas.length < 42) {
-      const d = new Date(this.celulas[this.celulas.length - 1].data);
-      d.setDate(d.getDate() + 1);
-      this.celulas.push({ data: d, mesAtual: false });
-    }
-  }
-
-  ngOnDestroy() {
-    this.sub?.unsubscribe();
-    this.langSub?.unsubscribe();
-  }
+  ngOnDestroy() { this.sub?.unsubscribe(); }
 }

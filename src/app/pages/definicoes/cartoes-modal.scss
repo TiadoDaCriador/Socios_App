@@ -1,0 +1,105 @@
+$primary:   #fff;
+$danger:    #e53935;
+$radius-sm: 12px;
+
+.modal-body {
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: #3e3e3e;
+}
+
+// ── Itens ────────────────────────────────────────────────────
+.cartao-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+  &:last-of-type { border-bottom: none; }
+}
+
+.cartao-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+// ── Labels ───────────────────────────────────────────────────
+.setting-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.setting-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.setting-desc {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+// ── Botão remover ────────────────────────────────────────────
+.btn-remover {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(229, 57, 53, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: $danger;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:active { background: rgba(229, 57, 53, 0.2); }
+}
+
+// ── Vazio ────────────────────────────────────────────────────
+.vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px;
+  gap: 8px;
+
+  ion-icon {
+    font-size: 36px;
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+// ── Botão adicionar ──────────────────────────────────────────
+.btn-adicionar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  padding: 13px;
+  border: none;
+  background: transparent;
+  color: $primary;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+  ion-icon { font-size: 20px; }
+}
